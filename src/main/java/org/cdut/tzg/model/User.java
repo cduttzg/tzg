@@ -8,7 +8,7 @@ import java.io.Serializable;
  */
 public class User implements Serializable {
     private Long id;
-    private String number;
+    private String schoolNumber;
     private String username;
     private String password;
     private String phoneNumber;
@@ -29,12 +29,12 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getNumber() {
-        return number;
+    public String getSchoolNumber() {
+        return schoolNumber;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setSchoolNumber(String schoolNumber) {
+        this.schoolNumber = schoolNumber;
     }
 
     public String getUsername() {
@@ -129,7 +129,7 @@ public class User implements Serializable {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", number='" + number + '\'' +
+                ", schoolNumber='" + schoolNumber + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
