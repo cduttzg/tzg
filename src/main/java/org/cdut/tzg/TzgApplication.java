@@ -12,7 +12,7 @@ public class TzgApplication {
         ApplicationContext context = SpringApplication.run(TzgApplication.class, args);
         String serverPort = context.getEnvironment().getProperty("server.port");
         System.out.println("tzg started at http://localhost:" + serverPort);;
-        System.out.println("tzg admin http://localhost:" + serverPort+"/user/findAll");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/user/isForzen");
     }
 
 }
