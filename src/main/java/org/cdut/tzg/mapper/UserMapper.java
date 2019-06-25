@@ -18,4 +18,16 @@ public interface UserMapper {
      */
     @Select("select * from user")
     List<User> findAll();
+
+    /**
+     * 根据姓名查找用户
+     */
+    @Select("select * from user where username = #{username}")
+    User findUserByName(String username);
+
+    /**
+     * 根据用户ID查找用户
+     */
+    @Select("select * from user where id = #{userId}")
+    User findUserById(Long userId);
 }
