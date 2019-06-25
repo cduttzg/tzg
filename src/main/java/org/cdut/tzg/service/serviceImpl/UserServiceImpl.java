@@ -22,4 +22,13 @@ public class UserServiceImpl implements UserService {
     public List<User> findAll() {
         return userMapper.findAll();
     }
+
+    @Override
+    public String isregister(Long id, String schoolNumber, String username, String password, String phoneNumber,
+                             String address, String email,Integer isForzen, Integer totalSold, Integer grade,
+                             String avatar, String moneyCode, Integer role) {
+        userMapper.insert(id,schoolNumber,username,password,phoneNumber,address,email,isForzen,totalSold,grade,avatar,moneyCode,role);
+
+        return "ok";
+    }
 }
