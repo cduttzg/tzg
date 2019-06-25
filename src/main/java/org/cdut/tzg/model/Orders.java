@@ -15,6 +15,7 @@ public class Orders implements Serializable {
     private Long goodsId;
     private Integer nember;
     private Date createdTime;
+    private Date completedTime;
     private Integer state;
 
     public Long getId() {
@@ -65,6 +66,14 @@ public class Orders implements Serializable {
         this.createdTime = createdTime;
     }
 
+    public Date getCompletedTime() {
+        return completedTime;
+    }
+
+    public void setCompletedTime(Date completedTime) {
+        this.completedTime = completedTime;
+    }
+
     public Integer getState() {
         return state;
     }
@@ -82,6 +91,7 @@ public class Orders implements Serializable {
                 ", goodsId=" + goodsId +
                 ", nember=" + nember +
                 ", createdTime=" + createdTime +
+                ", completedTime=" + completedTime +
                 ", state=" + state +
                 '}';
     }

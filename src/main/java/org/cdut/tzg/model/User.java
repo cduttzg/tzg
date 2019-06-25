@@ -16,7 +16,7 @@ public class User implements Serializable {
     private String phoneNumber;
     private String address;
     private String email;
-    private Integer isForzen;
+    private Integer isFrozen;
     private Integer totalSold;
     private Integer grade;
     private String avatar;
@@ -33,7 +33,7 @@ public class User implements Serializable {
         this.phoneNumber=phoneNumber;
         this.address=address;
         this.email=email;
-        this.isForzen=isForzen;
+        this.isFrozen=isForzen;
         this.totalSold=totalSold;
         this.grade=grade;
         this.avatar=avatar;
@@ -97,12 +97,12 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public Integer getIsForzen() {
-        return isForzen;
+    public Integer getIsFrozen() {
+        return isFrozen;
     }
 
-    public void setIsForzen(Integer isForzen) {
-        this.isForzen = isForzen;
+    public void setIsFrozen(Integer isFrozen) {
+        this.isFrozen = isFrozen;
     }
 
     public Integer getTotalSold() {
@@ -155,7 +155,7 @@ public class User implements Serializable {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
                 ", email='" + email + '\'' +
-                ", isForzen=" + isForzen +
+                ", isFrozen=" + isFrozen +
                 ", totalSold=" + totalSold +
                 ", grade=" + grade +
                 ", avatar='" + avatar + '\'' +

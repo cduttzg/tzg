@@ -24,11 +24,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String isregister(Long id, String schoolNumber, String username, String password, String phoneNumber,
-                             String address, String email,Integer isForzen, Integer totalSold, Integer grade,
-                             String avatar, String moneyCode, Integer role) {
-        userMapper.insert(id,schoolNumber,username,password,phoneNumber,address,email,isForzen,totalSold,grade,avatar,moneyCode,role);
+    public User findUserByName(String username) {
+        return userMapper.findUserByName(username);
+    }
 
-        return "ok";
+    @Override
+    public int register(Integer id, String schoolNumber, String username, String password, String phoneNumber, String address, String email, Integer isFrozen, Integer totalSold, Integer grade, String avatar, String moneyCode, Integer role) {
+        return userMapper.insert(id,schoolNumber,username,password,phoneNumber,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role);
     }
 }
