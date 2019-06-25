@@ -2,6 +2,7 @@ package org.cdut.tzg.service;
 
 import org.cdut.tzg.model.Orders;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -10,7 +11,11 @@ import java.util.List;
  */
 public interface OrderService {
     /**
-     * 获取后台订单数据
+     * 获取总订单数量
      */
-    List<Orders> getAllOrders();
+    int getAllOrdersCount();
+    /**
+     * 获取指定日期订单数量
+     */
+    int getCompletedOrdersCount(Date date);
 }

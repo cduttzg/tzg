@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.cdut.tzg.model.Orders;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,9 +13,15 @@ import java.util.List;
  */
 @Mapper
 public interface OrdersMapper {
+
     /**
-     * 获取后台订单数据
+     * 获取总订单数量
      */
-    @Select("select * from orders")
-    List<Orders> getAllOrders();
+    @Select("select count(*) from orders")
+    int getAllOrdersCount();
+    /**
+     * 获取指定日期订单数量
+     */
+    @Select("select count(*) from orders where datediff(completed_time,#{date}) = 0")
+    int getCompletedOrdersCount(Date date);
 }
