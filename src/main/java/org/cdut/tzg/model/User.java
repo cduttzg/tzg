@@ -8,13 +8,13 @@ import java.io.Serializable;
  */
 public class User implements Serializable {
     private Long id;
-    private String number;
+    private String schoolNumber;
     private String username;
     private String password;
     private String phoneNumber;
     private String address;
     private String email;
-    private Integer isForzen;
+    private Integer isFrozen;
     private Integer totalSold;
     private Float grade;
     private String avatar;
@@ -29,12 +29,12 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getNumber() {
-        return number;
+    public String getSchoolNumber() {
+        return schoolNumber;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setSchoolNumber(String schoolNumber) {
+        this.schoolNumber = schoolNumber;
     }
 
     public String getUsername() {
@@ -77,12 +77,12 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public Integer getIsForzen() {
-        return isForzen;
+    public Integer getIsFrozen() {
+        return isFrozen;
     }
 
-    public void setIsForzen(Integer isForzen) {
-        this.isForzen = isForzen;
+    public void setIsFrozen(Integer isFrozen) {
+        this.isFrozen = isFrozen;
     }
 
     public Integer getTotalSold() {
@@ -129,13 +129,13 @@ public class User implements Serializable {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", number='" + number + '\'' +
+                ", schoolNumber='" + schoolNumber + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
                 ", email='" + email + '\'' +
-                ", isForzen=" + isForzen +
+                ", isFrozen=" + isFrozen +
                 ", totalSold=" + totalSold +
                 ", grade=" + grade +
                 ", avatar='" + avatar + '\'' +
