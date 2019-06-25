@@ -16,7 +16,7 @@ public class User implements Serializable {
     private String email;
     private Integer isForzen;
     private Integer totalSold;
-    private float grade;
+    private Float grade;
     private String avatar;
     private String moneyCode;
     private Integer role;
@@ -93,11 +93,11 @@ public class User implements Serializable {
         this.totalSold = totalSold;
     }
 
-    public float getGrade() {
+    public Float getGrade() {
         return grade;
     }
 
-    public void setGrade(float grade) {
+    public void setGrade(Float grade) {
         this.grade = grade;
     }
 
