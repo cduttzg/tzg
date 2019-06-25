@@ -29,4 +29,11 @@ public class UserController {
         return users;
     }
 
+    @RequestMapping("/find")
+    @ResponseBody
+    public List<User> find(){
+        List<User> users = userService.findAll();
+        return users;
+    }
+
 }
