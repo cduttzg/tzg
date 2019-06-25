@@ -19,11 +19,9 @@ public interface GoodsMapper {
      */
     @Select("select * from goods where id = #{goodId}")
     Goods findGoodsById(Long goodId);
-
     /**
      * 获取指定日期上架商品
      */
     @Select("select count(*) from goods where datediff(created_time,#{date}) = 0")
     int getGoodsCount(Date date);
-
 }
