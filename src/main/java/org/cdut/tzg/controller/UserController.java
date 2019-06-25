@@ -31,9 +31,8 @@ public class UserController {
 
     @RequestMapping("/find")
     @ResponseBody
-    public List<User> find(){
-        List<User> users = userService.findAll();
-        return users;
+    public String find(){
+        return "test";
     }
 
 }
