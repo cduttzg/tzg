@@ -40,7 +40,7 @@ public class TzgApplication {
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/addAdmin?schoolNum=201613160833");
         //个人中心测试/api/user
         System.out.println("-----------个人中心测试----------");
-        System.out.println("tzg admin http://localhost:"+serverPort+"/api/user/home/SeekInfo?username=rose");
+        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/SeekInfo?username=rose");
     }
 
 }

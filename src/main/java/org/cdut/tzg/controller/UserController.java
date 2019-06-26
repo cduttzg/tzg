@@ -127,7 +127,7 @@ public class UserController {
         if((Boolean) map.get("发布")){//发布求购信息
 //            Date day=new Date();
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            int pubStatus = goodsService.publishSeekGood(userId,(Integer) map.get("商品标签"),(String) map.get("商品名称"),(String) map.get("描述"),(Float) map.get("单价"),(Integer) map.get("数量"),(String) map.get("商品图片"));
+            int pubStatus = goodsService.publishSeekGood(userId,(Integer) map.get("商品标签"),(String) map.get("商品名称"),(String) map.get("描述"),Float.parseFloat(map.get("单价").toString()),(Integer) map.get("数量"),(String) map.get("商品图片"));
             if (pubStatus==1){//求购信息发布成功
                 mapdata.put("success",true);
                 return Result.success(mapdata);
@@ -170,5 +170,16 @@ public class UserController {
             listdata.add(map);
         }
         return  Result.success(listdata);
+    }
+
+
+    /*
+    * 订单完成
+    * */
+    @RequestMapping(value = "/saller/completeOrder",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> setOrderComplete(){
+        Map<String,Object> map = new HashMap<>();
+        return Result.success(map);
     }
 }
