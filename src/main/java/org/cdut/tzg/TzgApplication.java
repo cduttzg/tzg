@@ -11,10 +11,15 @@ public class TzgApplication {
 //        SpringApplication.run(TzgApplication.class, args);
         ApplicationContext context = SpringApplication.run(TzgApplication.class, args);
         String serverPort = context.getEnvironment().getProperty("server.port");
+        System.out.println("tzg started at http://localhost:" + serverPort);;
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=jack");
         System.out.println("tzg started at http://localhost:" + serverPort);
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=jack");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=ffffff");
+        //后台数据连接
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getData");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/manageOrder?orderId=100");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getFrozenUser");
     }
 
 }

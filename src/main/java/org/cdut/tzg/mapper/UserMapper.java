@@ -40,4 +40,11 @@ public interface UserMapper {
      */
     @Select("select * from user where id = #{userId}")
     User findUserById(Long userId);
+
+    /**
+     * 获取冻结用户
+     */
+    @Select("select username,school_number,phone_number,role from user where is_frozen = 1")
+    List<User> getAllFreezeUsers();
+
 }

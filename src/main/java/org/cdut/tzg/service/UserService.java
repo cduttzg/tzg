@@ -27,4 +27,9 @@ public interface UserService {
      * 根据id查找用户
      */
     User findUserById(Long userId);
+
+    /**
+     * 获取所有冻结用户
+     */
+    List<User> getAllFreezeUsers();
 }

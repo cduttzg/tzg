@@ -32,8 +32,8 @@ public class HomeController {
     @Autowired
     private GoodsService goodsService;
 
-    @Autowired
-    private GoodsOrdersService goodsOrdersService;
+    //@Autowired
+    //private GoodsOrdersService goodsOrdersService;
 
     /***
      *

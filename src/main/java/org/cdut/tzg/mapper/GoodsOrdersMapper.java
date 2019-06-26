@@ -12,6 +12,7 @@ import java.util.List;
  */
 @Mapper
 public interface GoodsOrdersMapper {
+
     /**
      * 通过id获取订单的详情信息
      */
