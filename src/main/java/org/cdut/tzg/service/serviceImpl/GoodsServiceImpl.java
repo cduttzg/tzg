@@ -29,13 +29,19 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public int publishSeekGood(Long userId, Integer tag, String title, String content, Float price, Integer stock, String image) {
-        return goodsMapper.publishSeekGood(userId,tag,title,content,price,stock,image);
+    public int publishSeekGood(Goods good) {
+
+        return goodsMapper.publishSeekGood(good);
     }
 
     @Override
     public int deleteSeekGood(Long userId, Integer tag, String title) {
         return goodsMapper.deleteSeekGood(userId,tag,title);
+    }
+
+    @Override
+    public Goods isExitSeekGoods(Long userId, Integer tag, String title) {
+        return goodsMapper.isExitSeekGoods(userId,tag,title);
     }
 
     @Override

@@ -127,25 +127,42 @@ public class UserController {
         if((Boolean) map.get("发布")){//发布求购信息
 //            Date day=new Date();
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            int pubStatus = goodsService.publishSeekGood(userId,(Integer) map.get("商品标签"),(String) map.get("商品名称"),(String) map.get("描述"),Float.parseFloat(map.get("单价").toString()),(Integer) map.get("数量"),(String) map.get("商品图片"));
-            if (pubStatus==1){//求购信息发布成功
-                mapdata.put("success",true);
-                return Result.success(mapdata);
-            }else {//求购信息发布失败
+            //int pubStatus = goodsService.publishSeekGood(userId,(Integer) map.get("商品标签"),(String) map.get("商品名称"),(String) map.get("描述"),Float.parseFloat(map.get("单价").toString()),(Integer) map.get("数量"),(String) map.get("商品图片"));
+            Goods exitSeekGoods=goodsService.isExitSeekGoods(userId, (Integer) map.get("商品标签"), (String) map.get("商品名称"));
+            if (exitSeekGoods==null){ //求购信息不存在的时候
+                Goods good=new Goods();
+                good.setUserId(userId);
+                good.setTag((Integer) map.get("商品标签"));
+                good.setTitle((String) map.get("商品名称"));
+                good.setContent((String) map.get("描述"));
+                good.setPrice(Float.parseFloat(map.get("单价").toString()));
+                good.setStock((Integer) map.get("数量"));
+                good.setImage((String) map.get("商品图片"));
+                int pubStatus = goodsService.publishSeekGood(good);
+                if (pubStatus==1){//求购信息发布成功
+                    mapdata.put("success",true);
+                    return Result.success(mapdata);
+                }else {//求购信息发布失败
+                    mapdata.put("success",false);
+                    return Result.error(CodeMsg.PUBLISHGOODFAILED);
+                }
+            }else {//求购信息已经存在
                 mapdata.put("success",false);
-                return Result.error(CodeMsg.PUBLISHGOODFAILED);
+                return Result.error(CodeMsg.EXITSEEKGOODS);
             }
+
         }else {//删除求购信息
             int delStatus=goodsService.deleteSeekGood(userId, (Integer) map.get("商品标签"), (String) map.get("商品名称"));
-            if (delStatus == 1) {
+            if (delStatus == 1) {//删除求购信息成功
                 mapdata.put("success", true);
                 return Result.success(mapdata);
-            } else {
+            } else {//删除求购信息失败
                 mapdata.put("success", false);
                 return Result.error(CodeMsg.DELETEGOODFAILED);
             }
         }
     }
+    
     @RequestMapping(value = "/home/SeekInfo",method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> findAllSeekGoods(@RequestParam String username){
