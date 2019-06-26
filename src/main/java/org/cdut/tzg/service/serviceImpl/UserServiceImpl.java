@@ -63,4 +63,13 @@ public class UserServiceImpl implements UserService {
     public String findPhoneByUsername(String username) {
         return userMapper.getUserPhoneByUsername(username);
     }
+
+    @Override
+    public int setAdministrator(String schoolNum){
+        return userMapper.setAdministrator(schoolNum);
+    }
+    @Override
+    public int deletAdministrator(String schoolNum){
+        return userMapper.deletAdministrator(schoolNum);
+    }
 }

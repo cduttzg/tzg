@@ -8,6 +8,7 @@ import org.cdut.tzg.result.CodeMsg;
 import org.cdut.tzg.result.Result;
 import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.UserService;
+import org.cdut.tzg.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -61,24 +62,18 @@ public class UserController {
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     @ResponseBody
     public Map register(@RequestBody String data)
-    {   ObjectMapper objectMapper=new ObjectMapper();
-        Map map=null;
-        try {
-            map=objectMapper.readValue(data,Map.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        User user = new User(schoolNumber,username,password,phoneNumber,address,email,role);
+    {   Map map = MapUtils.getMap(data);
+        User user = new User(String.valueOf(map.get("学号")),String.valueOf(map.get("用户名")),String.valueOf(map.get("密码")),String.valueOf(map.get("手机号")),String.valueOf(map.get("地址")),String.valueOf(map.get("邮箱")),(Integer)(map.get("角色")));
         int count=userService.register(user);
-        Map map=new HashMap();
+        Map mapdata=new HashMap();
         if(count!=0){
-            map.put("status",0);
-            map.put("content","注册成功！");
+            mapdata.put("status",0);
+            mapdata.put("content","注册成功！");
         }else{
-            map.put("status",1);
-            map.put("content","注册失败！");
+            mapdata.put("status",1);
+            mapdata.put("content","注册失败！");
         }
-        return map;
+        return mapdata;
     }
 
     /**
@@ -86,38 +81,38 @@ public class UserController {
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Object> login(@RequestParam String username, @RequestParam String password){
-        User user=userService.findUserByName(username);
-        Map data = new LinkedHashMap();
-        if (user.getPassword().equals(password)){
-            data.put("status",0);
+    public Result<Object> login(@RequestBody String data){
+        Map map=MapUtils.getMap(data);
+        User user=userService.findUserByName((String)map.get("用户名"));
+        Map mapdata = new LinkedHashMap();
+        if (user.getPassword().equals((String)map.get("密码"))){
+            mapdata.put("status",0);
             boolean isFrozen = (user.getIsFrozen()==0?false:true);
-            data.put("是否被冻结",isFrozen);
+            mapdata.put("是否被冻结",isFrozen);
         }else {
-            data.put("status",1);
-            data.put("是否被冻结",true);
+            mapdata.put("status",1);
+            mapdata.put("是否被冻结",true);
         }
-        return Result.success(data);
+        return Result.success(mapdata);
     }
 
     /**
      * 用户是否是商家
-     * @param username
-     * @return
      */
     @RequestMapping(value = "/home/isSaller",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Object> isSaller(@RequestParam String username){
-        User user = userService.findUserByName(username);
-        Map <String,Object> data = new LinkedHashMap<String,Object>();
+    public Result<Object> isSaller(@RequestBody String data){
+        Map map=MapUtils.getMap(data);
+        User user = userService.findUserByName((String) map.get("用户名"));
+        Map <String,Object> mapdata = new LinkedHashMap<String,Object>();
         if (user.getMoneyCode() != null){
-            data.put("isSaller",true);
-            data.put("moneyCode",user.getMoneyCode());
+            mapdata.put("isSaller",true);
+            mapdata.put("moneyCode",user.getMoneyCode());
         }else {
-            data.put("isSaller",false);
-            data.put("moneyCode",null);
+            mapdata.put("isSaller",false);
+            mapdata.put("moneyCode",null);
         }
-        return Result.success(data);
+        return Result.success(mapdata);
     }
 
     /**
@@ -125,30 +120,28 @@ public class UserController {
      */
     @RequestMapping(value = "/home/handleSeek",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Object> handleSeek(@RequestParam Boolean isPublish,@RequestParam String username,@RequestParam Integer tag,
-                                     @RequestParam String title,@RequestParam String content,@RequestParam Float price,
-                                     @RequestParam Integer stock,@RequestParam String image){
-
-        Map data = new HashMap();
-        Long userId = userService.findIdByUserName(username);
-        if(isPublish){//发布求购信息
+    public Result<Object> handleSeek(@RequestBody String data){
+        Map map=MapUtils.getMap(data);
+        Map mapdata = new HashMap();
+        Long userId = userService.findIdByUserName((String) map.get("用户名"));
+        if((Boolean) map.get("发布")){//发布求购信息
 //            Date day=new Date();
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            int pubStatus = goodsService.publishSeekGood(userId,tag,title,content,price,stock,image);
+            int pubStatus = goodsService.publishSeekGood(userId,(Integer) map.get("商品标签"),(String) map.get("商品名称"),(String) map.get("描述"),(Float) map.get("单价"),(Integer) map.get("数量"),(String) map.get("商品图片"));
             if (pubStatus==1){//求购信息发布成功
-                data.put("success",true);
-                return Result.success(data);
+                mapdata.put("success",true);
+                return Result.success(mapdata);
             }else {//求购信息发布失败
-                data.put("success",false);
+                mapdata.put("success",false);
                 return Result.error(CodeMsg.PUBLISHGOODFAILED);
             }
         }else {//删除求购信息
             int delStatus=goodsService.deleteSeekGood(userId, tag, title);
             if (delStatus == 1) {
-                data.put("success", true);
-                return Result.success(data);
+                mapdata.put("success", true);
+                return Result.success(mapdata);
             } else {
-                data.put("success", false);
+                mapdata.put("success", false);
                 return Result.error(CodeMsg.DELETEGOODFAILED);
             }
         }

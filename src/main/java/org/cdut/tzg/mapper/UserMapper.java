@@ -1,6 +1,9 @@
 package org.cdut.tzg.mapper;
 
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.cdut.tzg.model.User;
 
 import java.util.List;
@@ -57,6 +60,7 @@ public interface UserMapper {
      */
     @Update("update user set is_frozen = 1 where school_number = #{schoolNum}")
     int setFreezeUser(String schoolNum);
+
     /**
      * 根据学号查找用户
      */
@@ -68,4 +72,16 @@ public interface UserMapper {
      */
     @Select("select phone_number from user where username = #{username}")
     String getUserPhoneByUsername(String username);
+    /**
+     * 根据学号增加管理员
+     */
+    @Update("update user set role = 1 where school_number = #{schoolNum}")
+    int setAdministrator(String schoolNum);
+
+    /**
+     * 根据学号删除管理员
+     */
+    @Update("update user set role = 0 where school_number = #{schoolNum}")
+    int deletAdministrator(String schoolNum);
+
 }

@@ -108,6 +108,7 @@ public class Goods implements Serializable {
                 ", image='" + image + '\'' +
                 ", createTime=" + createTime +
                 ", stock=" + stock +
+                ", tag=" + tag +
                 '}';
     }
 }

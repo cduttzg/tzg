@@ -13,5 +13,5 @@ public interface GoodsOrdersService {
     /**
      * 通过id获取订单的详情信息
      */
-    List<GoodsOrders> findTheOrdersDetial(Integer ordersId);
+    List<GoodsOrders> findTheOrdersDetailById(Long ordersId);
 }
