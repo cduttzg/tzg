@@ -28,5 +28,111 @@
         });
     })
 </script>
+<!--
+    URL：/api/user/login         （已完成 谢礼峰）
+    描述：用户登陆
+    方法：POST
+    数据：{“用户名”:”XXX”,”密码（HASH加密）”}
+    期望返回格式：{“status”:0/1,”是否被冻结”:true/false }
+-->
+<button id="login" type="button">登录</button>
+<script>
+    var loginbtn = $("#login");
+    loginbtn.click(function () {
+        console.log("--start--");
+        $.ajax({
+            url: "/api/user/login",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"用户名":"rock","密码":"rock"}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function () {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
+
+<!--URL：/api/user/home/isSaller    (谢礼峰 完成)
+    描述：是否是卖家
+    方法：POST
+    数据：{“用户名”:”XXX”}
+    期望返回格式：{“isSaller”:true/false ,”moneyCode”:”XXX”}
+-->
+
+<button id="isSaller" type="button">是否是卖家</button>
+<script>
+    var isSallerbtn = $("#isSaller");
+    isSallerbtn.click(function () {
+        console.log("--start--");
+        $.ajax({
+            url: "/api/user/home/isSaller",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"用户名":"rock"}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function () {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
+
+<button id="insertbtn" type="button">发布求购</button>
+<button id="delebtn" type="button">删除求购</button>
+<script>
+    var insertbtn = $("#insertbtn");
+    insertbtn.click(function () {
+        console.log("--start--");
+        $.ajax({
+            url: "/api/user/home/handleSeek",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"发布":true,"用户名":"rose","商品标签":5,"商品名称":"c++","描述":"从入门到入土","单价":52.2,"数量":2,"商品图片":"XXX"}),   //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function () {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+    var delebtn = $("#delebtn");
+    delebtn.click(function () {
+        console.log("--start--");
+        $.ajax({
+            url: "/api/user/home/handleSeek",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"发布":false,"用户名":"rose","商品标签":5,"商品名称":"c++","描述":"从入门到入土","单价":52.2,"数量":2,"商品图片":"XXX"}),   //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处
+                console.log(req);
+            },
+            error: function () {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
 </body>
 </html>

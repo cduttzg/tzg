@@ -29,8 +29,9 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public int publishSeekGood(Long userId, Integer tag, String title, String content, Float price, Integer stock, String image) {
-        return goodsMapper.publishSeekGood(userId,tag,title,content,price,stock,image);
+    public int publishSeekGood(Goods good) {
+
+        return goodsMapper.publishSeekGood(good);
     }
 
     @Override
@@ -39,8 +40,23 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public Goods isExitSeekGoods(Long userId, Integer tag, String title) {
+        return goodsMapper.isExitSeekGoods(userId,tag,title);
+    }
+
+    @Override
     public int updateGoodsStock(Long goodsId,Integer newNumber) {
        return goodsMapper.updateGoodsStock(goodsId,newNumber);
+    }
+
+    @Override
+    public List<Goods> getAllSeekGoodsByUserId(Long userid) {
+        return goodsMapper.selectSeekGoodsByUserid(userid);
+    }
+
+    @Override
+    public List<Goods> findSameTypeGoodsByType(Integer type) {
+        return goodsMapper.findSameTypeGoodsByType(type);
     }
 
     @Override

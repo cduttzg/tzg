@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.Console;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -66,19 +66,19 @@ public class UserController {
      */
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     @ResponseBody
-    public Map register(@RequestParam Integer id,@RequestParam String schoolNumber,@RequestParam String username,@RequestParam String password,@RequestParam String phoneNumber,@RequestParam String address
-     ,@RequestParam String email,@RequestParam Integer isFrozen,@RequestParam Integer totalSold,@RequestParam Integer grade,@RequestParam String avatar,@RequestParam String moneyCode,@RequestParam Integer role)
-    {
-        int count=userService.register(id,schoolNumber,username,password,phoneNumber,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role);
-        Map map=new HashMap();
+    public Map register(@RequestBody String data)
+    {   Map map = MapUtils.getMap(data);
+        User user = new User(String.valueOf(map.get("学号")),String.valueOf(map.get("用户名")),String.valueOf(map.get("密码")),String.valueOf(map.get("手机号")),String.valueOf(map.get("地址")),String.valueOf(map.get("邮箱")),(Integer)(map.get("角色")));
+        int count=userService.register(user);
+        Map mapdata=new HashMap();
         if(count!=0){
-            map.put("status",0);
-            map.put("content","注册成功！");
+            mapdata.put("status",0);
+            mapdata.put("content","注册成功！");
         }else{
-            map.put("status",1);
-            map.put("content","注册失败！");
+            mapdata.put("status",1);
+            mapdata.put("content","注册失败！");
         }
-        return map;
+        return mapdata;
     }
 
     /**
@@ -86,72 +86,112 @@ public class UserController {
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Object> login(@RequestParam String username, @RequestParam String password){
-        User user=userService.findUserByName(username);
-        Map data = new LinkedHashMap();
-        if (user.getPassword().equals(password)){
-            data.put("status",0);
+    public Result<Object> login(@RequestBody String data){
+        Map map=MapUtils.getMap(data);
+        User user=userService.findUserByName((String)map.get("用户名"));
+        Map mapdata = new LinkedHashMap();
+        if (user.getPassword().equals((String)map.get("密码"))){
+            mapdata.put("status",0);
             boolean isFrozen = (user.getIsFrozen()==0?false:true);
-            data.put("是否被冻结",isFrozen);
+            mapdata.put("是否被冻结",isFrozen);
         }else {
-            data.put("status",1);
-            data.put("是否被冻结",true);
+            mapdata.put("status",1);
+            mapdata.put("是否被冻结",true);
         }
-        return Result.success(data);
+        return Result.success(mapdata);
     }
 
     /**
      * 用户是否是商家
-     * @param username
-     * @return
      */
     @RequestMapping(value = "/home/isSaller",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Object> isSaller(@RequestParam String username){
-        User user = userService.findUserByName(username);
-        Map <String,Object> data = new LinkedHashMap<String,Object>();
+    public Result<Object> isSaller(@RequestBody String data){
+        Map map=MapUtils.getMap(data);
+        User user = userService.findUserByName((String) map.get("用户名"));
+        Map <String,Object> mapdata = new LinkedHashMap<String,Object>();
         if (user.getMoneyCode() != null){
-            data.put("isSaller",true);
-            data.put("moneyCode",user.getMoneyCode());
+            mapdata.put("isSaller",true);
+            mapdata.put("moneyCode",user.getMoneyCode());
         }else {
-            data.put("isSaller",false);
-            data.put("moneyCode",null);
+            mapdata.put("isSaller",false);
+            mapdata.put("moneyCode",null);
         }
-        return Result.success(data);
+        return Result.success(mapdata);
     }
 
     /**
      * 发布/删除求购
      */
-    @RequestMapping(value = "/home/handleSeek",method = RequestMethod.GET)
+    @RequestMapping(value = "/home/handleSeek",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Object> handleSeek(@RequestParam Boolean isPublish,@RequestParam String username,@RequestParam Integer tag,
-                                     @RequestParam String title,@RequestParam String content,@RequestParam Float price,
-                                     @RequestParam Integer stock,@RequestParam String image){
-
-        Map data = new HashMap();
-        Long userId = userService.findIdByUserName(username);
-        if(isPublish){//发布求购信息
+    public Result<Object> handleSeek(@RequestBody String data){
+        Map map=MapUtils.getMap(data);
+        Map mapdata = new HashMap();
+        Long userId = userService.findIdByUserName((String) map.get("用户名"));
+        if((Boolean) map.get("发布")){//发布求购信息
 //            Date day=new Date();
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            int pubStatus = goodsService.publishSeekGood(userId,tag,title,content,price,stock,image);
-            if (pubStatus==1){//求购信息发布成功
-                data.put("success",true);
-                return Result.success(data);
-            }else {//求购信息发布失败
-                data.put("success",false);
-                return Result.error(CodeMsg.PUBLISHGOODFAILED);
+            //int pubStatus = goodsService.publishSeekGood(userId,(Integer) map.get("商品标签"),(String) map.get("商品名称"),(String) map.get("描述"),Float.parseFloat(map.get("单价").toString()),(Integer) map.get("数量"),(String) map.get("商品图片"));
+            Goods exitSeekGoods=goodsService.isExitSeekGoods(userId, (Integer) map.get("商品标签"), (String) map.get("商品名称"));
+            if (exitSeekGoods==null){ //求购信息不存在的时候
+                Goods good=new Goods();
+                good.setUserId(userId);
+                good.setTag((Integer) map.get("商品标签"));
+                good.setTitle((String) map.get("商品名称"));
+                good.setContent((String) map.get("描述"));
+                good.setPrice(Float.parseFloat(map.get("单价").toString()));
+                good.setStock((Integer) map.get("数量"));
+                good.setImage((String) map.get("商品图片"));
+                int pubStatus = goodsService.publishSeekGood(good);
+                if (pubStatus==1){//求购信息发布成功
+                    mapdata.put("success",true);
+                    return Result.success(mapdata);
+                }else {//求购信息发布失败
+                    mapdata.put("success",false);
+                    return Result.error(CodeMsg.PUBLISHGOODFAILED);
+                }
+            }else {//求购信息已经存在
+                mapdata.put("success",false);
+                return Result.error(CodeMsg.EXITSEEKGOODS);
             }
+
         }else {//删除求购信息
-            int delStatus=goodsService.deleteSeekGood(userId, tag, title);
-            if (delStatus == 1) {
-                data.put("success", true);
-                return Result.success(data);
-            } else {
-                data.put("success", false);
+            int delStatus=goodsService.deleteSeekGood(userId, (Integer) map.get("商品标签"), (String) map.get("商品名称"));
+            if (delStatus == 1) {//删除求购信息成功
+                mapdata.put("success", true);
+                return Result.success(mapdata);
+            } else {//删除求购信息失败
+                mapdata.put("success", false);
                 return Result.error(CodeMsg.DELETEGOODFAILED);
             }
         }
+    }
+
+    @RequestMapping(value = "/home/SeekInfo",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<Object> findAllSeekGoods(@RequestParam String username){
+        Map map=null;
+        Long userId=userService.findIdByUserName(username);
+        List<Goods> seekGoods=goodsService.getAllSeekGoodsByUserId(userId);
+        String userPhone=userService.findPhoneByUsername(username);
+        if (userPhone==null){
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
+        List<Map> listdata=new ArrayList<Map>();
+        //“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX ,”商品图片”:”XXX”,”联系方式”:”XXX”
+        for(Goods good : seekGoods){
+            map=new HashMap();
+            map.put("商品标签",good.getTag());
+            map.put("商品名称",good.getTitle());
+            map.put("描述",good.getContent());
+            map.put("单价",good.getPrice());
+            map.put("数量",good.getStock());
+            map.put("商品图片",good.getImage());
+            map.put("联系方式",userPhone);
+            listdata.add(map);
+        }
+        return  Result.success(listdata);
     }
 
 

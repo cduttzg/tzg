@@ -22,14 +22,35 @@ public interface GoodsService {
      */
     int getGoodsCount(Date date);
 
-    int publishSeekGood(Long userId,Integer tag,String title,String content,Float price,Integer stock,String image);
+    /**
+     *  发布求购信息
+     */
+    //int publishSeekGood(Long userId,Integer tag,String title,String content,Float price,Integer stock,String image);
+    int publishSeekGood(Goods good);
 
+    /**
+     *  删除求购信息
+     */
     int deleteSeekGood(Long userId,Integer tag,String title);
+
+    /**
+     * 求购信息是否存在
+     */
+    Goods isExitSeekGoods(Long userId,Integer tag,String title);
 
     /**
      * 更新商品库存
      */
     int updateGoodsStock(Long goodsId,Integer newNumber);
+    /**
+     *根据用户名查找用户的求购信息
+     */
+    List<Goods> getAllSeekGoodsByUserId(Long userid);
+
+    /**
+     * 根据种类信息取得所有相同种类的商品
+     */
+    List<Goods> findSameTypeGoodsByType(Integer type);
 
     /**
      * 根据类型查询n条商品
