@@ -14,4 +14,9 @@ public interface CartService {
      * 根据用户id,查找购物车的信息
      */
     List<Cart> findAll(Long buyerId);
+
+    /**
+     * 添加指定商品到购物车
+     */
+    int insertToCart(Long buyerId,Long sellerId,Long goodsId,Integer number);
 }

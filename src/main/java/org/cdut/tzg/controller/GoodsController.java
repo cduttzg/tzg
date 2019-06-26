@@ -1,13 +1,16 @@
 package org.cdut.tzg.controller;
 
 import org.apache.ibatis.transaction.Transaction;
+import org.cdut.tzg.model.Cart;
 import org.cdut.tzg.model.Goods;
 import org.cdut.tzg.model.User;
 import org.cdut.tzg.result.Result;
+import org.cdut.tzg.service.CartService;
 import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.cdut.tzg.result.CodeMsg.STOCKOUT;
 
 
 @Controller
@@ -25,6 +30,9 @@ public class GoodsController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CartService cartService;
 
     /**
      URL：/api/goods/getInfo
@@ -51,24 +59,28 @@ public class GoodsController {
      URL：/api/goods/addToCart
      描述：添加商品到购物车
      方法：POST
-     数据：{"商品ID":"XXX"}
-     期望返回格式：{"success":true/false,"content":"XXXX"}
+     数据：{"用户名","XXX","商品ID":"XXX","商品数量":XXX}
+     期望返回格式：{"code":XXX,"msg":"XXXX","data":null}
      */
-    @RequestMapping(value = "/addToCart",method = RequestMethod.POST)
+    @Transactional
+    @RequestMapping(value = "/addToCart",method = RequestMethod.GET)
     @ResponseBody
-    public Result<Object> addToCart(@RequestParam Long goodsId){
-        Goods goods=goodsService.findGoodsById(goodsId);
-        Map<String,Object> map=new HashMap<>();
-        if(goods.getStock()<=0){//库存为0
-            map.put("success:",goods.getStock()<=0);
-            map.put("content:","抱歉!该商品已售完!");
+    public Result<Object> addToCart(@RequestParam String username,@RequestParam Long goodsId,@RequestParam Integer number){
+        Goods cartGoods=goodsService.findGoodsById(goodsId);//商品
+        System.out.println(cartGoods);
+        if(cartGoods.getStock()-number<0){//库存不足
+            return Result.error(STOCKOUT);
         }
         else{
-            //to-do:使用事务 对商品列表对应商品库存-1 后加入购物车表 判断购物车中是否有该物品 有则number+1
-            //Q: 添加到购物车需不需要指定数量?需不需要将数据库中的库存-1？
+            User buyer=userService.findUserByName(username);//买家
+            User seller=userService.findUserById(cartGoods.getUserId());//卖家
+            //从商品表更新库存
+            goodsService.updateGoodsStock(cartGoods.getId(),(cartGoods.getStock()-number));
+            //添加到购物车表
+            cartService.insertToCart(buyer.getId(),seller.getId(),cartGoods.getId(),number);
+            String data="添加到购物车成功";
+            return Result.success(data);
         }
-        //Q:当商品库存为0时返回Result.fail还是返回Result.fail?
-        return Result.success(map);
     }
 
 

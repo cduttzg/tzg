@@ -11,6 +11,10 @@ public class CodeMsg {
     //通用异常
     public static CodeMsg SUCCESS = new CodeMsg(200, "success");
     public static CodeMsg FAILED = new CodeMsg(500500, "异常");
+
+    //商品异常 5003xx
+    public static CodeMsg STOCKOUT = new CodeMsg(500301,"库存不足");
+
     private CodeMsg(int code, String msg) {
         this.code = code;
         this.msg = msg;

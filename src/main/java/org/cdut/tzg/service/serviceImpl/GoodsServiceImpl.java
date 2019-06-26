@@ -27,4 +27,9 @@ public class GoodsServiceImpl implements GoodsService {
     public int getGoodsCount(Date date){
         return goodsMapper.getGoodsCount(date);
     }
+
+    @Override
+    public int updateGoodsStock(Long goodsId,Integer number) {
+       return goodsMapper.updateGoodsStock(goodsId,number);
+    }
 }

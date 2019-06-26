@@ -15,6 +15,7 @@ public class TzgApplication {
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=jack");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/getInfo?goodsId=3");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getData");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/addToCart?username=jack&goodsId=5&number=1");
     }
 
 }

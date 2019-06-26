@@ -1,5 +1,6 @@
 package org.cdut.tzg.mapper;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.cdut.tzg.model.User;
@@ -31,4 +32,12 @@ public interface UserMapper {
      */
     @Select("select * from user where id = #{userId}")
     User findUserById(Long userId);
+
+    /**
+     *插入用户数据
+     */
+    @Insert("insert into user(id,schoolNumber,username,password,phoneNumber,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role)" +
+            " values (#{id},#{schoolNumber},#{username},#{password},#{phoneNumber},#{address},#{email},#{isFrozen},#{totalSold},#{grade},#{avatar},#{moneyCode},#{role})")
+    int insert(Integer id,String schoolNumber,String username,String password,String phoneNumber,String address
+            ,String email,Integer isFrozen,Integer totalSold,Integer grade,String avatar,String moneyCode, Integer role);
 }
