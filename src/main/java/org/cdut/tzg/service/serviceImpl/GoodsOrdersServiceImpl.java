@@ -20,8 +20,8 @@ public class GoodsOrdersServiceImpl implements GoodsOrdersService {
 
 
     @Override
-    public List<GoodsOrders> findTheOrdersDetial(Integer ordersId) {
-        return goodsOrdersMapper.findTheOrdersDetial(ordersId);
+    public List<GoodsOrders> findTheOrdersDetailById(Long ordersId) {
+        return goodsOrdersMapper.findTheOrdersDetailById(ordersId);
     }
 
     @Override

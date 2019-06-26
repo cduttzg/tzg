@@ -18,6 +18,7 @@ public class Goods implements Serializable {
     private String image;
     private Date createTime;
     private Integer stock;
+    private Integer tag;
 
     public Long getId() {
         return id;
@@ -91,6 +92,14 @@ public class Goods implements Serializable {
         this.stock = stock;
     }
 
+    public Integer getTag() {
+        return tag;
+    }
+
+    public void setTag(Integer tag) {
+        this.tag = tag;
+    }
+
     @Override
     public String toString() {
         return "Goods{" +
@@ -103,6 +112,7 @@ public class Goods implements Serializable {
                 ", image='" + image + '\'' +
                 ", createTime=" + createTime +
                 ", stock=" + stock +
+                ", tag=" + tag +
                 '}';
     }
 }

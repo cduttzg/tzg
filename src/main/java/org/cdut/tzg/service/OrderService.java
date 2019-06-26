@@ -21,11 +21,11 @@ public interface OrderService {
     /**
      * 获取指定id订单
      */
-    Orders getOrderById(int orderId);
+    Orders getOrderById(Long orderId);
     /**
      * 更新指定订单号订单状态为异常
      */
-    int setOrderException(int orderId);
+    int setOrderException(Long orderId);
 
     /**
      * 获取最新提交的前 n 条订单

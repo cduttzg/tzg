@@ -34,6 +34,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Long findIdByUserName(String username) {
+        return userMapper.findUserIdByUserName(username);
+    }
+
+    @Override
     public User findUserById(Long userId) {
         return userMapper.findUserById(userId);
     }
@@ -51,5 +56,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserBySchoolNum(String schoolNum){
         return userMapper.getUserBySchoolNum(schoolNum);
+    }
+
+    @Override
+    public int setAdministrator(String schoolNum){
+        return userMapper.setAdministrator(schoolNum);
+    }
+    @Override
+    public int deletAdministrator(String schoolNum){
+        return userMapper.deletAdministrator(schoolNum);
     }
 }

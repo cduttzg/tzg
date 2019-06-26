@@ -7,11 +7,13 @@ import org.apache.ibatis.transaction.Transaction;
 import org.cdut.tzg.model.*;
 import org.cdut.tzg.result.Result;
 import org.cdut.tzg.service.*;
+import org.cdut.tzg.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.rmi.CORBA.Util;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -70,13 +72,7 @@ public class GoodsController {
     @Transactional
     @ResponseBody
     public Result<Object> addToCart(@RequestBody String data){
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map map = null;
-        try {
-             map = objectMapper.readValue(data,Map.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Map map= MapUtils.getMap(data);
         String username = (String) map.get("用户名");
         Long goodsId = Long.valueOf((String)map.get("商品ID"));
         Integer buyedNumber = (Integer) map.get("商品数量");
@@ -123,14 +119,7 @@ public class GoodsController {
     @Transactional
     public Result<Object> buyNow(@RequestBody String data){
         //解析请求体参数
-        ObjectMapper objectMapper=new ObjectMapper();
-        Map map=null;
-        try {
-            map=objectMapper.readValue(data,Map.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return Result.error(FAILED);
-        }
+        Map map= MapUtils.getMap(data);
         String username=(String)map.get("用户名");
         Long goodsId = Long.valueOf((String)map.get("商品ID"));
         Integer number=(Integer) map.get("数量");

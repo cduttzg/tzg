@@ -29,6 +29,14 @@ public interface UserMapper {
     User findUserByName(String username);
 
     /**
+     * 根据用户名查找用户id
+     * @param username
+     * @return
+     */
+    @Select("select id from user where username = #{username}")
+    Long findUserIdByUserName(String username);
+
+    /**
      *插入用户数据
      */
     @Insert("insert into user(id,schoolNumber,username,password,phoneNumber,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role)" +
@@ -53,10 +61,23 @@ public interface UserMapper {
      */
     @Update("update user set is_frozen = 1 where school_number = #{schoolNum}")
     int setFreezeUser(String schoolNum);
+
     /**
      * 根据学号查找用户
      */
     @Select("select * from user where school_number = #{schoolNum}")
     User getUserBySchoolNum(String schoolNum);
+
+    /**
+     * 根据学号增加管理员
+     */
+    @Update("update user set role = 1 where school_number = #{schoolNum}")
+    int setAdministrator(String schoolNum);
+
+    /**
+     * 根据学号删除管理员
+     */
+    @Update("update user set role = 0 where school_number = #{schoolNum}")
+    int deletAdministrator(String schoolNum);
 
 }

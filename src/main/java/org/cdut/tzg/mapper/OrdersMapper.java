@@ -30,12 +30,12 @@ public interface OrdersMapper {
      * 获取指定id订单
      */
     @Select("select * from orders where id = #{orderId}")
-    Orders getOrderById(int orderId);
+    Orders getOrderById(Long orderId);
     /**
      * 更新指定订单号订单状态为异常
      */
     @Update("update orders set state=3 where id = #{orderId}")
-    int setOrderException(int orderId);
+    int setOrderException(Long orderId);
 
 
     /**
