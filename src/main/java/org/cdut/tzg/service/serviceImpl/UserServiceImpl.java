@@ -32,4 +32,9 @@ public class UserServiceImpl implements UserService {
     public int register(Integer id, String schoolNumber, String username, String password, String phoneNumber, String address, String email, Integer isFrozen, Integer totalSold, Integer grade, String avatar, String moneyCode, Integer role) {
         return userMapper.insert(id,schoolNumber,username,password,phoneNumber,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role);
     }
+
+    @Override
+    public Long findIdByUserName(String username) {
+        return userMapper.findUserIdByUserName(username);
+    }
 }

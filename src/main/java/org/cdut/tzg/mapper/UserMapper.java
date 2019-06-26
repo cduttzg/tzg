@@ -28,6 +28,14 @@ public interface UserMapper {
     User findUserByName(String username);
 
     /**
+     * 根据用户名查找用户id
+     * @param username
+     * @return
+     */
+    @Select("select id from user where username = #{username}")
+    Long findUserIdByUserName(String username);
+
+    /**
      *插入用户数据
      */
     @Insert("insert into user(id,schoolNumber,username,password,phoneNumber,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role)" +

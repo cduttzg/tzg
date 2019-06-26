@@ -18,4 +18,8 @@ public interface GoodsService {
      * 获取指定日期上架商品
      */
     int getGoodsCount(Date date);
+
+    int publishSeekGood(Long userId,Integer tag,String title,String content,Float price,Integer stock,String image);
+
+    int deleteSeekGood(Long userId,Integer tag,String title);
 }

@@ -27,4 +27,14 @@ public class GoodsServiceImpl implements GoodsService {
     public int getGoodsCount(Date date){
         return goodsMapper.getGoodsCount(date);
     }
+
+    @Override
+    public int publishSeekGood(Long userId, Integer tag, String title, String content, Float price, Integer stock, String image) {
+        return goodsMapper.publishSeekGood(userId,tag,title,content,price,stock,image);
+    }
+
+    @Override
+    public int deleteSeekGood(Long userId, Integer tag, String title) {
+        return goodsMapper.deleteSeekGood(userId,tag,title);
+    }
 }
