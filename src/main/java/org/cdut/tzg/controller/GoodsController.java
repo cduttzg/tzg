@@ -61,10 +61,11 @@ public class GoodsController {
      数据：{"用户名","XXX","商品ID":"XXX","商品数量":XXX}
      期望返回格式：{"code":XXX,"msg":"XXXX","data":null}
      */
+    @RequestMapping(value = "/addToCart",method = RequestMethod.POST)
     @Transactional
-    @RequestMapping(value = "/addToCart",method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> addToCart(@RequestBody String data){
+        System.out.println("1111111111");
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String,Object> map = null;
         try {

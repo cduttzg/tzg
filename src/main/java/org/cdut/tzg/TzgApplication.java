@@ -17,11 +17,10 @@ public class TzgApplication {
         System.out.println("tzg started at http://localhost:" + serverPort);
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=jack");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=ffffff");
-        System.out.println("tzg started at http://localhost:" + serverPort);;
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=jack");
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/getInfo?goodsId=3");
+        //后台数据连接
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getData");
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/addToCart?username=jack&goodsId=5&number=1");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/manageOrder?orderId=100");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getFrozenUser");
     }
 
 }

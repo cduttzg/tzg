@@ -26,6 +26,17 @@ public class OrderServiceImpl implements OrderService {
         return ordersMapper.getCompletedOrdersCount(date);
     }
 
+    //获取指定id订单
+    public Orders getOrderById(int orderId){
+        return ordersMapper.getOrderById(orderId);
+    }
+
+    //更新指定订单号订单状态为异常
+    @Override
+    public int setOrderException(int orderId){
+        return ordersMapper.setOrderException(orderId);
+    }
+
     @Override
     public List<Orders> findTheLatestOrders(Integer number) {
         return ordersMapper.findTheLatestOrders(number);
