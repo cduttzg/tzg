@@ -49,4 +49,11 @@ public interface GoodsMapper {
      */
     @Select("select * from goods where user_id =#{userid} and type=5")
     List<Goods> selectSeekGoodsByUserid(Long userid);
+
+    /**
+     * 根据类型查询n条商品
+     */
+    @Select("select * from goods where type = #{type} limit #{limit}")
+    List<Goods> findGoodsByTypeAndLimit(@Param("type") Integer type, @Param("limit") int limit);
+
 }

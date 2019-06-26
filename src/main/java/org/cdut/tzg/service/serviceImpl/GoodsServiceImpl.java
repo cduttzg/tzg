@@ -47,4 +47,9 @@ public class GoodsServiceImpl implements GoodsService {
     public List<Goods> getAllSeekGoodsByUserId(Long userid) {
         return goodsMapper.selectSeekGoodsByUserid(userid);
     }
+
+    @Override
+    public List<Goods> findGoodsByTypeAndLimit(Integer type, int limit) {
+        return goodsMapper.findGoodsByTypeAndLimit(type,limit);
+    }
 }

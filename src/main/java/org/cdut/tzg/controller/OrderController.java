@@ -115,7 +115,6 @@ public class OrderController {
     @RequestMapping(value = "/getFrozenUser",method = RequestMethod.GET)
     @ResponseBody
     public Result<List<Map<String,Object>>> getAllFreezeUsers(){
-        Map<String,Object> map = new HashMap<>();
         List<Map<String,Object>> list = new ArrayList<>();
         List<User> users = userService.getAllFreezeUsers();
         if (users.size() == 0)
@@ -123,6 +122,7 @@ public class OrderController {
         else{
             for (int i=0; i<users.size();i++){
                 User user = users.get(i);
+                Map<String,Object> map = new HashMap<>();
                 map.put("用户名",user.getUsername());
                 map.put("学号",user.getSchoolNumber());
                 map.put("电话",user.getPhoneNumber());
@@ -195,7 +195,36 @@ public class OrderController {
         Map maps = MapUtils.getMap(data);
         String schoolNum = (String) maps.get("schoolNum");
         Map<String,Object> map = new HashMap<>();
+        User user = userService.getUserBySchoolNum(schoolNum);
+        if (user != null){
+            int sign = userService.deletAdministrator(schoolNum);
+            if (sign == 1){
+                map.put("success",true);
+                map.put("content","删除管理员成功");
+            }else if (sign == 0)
+                return Result.error(CodeMsg.REPETITIVE_OPERATION);
+        }else
+            return Result.error(CodeMsg.USER_UNDEFIND);
         return Result.success(map);
+    }
+    /*
+    * 获取所有管理员
+    * */
+    @RequestMapping(value = "/getAdmin",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<Map<String,String>>> getAllAdministrator(){
+        List<User> users = userService.getAllAdministrator();
+        if (users.size() == 0)
+            return Result.error(CodeMsg.NO_ADMINISTRATOR);
+        List<Map<String,String>> list = new ArrayList<>();
+        for (int i=0; i<users.size(); i++){
+            User user = users.get(i);
+            Map<String,String> map = new HashMap<>();
+            map.put("用户名",user.getUsername());
+            map.put("电话",user.getPhoneNumber());
+            list.add(map);
+        }
+        return Result.success(list);
     }
 
 }

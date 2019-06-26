@@ -34,4 +34,9 @@ public interface GoodsService {
      *根据用户名查找用户的求购信息
      */
     List<Goods> getAllSeekGoodsByUserId(Long userid);
+
+    /**
+     * 根据类型查询n条商品
+     */
+    List<Goods> findGoodsByTypeAndLimit(Integer type, int limit);
 }

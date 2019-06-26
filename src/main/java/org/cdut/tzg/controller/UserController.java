@@ -22,7 +22,7 @@ import java.util.*;
  * @date 2019/6/25 8:39
  */
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     @Autowired
