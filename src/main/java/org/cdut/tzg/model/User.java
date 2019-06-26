@@ -1,5 +1,7 @@
 package org.cdut.tzg.model;
 
+import org.apache.ibatis.annotations.Insert;
+
 import java.io.Serializable;
 
 /**
@@ -16,11 +18,29 @@ public class User implements Serializable {
     private String email;
     private Integer isFrozen;
     private Integer totalSold;
-    private Float grade;
+    private Integer grade;
     private String avatar;
     private String moneyCode;
     private Integer role;
 
+    public User(Long id, String schoolNumber, String username, String password, String phoneNumber,
+         String address, String email,Integer isForzen, Integer totalSold, Integer grade,
+         String avatar, String moneyCode, Integer role){
+        this.id=id;
+        this.schoolNumber=schoolNumber;
+        this.username=username;
+        this.password=password;
+        this.phoneNumber=phoneNumber;
+        this.address=address;
+        this.email=email;
+        this.isFrozen=isForzen;
+        this.totalSold=totalSold;
+        this.grade=grade;
+        this.avatar=avatar;
+        this.moneyCode=moneyCode;
+        this.role=role;
+    }
+    public User(){}
     public Long getId() {
         return id;
     }
@@ -93,11 +113,11 @@ public class User implements Serializable {
         this.totalSold = totalSold;
     }
 
-    public Float getGrade() {
+    public Integer getGrade() {
         return grade;
     }
 
-    public void setGrade(Float grade) {
+    public void setGrade(Integer grade) {
         this.grade = grade;
     }
 
@@ -129,7 +149,7 @@ public class User implements Serializable {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", schoolNumber='" + schoolNumber + '\'' +
+                ", number='" + schoolNumber + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +

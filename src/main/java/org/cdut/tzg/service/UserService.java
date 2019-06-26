@@ -18,4 +18,8 @@ public interface UserService {
      * 根据姓名查找用户
      */
     User findUserByName(String username);
+    int register(Integer id,String schoolNumber,String username,String password,String phoneNumber,String address
+            ,String email,Integer isFrozen,Integer totalSold,Integer grade,String avatar,String moneyCode, Integer role);
+
+
 }
