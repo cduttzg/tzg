@@ -11,6 +11,12 @@ public class TzgApplication {
 //        SpringApplication.run(TzgApplication.class, args);
         ApplicationContext context = SpringApplication.run(TzgApplication.class, args);
         String serverPort = context.getEnvironment().getProperty("server.port");
+        //ajaxtest
+        System.out.println("test页面  http://localhost:" + serverPort+"/test/testHtml");
+
+        System.out.println("tzg started at http://localhost:" + serverPort);
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=jack");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=ffffff");
         System.out.println("tzg started at http://localhost:" + serverPort);;
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=jack");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/getInfo?goodsId=3");

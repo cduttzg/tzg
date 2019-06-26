@@ -25,4 +25,9 @@ public class OrderServiceImpl implements OrderService {
     public int getCompletedOrdersCount(Date date){
         return ordersMapper.getCompletedOrdersCount(date);
     }
+
+    @Override
+    public List<Orders> findTheLatestOrders(Integer number) {
+        return ordersMapper.findTheLatestOrders(number);
+    }
 }

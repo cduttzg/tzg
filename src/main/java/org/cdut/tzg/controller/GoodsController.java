@@ -1,5 +1,6 @@
 package org.cdut.tzg.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.ibatis.transaction.Transaction;
 import org.cdut.tzg.model.Cart;
 import org.cdut.tzg.model.Goods;
@@ -11,11 +12,9 @@ import org.cdut.tzg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,22 +64,31 @@ public class GoodsController {
     @Transactional
     @RequestMapping(value = "/addToCart",method = RequestMethod.GET)
     @ResponseBody
-    public Result<Object> addToCart(@RequestParam String username,@RequestParam Long goodsId,@RequestParam Integer number){
-        Goods cartGoods=goodsService.findGoodsById(goodsId);//商品
-        System.out.println(cartGoods);
-        if(cartGoods.getStock()-number<0){//库存不足
-            return Result.error(STOCKOUT);
+    public Result<Object> addToCart(@RequestBody String data){
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String,Object> map = null;
+        try {
+             map = objectMapper.readValue(data,Map.class);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        else{
-            User buyer=userService.findUserByName(username);//买家
-            User seller=userService.findUserById(cartGoods.getUserId());//卖家
-            //从商品表更新库存
-            goodsService.updateGoodsStock(cartGoods.getId(),(cartGoods.getStock()-number));
-            //添加到购物车表
-            cartService.insertToCart(buyer.getId(),seller.getId(),cartGoods.getId(),number);
-            String data="添加到购物车成功";
-            return Result.success(data);
-        }
+        System.out.println(map);
+        return Result.success(map);
+//        Goods cartGoods=goodsService.findGoodsById(goodsId);//商品
+//        System.out.println(cartGoods);
+//        if(cartGoods.getStock()-number<0){//库存不足
+//            return Result.error(STOCKOUT);
+//        }
+//        else{
+//            User buyer=userService.findUserByName(username);//买家
+//            User seller=userService.findUserById(cartGoods.getUserId());//卖家
+//            //从商品表更新库存
+//            goodsService.updateGoodsStock(cartGoods.getId(),(cartGoods.getStock()-number));
+//            //添加到购物车表
+//            cartService.insertToCart(buyer.getId(),seller.getId(),cartGoods.getId(),number);
+//            String data="添加到购物车成功";
+//            return Result.success(data);
+//        }
     }
 
 

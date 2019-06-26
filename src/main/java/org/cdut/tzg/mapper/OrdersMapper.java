@@ -24,4 +24,11 @@ public interface OrdersMapper {
      */
     @Select("select count(*) from orders where datediff(completed_time,#{date}) = 0")
     int getCompletedOrdersCount(Date date);
+
+    /**
+     * 获取最新提交的前 n 条订单
+     */
+    @Select("SELECT * FROM goods_orders ORDER BY created_time DESC LIMIT #{number}")
+    List<Orders> findTheLatestOrders(Integer number);
+
 }

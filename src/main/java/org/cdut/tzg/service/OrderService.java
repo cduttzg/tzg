@@ -10,12 +10,19 @@ import java.util.List;
  * @date 2019/6/25 16:12
  */
 public interface OrderService {
+
     /**
      * 获取总订单数量
      */
     int getAllOrdersCount();
+
     /**
      * 获取指定日期订单数量
      */
     int getCompletedOrdersCount(Date date);
+
+    /**
+     * 获取最新提交的前 n 条订单
+     */
+    List<Orders> findTheLatestOrders(Integer number);
 }
