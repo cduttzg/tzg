@@ -58,4 +58,8 @@ public interface UserService {
      * 根据学号删除管理员
      */
     int deletAdministrator(String schoolNum);
+    /**
+     * 获取所有管理员
+     */
+    List<User> getAllAdministrator();
 }

@@ -35,7 +35,7 @@
 
 <!--后台数据测试按钮 id=b1x-->
 <br><hr>
-<button id="b11" type="button">订单置为异常</button>
+<button id="b11" type="button">订单异常</button>
 <script>
     var btn1 = $("#b11");
     btn1.click(function () {
@@ -79,7 +79,7 @@
         });
     })
 </script>
-<button id="b13" type="button">用户升级为管理员</button>
+<button id="b13" type="button">添加管理员</button>
 <script>
     var btn1 = $("#b13");
     btn1.click(function () {
@@ -89,6 +89,50 @@
             dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性
             data: JSON.stringify({"schoolNum":"201613160833"}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function (req) {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
+<button id="b14" type="button">删除管理员</button>
+<script>
+    var btn1 = $("#b14");
+    btn1.click(function () {
+        $.ajax({
+            url: "/api/backstage/deletAdmin",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"schoolNum":"201613160833"}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function (req) {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
+<button id="b15" type="button">获取管理员</button>
+<script>
+    var btn1 = $("#b15");
+    btn1.click(function () {
+        $.ajax({
+            url: "/api/backstage/getAdmin",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify(),    //参数值
             type: "POST",   //请求方式
             success: function (req) {
                 //请求成功时处理
