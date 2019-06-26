@@ -54,4 +54,8 @@ public interface UserService {
      * 根据学号增加管理员
      */
     int setAdministrator(String schoolNum);
+    /**
+     * 根据学号删除管理员
+     */
+    int deletAdministrator(String schoolNum);
 }

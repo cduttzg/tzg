@@ -11,6 +11,7 @@ import org.cdut.tzg.result.Result;
 import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.OrderService;
 import org.cdut.tzg.service.UserService;
+import org.cdut.tzg.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -141,13 +142,7 @@ public class OrderController {
     @RequestMapping(value = "/freezeUser",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> setFreezeUser(@RequestBody String data){
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map maps = null;
-        try {
-            maps = objectMapper.readValue(data,Map.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Map maps = MapUtils.getMap(data);
         String schoolNum = (String) maps.get("schoolNum");
         Map<String,Object> map = new HashMap<>();
         User user = userService.getUserBySchoolNum(schoolNum);
@@ -174,13 +169,7 @@ public class OrderController {
     @RequestMapping(value = "/addAdmin",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> addAdministrator(@RequestBody String data){
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map maps = null;
-        try{
-            maps = objectMapper.readValue(data,Map.class);
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        Map maps = MapUtils.getMap(data);
         String schoolNum = (String) maps.get("schoolNum");
         Map<String,Object> map = new HashMap<>();
         User user = userService.getUserBySchoolNum(schoolNum);
@@ -197,4 +186,16 @@ public class OrderController {
         }
         return Result.success(map);
     }
+    /*
+    * 删除管理员
+    * */
+    @RequestMapping(value = "/deletAdmin",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> deletAdministrator(@RequestBody String data){
+        Map maps = MapUtils.getMap(data);
+        String schoolNum = (String) maps.get("schoolNum");
+        Map<String,Object> map = new HashMap<>();
+        return Result.success(map);
+    }
+
 }

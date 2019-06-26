@@ -74,4 +74,10 @@ public interface UserMapper {
     @Update("update user set role = 1 where school_number = #{schoolNum}")
     int setAdministrator(String schoolNum);
 
+    /**
+     * 根据学号删除管理员
+     */
+    @Update("update user set role = 0 where school_number = #{schoolNum}")
+    int deletAdministrator(String schoolNum);
+
 }
