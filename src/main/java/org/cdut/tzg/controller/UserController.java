@@ -53,7 +53,7 @@ public class UserController {
     }
 
     /**
-     * 注册用户
+     * 注册用户!!!!!!未开发完
      * @param id
      * @param schoolNumber
      * @param username
