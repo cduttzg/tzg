@@ -31,8 +31,11 @@ public class HomeController {
     @Autowired
     private GoodsService goodsService;
 
-    //@Autowired
-    //private GoodsOrdersService goodsOrdersService;
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private GoodsOrdersService goodsOrdersService;
 
     /***
      *
@@ -79,14 +82,33 @@ public class HomeController {
      * 描述：实时购买展示
      * 方法：GET
      * 数据：{“number”:1}
-     * 期望返回格式：{“买家姓名”:”XXX”,”卖家姓名”:”XXX”,”商品名称”:”XXX”,”订单时间”:”XXX” }
-     * 例子：{”买家姓名”:”张三” ,”卖家姓名”:”李四” ,”商品名称”:”书” ,”订单时间”:”2019-6-24”}
+     * 期望返回格式：{“买家姓名”:”XXX”,”,”商品名称”:”XXX”,”订单时间”:”XXX” }
+     * 例子：{”买家姓名”:”张三” ,”商品名称”:”书” ,”订单时间”:”2019-6-24”}
      */
     @RequestMapping(value = "/OrderInfo", method = RequestMethod.GET)
     @ResponseBody
-    public Result<Object> orderInfo(@RequestBody Integer number) {
-        System.out.println(number);
-        return Result.success(number);
+    public Result<Object> orderInfo(@RequestParam Integer number) {
+        List<Orders> orders = orderService.findTheLatestOrders(number);
+        Map<String,Object> data = new HashMap<>();
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (Orders order : orders) {
+            Map<String, Object> map = new HashMap<>();
+            String buyerName = userService.findUserById(order.getBuyerId()).getUsername();
+            map.put("买家姓名", buyerName);
+            List<GoodsOrders> goodsOrders = goodsOrdersService.findTheOrdersDetailById(order.getId());
+            StringBuilder goodsNames = new StringBuilder();
+            for (int j = 0; j < goodsOrders.size(); j++) {
+                goodsNames.append(goodsService.findGoodsById(goodsOrders.get(j).getGoodsId()).getTitle());
+                if (j != goodsOrders.size() - 1) {
+                    goodsNames.append("、");
+                }
+            }
+            map.put("商品名称", goodsNames);
+            map.put("订单时间", order.getCompletedTime());
+            list.add(map);
+        }
+        data.put("data",list);
+        return Result.success(data);
     }
 
 
