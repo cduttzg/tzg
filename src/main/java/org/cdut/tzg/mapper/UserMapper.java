@@ -34,4 +34,10 @@ public interface UserMapper {
             " values (#{id},#{schoolNumber},#{username},#{password},#{phoneNumber},#{address},#{email},#{isFrozen},#{totalSold},#{grade},#{avatar},#{moneyCode},#{role})")
     int insert(Integer id,String schoolNumber,String username,String password,String phoneNumber,String address
             ,String email,Integer isFrozen,Integer totalSold,Integer grade,String avatar,String moneyCode, Integer role);
+
+    /**
+     * 根据id查找用户
+     */
+    @Select("select * from user where id = #{userId}")
+    User findUserById(Long userId);
 }

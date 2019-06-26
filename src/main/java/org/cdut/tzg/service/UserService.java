@@ -22,4 +22,9 @@ public interface UserService {
             ,String email,Integer isFrozen,Integer totalSold,Integer grade,String avatar,String moneyCode, Integer role);
 
 
+
+    /**
+     * 根据id查找用户
+     */
+    User findUserById(Long userId);
 }
