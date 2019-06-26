@@ -49,6 +49,11 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public List<Goods> findSameTypeGoodsByType(Integer type) {
+        return goodsMapper.findSameTypeGoodsByType(type);
+    }
+
+    @Override
     public List<Goods> findGoodsByTypeAndLimit(Integer type, int limit) {
         return goodsMapper.findGoodsByTypeAndLimit(type,limit);
     }

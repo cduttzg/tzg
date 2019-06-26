@@ -36,6 +36,11 @@ public interface GoodsService {
     List<Goods> getAllSeekGoodsByUserId(Long userid);
 
     /**
+     * 根据种类信息取得所有相同种类的商品
+     */
+    List<Goods> findSameTypeGoodsByType(Integer type);
+
+    /**
      * 根据类型查询n条商品
      */
     List<Goods> findGoodsByTypeAndLimit(Integer type, int limit);

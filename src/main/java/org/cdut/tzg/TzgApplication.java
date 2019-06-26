@@ -25,10 +25,10 @@ public class TzgApplication {
         System.out.println("home  http://localhost:" + serverPort+"/api/home/");
         System.out.println();
 
-        //商品测试 /api/goods/getInfo
+        //商品测试 /api/goods/
         System.out.println("-------------商品测试-----------");
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=jack");
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=ffffff");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/getInfo?goodsId=5");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/gallery?type=1");
         System.out.println();
 
         //后台数据连接
@@ -44,3 +44,4 @@ public class TzgApplication {
     }
 
 }
+

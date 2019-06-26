@@ -51,6 +51,12 @@ public interface GoodsMapper {
     List<Goods> selectSeekGoodsByUserid(Long userid);
 
     /**
+     * 根据种类信息取得所有相同种类的商品
+     */
+    @Select("select * from goods where type=#{type}")
+    List<Goods> findSameTypeGoodsByType(Integer type);
+
+    /**
      * 根据类型查询n条商品
      */
     @Select("select * from goods where type = #{type} limit #{limit}")
