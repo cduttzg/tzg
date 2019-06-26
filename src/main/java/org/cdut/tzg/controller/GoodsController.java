@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.org.apache.xpath.internal.operations.Or;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.transaction.Transaction;
-import org.cdut.tzg.model.Cart;
-import org.cdut.tzg.model.Goods;
-import org.cdut.tzg.model.Orders;
-import org.cdut.tzg.model.User;
+import org.cdut.tzg.model.*;
 import org.cdut.tzg.result.Result;
 import org.cdut.tzg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +16,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static org.cdut.tzg.result.CodeMsg.FAILED;
 import static org.cdut.tzg.result.CodeMsg.STOCKOUT;
 
 
@@ -91,7 +89,7 @@ public class GoodsController {
             User buyer=userService.findUserByName(username);//买家
             User seller=userService.findUserById(cartGoods.getUserId());//卖家
             //从商品表更新库存
-            goodsService.updateGoodsStock(cartGoods.getId(),cartGoods.getStock()-buyedNumber);
+            //goodsService.updateGoodsStock(cartGoods.getId(),cartGoods.getStock()-buyedNumber);
             //添加到购物车表
             //寻找购物车中是否存在该商品
             List<Cart> allCartGoods=cartService.findAll(buyer.getId());//获取到该用户的购物车所有商品信息
@@ -120,10 +118,10 @@ public class GoodsController {
      数据：{“用户名”:”XXX”,“商品ID”:”XXX”,”数量”:XXX}
      期望返回格式：{"success":true/false,"content":"XXXX"}
      */
-    @RequestMapping(value = "/buyNow",method =RequestMethod.GET)
+    @RequestMapping(value = "/buyNow",method =RequestMethod.POST)
     @ResponseBody
     @Transactional
-    public Result<Object> buyNow(@RequestParam String data){
+    public Result<Object> buyNow(@RequestBody String data){
         //解析请求体参数
         ObjectMapper objectMapper=new ObjectMapper();
         Map map=null;
@@ -131,19 +129,33 @@ public class GoodsController {
             map=objectMapper.readValue(data,Map.class);
         } catch (IOException e) {
             e.printStackTrace();
+            return Result.error(FAILED);
         }
         String username=(String)map.get("用户名");
-        Long goodsId=Long.valueOf((String)map.get("商品ID"));
-        Integer number=Integer.valueOf((String)map.get("数量"));
+        Long goodsId = Long.valueOf((String)map.get("商品ID"));
+        Integer number=(Integer) map.get("数量");
 
         //orders订单入库
         Goods buyedGoods=goodsService.findGoodsById(goodsId);//获得需要购买的商品信息
         Orders orders=new Orders();//创建新订单
-        orders.setBuyerId(buyedGoods.getUserId());//设置订单的buyer_id
+        orders.setBuyerId(userService.findUserByName(username).getId());//设置订单的buyer_id
         orders.setState(0);//待支付
-        //重新获取该orders订单以得到orders表的id 并将GoodsOrders记录入库
         //Date date=new Date();
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        orderService.addOrders(orders);
+
+        //通过最新的一个订单信息重新获取该orders订单以得到orders表的id
+        //to-do: !!!! 注意  线程安全问题
+        //to-do: 在这个时候别人插入订单后可能会导致出错 考虑加锁
+        orders=orderService.findTheLatestOrders(1).get(0);
+
+        //并将GoodsOrders记录入库
+        GoodsOrders goodsOrders=new GoodsOrders();
+        goodsOrders.setOrdersId(orders.getId());
+        goodsOrders.setGoodsId(goodsId);
+        goodsOrders.setSellerId(buyedGoods.getUserId());
+        goodsOrders.setNumber(number);
+        goodsOrdersService.addGoodsOrders(goodsOrders);
         return Result.success("生成订单成功,请尽快支付");
     }
 }

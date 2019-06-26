@@ -12,14 +12,15 @@ public class TzgApplication {
         ApplicationContext context = SpringApplication.run(TzgApplication.class, args);
         String serverPort = context.getEnvironment().getProperty("server.port");
         //ajaxtest
-        //商品测试 /api/goods/addToCart
+        //商品测试 /api/goods/addToCart   /api/goods/buyNow
         System.out.println("test页面  http://localhost:" + serverPort+"/test/testHtml");
+
+
 
         //商品测试 /api/goods/getInfo
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=jack");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=ffffff");
-       //商品测试 /api/goods/buyNow
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/buyNow");
+
 
         //后台数据连接
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getData");

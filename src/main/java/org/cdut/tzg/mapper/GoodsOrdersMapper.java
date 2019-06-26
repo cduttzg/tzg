@@ -1,5 +1,6 @@
 package org.cdut.tzg.mapper;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.cdut.tzg.model.GoodsOrders;
@@ -18,4 +19,11 @@ public interface GoodsOrdersMapper {
      */
     @Select("select * from goods_orders where orders_id = #{ordersId}")
     List<GoodsOrders> findTheOrdersDetial(Integer ordersId);
+
+    /**
+     * 商品订单关系信息(GoodsOrders)入库
+     */
+    @Insert("insert into goods_orders (orders_id,goods_id,seller_id,number) " +
+            "values(#{ordersId},#{goodsId},#{sellerId},#{number})")
+    int addGoodsOrders(GoodsOrders goodsOrders);
 }

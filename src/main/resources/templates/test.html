@@ -7,6 +7,7 @@
 
 </head>
 <body>
+<!--/api/goods/addToCart的POST方法测试-->
 <button id="b01" type="button">/api/goods/addToCart</button>
 <script>
     var btn1 = $("#b01");
@@ -18,6 +19,32 @@
             dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性
             data: JSON.stringify({"用户名":"小红","商品ID":"5","商品数量":1}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function () {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
+
+
+<!--/api/goods/buyNow的POST方法测试-->
+<button id="bbuyNow" type="button">/api/goods/buyNow</button>
+<script>
+    var btn1 = $("#bbuyNow");
+    btn1.click(function () {
+        console.log("--start--");
+        $.ajax({
+            url: "/api/goods/buyNow",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"用户名":"小红","商品ID":"5","数量":1}),    //参数值
             type: "POST",   //请求方式
             success: function (req) {
                 //请求成功时处理

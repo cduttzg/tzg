@@ -1,5 +1,6 @@
 package org.cdut.tzg.mapper;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -40,7 +41,12 @@ public interface OrdersMapper {
     /**
      * 获取最新提交的前 n 条订单
      */
-    @Select("SELECT * FROM goods_orders ORDER BY created_time DESC LIMIT #{number}")
+    @Select("SELECT * FROM orders ORDER BY created_time DESC LIMIT #{number}")
     List<Orders> findTheLatestOrders(Integer number);
 
+    /**
+     * 立即购买 单一商品订单入库
+     */
+    @Insert("insert into orders (buyer_id,state) values(#{buyerId},#{state})")
+    int addOrders(Orders orders);
 }

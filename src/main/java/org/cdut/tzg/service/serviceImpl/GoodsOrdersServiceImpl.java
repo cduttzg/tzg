@@ -23,4 +23,9 @@ public class GoodsOrdersServiceImpl implements GoodsOrdersService {
     public List<GoodsOrders> findTheOrdersDetial(Integer ordersId) {
         return goodsOrdersMapper.findTheOrdersDetial(ordersId);
     }
+
+    @Override
+    public int addGoodsOrders(GoodsOrders goodsOrders) {
+        return goodsOrdersMapper.addGoodsOrders(goodsOrders);
+    }
 }
