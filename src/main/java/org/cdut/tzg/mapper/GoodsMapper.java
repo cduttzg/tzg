@@ -43,4 +43,10 @@ public interface GoodsMapper {
      */
     @Update("update goods set stock=#{newNumber} where id=#{goodsId}")
     int updateGoodsStock(@Param("goodsId") Long goodsId, @Param("newNumber") Integer newNumber);
+
+    /**
+     * 根据种类信息取得所有相同种类的商品
+     */
+    @Select("select * from goods where type=#{type}")
+    List<Goods> findSameTypeGoodsByType(Integer type);
 }

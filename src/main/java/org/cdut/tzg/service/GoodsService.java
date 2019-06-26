@@ -30,4 +30,9 @@ public interface GoodsService {
      * 更新商品库存
      */
     int updateGoodsStock(Long goodsId,Integer newNumber);
+
+    /**
+     * 根据种类信息取得所有相同种类的商品
+     */
+    List<Goods> findSameTypeGoodsByType(Integer type);
 }

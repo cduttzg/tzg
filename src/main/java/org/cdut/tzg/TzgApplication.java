@@ -19,8 +19,8 @@ public class TzgApplication {
         System.out.println("OrderInfo  http://localhost:" + serverPort+"/api/home/OrderInfo?number=2");
 
         //商品测试 /api/goods/getInfo
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=jack");
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=ffffff");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/getInfo?goodsId=5");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/gallery?type=1");
 
         //后台数据连接
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getData");
