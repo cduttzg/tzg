@@ -52,4 +52,9 @@ public class UserServiceImpl implements UserService {
     public User getUserBySchoolNum(String schoolNum){
         return userMapper.getUserBySchoolNum(schoolNum);
     }
+
+    @Override
+    public int setAdministrator(String schoolNum){
+        return userMapper.setAdministrator(schoolNum);
+    }
 }

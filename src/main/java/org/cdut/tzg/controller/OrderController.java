@@ -1,6 +1,8 @@
 package org.cdut.tzg.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.org.apache.bcel.internal.classfile.Code;
+import org.cdut.tzg.mapper.OrdersMapper;
 import org.cdut.tzg.model.Goods;
 import org.cdut.tzg.model.Orders;
 import org.cdut.tzg.model.User;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -75,9 +78,17 @@ public class OrderController {
     * 数据：{"订单ID":"XXX"}
     * 期望返回格式：{"success":true/false,"content":"XXXX"}
     * */
-    @RequestMapping(value = "/manageOrder"/*,method = RequestMethod.POST*/)
+    @RequestMapping(value = "/manageOrder",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Map<String,Object>> setOrderException(@RequestParam int orderId){
+    public Result<Map<String,Object>> setOrderException(@RequestBody String data){
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map maps = null;
+        try {
+            maps = objectMapper.readValue(data,Map.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Long orderId = Long.valueOf((Integer) maps.get("orderId"));
         Map<String,Object> map = new HashMap<>();
         Orders order = orderService.getOrderById(orderId);
         if (order != null) {
@@ -90,8 +101,6 @@ public class OrderController {
             }
         }
         else {
-            //map.put("success",false);
-            //map.put("content","订单不存在");
             return Result.error(CodeMsg.NO_ORDER);
         }
         return Result.success(map);
@@ -130,9 +139,17 @@ public class OrderController {
     * 数据：{"用户学号":"XXX"}
     * 期望返回格式：{"code":XXX,"msg":"xxx","data":"XXX"}
     * */
-    @RequestMapping(value = "/freezeUser"/*,method = RequestMethod.POST*/)
+    @RequestMapping(value = "/freezeUser",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Map<String,Object>> setFreezeUser(@RequestParam String schoolNum){
+    public Result<Map<String,Object>> setFreezeUser(@RequestBody String data){
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map maps = null;
+        try {
+            maps = objectMapper.readValue(data,Map.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String schoolNum = (String) maps.get("schoolNum");
         Map<String,Object> map = new HashMap<>();
         User user = userService.getUserBySchoolNum(schoolNum);
         if (user == null)
@@ -144,6 +161,39 @@ public class OrderController {
                 map.put("content","用户已冻结");
             }else{
                 Result.error(CodeMsg.REPETITIVE_OPERATION);
+            }
+        }
+        return Result.success(map);
+    }
+
+    /*
+    * 根据学号设置管理员
+    * 方法：POST
+    * 数据：{"用户学号":"XXX"}
+    * 期望返回格式：{"code":XXX,"msg":"xxx","data":"XXX"}
+    * */
+    @RequestMapping(value = "/addAdmin",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> addAdministrator(@RequestBody String data){
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map maps = null;
+        try{
+            maps = objectMapper.readValue(data,Map.class);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        String schoolNum = (String) maps.get("schoolNum");
+        Map<String,Object> map = new HashMap<>();
+        User user = userService.getUserBySchoolNum(schoolNum);
+        if (user == null)
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        else {
+            int sign = userService.setAdministrator(schoolNum);
+            if (sign == 1){
+                map.put("success",true);
+                map.put("content","该用户升级为管理员");
+            }else if (sign == 0){
+                return Result.error(CodeMsg.REPETITIVE_OPERATION);
             }
         }
         return Result.success(map);

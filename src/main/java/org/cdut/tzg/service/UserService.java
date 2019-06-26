@@ -40,4 +40,8 @@ public interface UserService {
      * 根据学号查找用户
      */
     User getUserBySchoolNum(String schoolNum);
+    /**
+     * 根据学号增加管理员
+     */
+    int setAdministrator(String schoolNum);
 }
