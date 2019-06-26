@@ -4,13 +4,13 @@ import java.io.Serializable;
 
 /**
  * @author anlan
- * @date 2019/6/25 9:29
+ * @date 2019/6/26 9:18
  */
-public class Cart implements Serializable {
+public class GoodsOrders implements Serializable {
     private Long id;
-    private Long buyerId;
-    private Long sellerId;
+    private Long ordersId;
     private Long goodsId;
+    private Long sellerId;
     private Integer number;
 
     public Long getId() {
@@ -21,20 +21,12 @@ public class Cart implements Serializable {
         this.id = id;
     }
 
-    public Long getBuyerId() {
-        return buyerId;
+    public Long getOrdersId() {
+        return ordersId;
     }
 
-    public void setBuyerId(Long buyerId) {
-        this.buyerId = buyerId;
-    }
-
-    public Long getSellerId() {
-        return sellerId;
-    }
-
-    public void setSellerId(Long sellerId) {
-        this.sellerId = sellerId;
+    public void setOrdersId(Long ordersId) {
+        this.ordersId = ordersId;
     }
 
     public Long getGoodsId() {
@@ -43,6 +35,14 @@ public class Cart implements Serializable {
 
     public void setGoodsId(Long goodsId) {
         this.goodsId = goodsId;
+    }
+
+    public Long getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
     }
 
     public Integer getNumber() {
@@ -55,11 +55,11 @@ public class Cart implements Serializable {
 
     @Override
     public String toString() {
-        return "Cart{" +
+        return "GoodsOrders{" +
                 "id=" + id +
-                ", buyerId=" + buyerId +
-                ", sellerId=" + sellerId +
+                ", ordersId=" + ordersId +
                 ", goodsId=" + goodsId +
+                ", sellerId=" + sellerId +
                 ", number=" + number +
                 '}';
     }

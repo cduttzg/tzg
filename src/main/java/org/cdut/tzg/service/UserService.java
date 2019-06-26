@@ -22,23 +22,32 @@ public interface UserService {
 
     /**
      * 根据填的数据进行用户注册
-     * @param id
-     * @param schoolNumber
-     * @param username
-     * @param password
-     * @param phoneNumber
-     * @param address
-     * @param email
-     * @param isFrozen
-     * @param totalSold
-     * @param grade
-     * @param avatar
-     * @param moneyCode
-     * @param role
-     * @return
      */
     int register(Integer id,String schoolNumber,String username,String password,String phoneNumber,String address
             ,String email,Integer isFrozen,Integer totalSold,Integer grade,String avatar,String moneyCode, Integer role);
 
+
+
+    /**
+     * 根据id查找用户
+     */
+    User findUserById(Long userId);
+
+    /**
+     * 获取所有冻结用户
+     */
+    List<User> getAllFreezeUsers();
+    /**
+     * 冻结指定id用户
+     */
+    int setFreezeUser(String schoolNum);
+    /**
+     * 根据学号查找用户
+     */
+    User getUserBySchoolNum(String schoolNum);
+
+    /**
+     *根据用户名查找id
+     */
     Long findIdByUserName(String username);
 }

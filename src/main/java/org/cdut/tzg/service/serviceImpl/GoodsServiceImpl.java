@@ -37,4 +37,9 @@ public class GoodsServiceImpl implements GoodsService {
     public int deleteSeekGood(Long userId, Integer tag, String title) {
         return goodsMapper.deleteSeekGood(userId,tag,title);
     }
+
+    @Override
+    public int updateGoodsStock(Long goodsId,Integer newNumber) {
+       return goodsMapper.updateGoodsStock(goodsId,newNumber);
+    }
 }

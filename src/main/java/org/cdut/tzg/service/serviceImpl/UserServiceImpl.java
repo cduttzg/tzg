@@ -37,4 +37,24 @@ public class UserServiceImpl implements UserService {
     public Long findIdByUserName(String username) {
         return userMapper.findUserIdByUserName(username);
     }
+
+    @Override
+    public User findUserById(Long userId) {
+        return userMapper.findUserById(userId);
+    }
+
+    @Override
+    public List<User> getAllFreezeUsers(){
+        return userMapper.getAllFreezeUsers();
+    }
+
+    @Override
+    public int setFreezeUser(String schoolNum){
+        return userMapper.setFreezeUser(schoolNum);
+    }
+
+    @Override
+    public User getUserBySchoolNum(String schoolNum){
+        return userMapper.getUserBySchoolNum(schoolNum);
+    }
 }

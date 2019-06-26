@@ -2,6 +2,7 @@ package org.cdut.tzg.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.cdut.tzg.model.Orders;
 
 import java.util.Date;
@@ -24,4 +25,22 @@ public interface OrdersMapper {
      */
     @Select("select count(*) from orders where datediff(completed_time,#{date}) = 0")
     int getCompletedOrdersCount(Date date);
+    /**
+     * 获取指定id订单
+     */
+    @Select("select * from orders where id = #{orderId}")
+    Orders getOrderById(int orderId);
+    /**
+     * 更新指定订单号订单状态为异常
+     */
+    @Update("update orders set state=3 where id = #{orderId}")
+    int setOrderException(int orderId);
+
+
+    /**
+     * 获取最新提交的前 n 条订单
+     */
+    @Select("SELECT * FROM goods_orders ORDER BY created_time DESC LIMIT #{number}")
+    List<Orders> findTheLatestOrders(Integer number);
+
 }

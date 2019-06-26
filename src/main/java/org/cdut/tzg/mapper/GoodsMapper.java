@@ -18,6 +18,7 @@ public interface GoodsMapper {
      */
     @Select("select * from goods where id = #{goodId}")
     Goods findGoodsById(Long goodId);
+
     /**
      * 获取指定日期上架商品
      */
@@ -36,4 +37,10 @@ public interface GoodsMapper {
      */
     @Delete("delete from goods where user_id=#{userId} and title=#{title} and tag=#{tag}")
     int deleteSeekGood(@Param("userId") Long userId,@Param("tag") Integer tag,@Param("title") String title);
+
+    /**
+     * 更新商品库存
+     */
+    @Update("update goods set stock=#{newNumber} where id=#{goodsId}")
+    int updateGoodsStock(@Param("goodsId") Long goodsId, @Param("newNumber") Integer newNumber);
 }

@@ -10,10 +10,13 @@ import java.util.List;
  * @date 2019/6/25 16:23
  */
 public interface GoodsService {
+
     /**
      * 通过id查找商品
      */
+
     Goods findGoodsById(Long goodId);
+
     /**
      * 获取指定日期上架商品
      */
@@ -22,4 +25,9 @@ public interface GoodsService {
     int publishSeekGood(Long userId,Integer tag,String title,String content,Float price,Integer stock,String image);
 
     int deleteSeekGood(Long userId,Integer tag,String title);
+
+    /**
+     * 更新商品库存
+     */
+    int updateGoodsStock(Long goodsId,Integer newNumber);
 }

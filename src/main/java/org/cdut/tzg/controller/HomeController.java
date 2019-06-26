@@ -1,23 +1,18 @@
 package org.cdut.tzg.controller;
 
-import org.cdut.tzg.model.Cart;
-import org.cdut.tzg.model.Goods;
-import org.cdut.tzg.model.User;
+import org.cdut.tzg.model.*;
 import org.cdut.tzg.result.Result;
-import org.cdut.tzg.service.CartService;
-import org.cdut.tzg.service.GoodsService;
-import org.cdut.tzg.service.UserService;
+import org.cdut.tzg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.cdut.tzg.result.CodeMsg.USER_UNDEFIND;
 
 /**
  * @author anlan
@@ -36,8 +31,10 @@ public class HomeController {
     @Autowired
     private GoodsService goodsService;
 
+    //@Autowired
+    //private GoodsOrdersService goodsOrdersService;
+
     /***
-     *
      *
      * URL：/api/home/cartInfo
      * 描述：获取购物车信息、查询用户是否被冻结、查询用户角色
@@ -46,32 +43,51 @@ public class HomeController {
      * 期望返回格式：{"data":[{"商品名称":"XXX",”商品图片”:”XXX”, ”描述”:”XXX”,”单价”:XXX,”数量”:XXX},],”是否被冻结”:true/false,"角色":0/1/2}
      * 例子：{"data":[{"商品名称":"《BOOK》",”商品图片”:”XXX”, ”描述”:”这是一本书”,”单价”:15.5,”数量”:2},],”是否被冻结”:false,"角色":0}
      */
-    @RequestMapping(value = "/cartInfo",method = RequestMethod.GET)
+    @RequestMapping(value = "/cartInfo", method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> cartInfo(@RequestParam String username) {
-//        获取用户数据并封装到map里
+        //获取用户数据并封装到map里
         Map<String, Object> data = new HashMap<>();
         User user = userService.findUserByName(username);
+        if (user == null)
+            return Result.error(USER_UNDEFIND);
         boolean isFrozen = user.getIsFrozen() == 1;
         data.put("是否被冻结", isFrozen);
-        data.put("角色",user.getRole());
+        data.put("角色", user.getRole());
 
-//        获取购物车信息并封装到map里
+
+        //获取购物车信息并封装到map里
         List<Cart> carts = cartService.findAll(user.getId());
-        List<Map<String,Object>> list = new ArrayList<>();
-        for(int i=0;i<carts.size();i++){
-//            查询商品的具体信息并封装到map里
-            Map<String,Object> map = new HashMap<>();
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (int i = 0; i < carts.size(); i++) {
+            //查询商品的具体信息并封装到map里
+            Map<String, Object> map = new HashMap<>();
             Goods goods = goodsService.findGoodsById(carts.get(i).getGoodsId());
-            map.put("商品名称",goods.getTitle());
-            map.put("描述",goods.getContent());
-            map.put("商品图片",goods.getImage());
-            map.put("单价",goods.getPrice());
-            map.put("数量",carts.get(i).getNumber());
+            map.put("商品名称", goods.getTitle());
+            map.put("描述", goods.getContent());
+            map.put("商品图片", goods.getImage());
+            map.put("单价", goods.getPrice());
+            map.put("数量", carts.get(i).getNumber());
             list.add(map);
         }
         data.put("data", list);
-        System.out.println(data);
         return Result.success(data);
     }
+
+    /***
+     * URL：/api/home/OrderInfo
+     * 描述：实时购买展示
+     * 方法：GET
+     * 数据：{“number”:1}
+     * 期望返回格式：{“买家姓名”:”XXX”,”卖家姓名”:”XXX”,”商品名称”:”XXX”,”订单时间”:”XXX” }
+     * 例子：{”买家姓名”:”张三” ,”卖家姓名”:”李四” ,”商品名称”:”书” ,”订单时间”:”2019-6-24”}
+     */
+    @RequestMapping(value = "/OrderInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public Result<Object> orderInfo(@RequestBody Integer number) {
+        System.out.println(number);
+        return Result.success(number);
+    }
+
+
 }
