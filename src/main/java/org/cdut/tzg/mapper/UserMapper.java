@@ -80,4 +80,10 @@ public interface UserMapper {
     @Update("update user set role = 0 where school_number = #{schoolNum}")
     int deletAdministrator(String schoolNum);
 
+    /**
+     * 获取所有管理员
+     */
+    @Select("select username,phone_number from user where role = 1 order by school_number")
+    List<User> getAllAdministrator();
+
 }
