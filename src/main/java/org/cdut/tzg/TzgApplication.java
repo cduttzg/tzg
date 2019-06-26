@@ -13,7 +13,10 @@ public class TzgApplication {
         String serverPort = context.getEnvironment().getProperty("server.port");
         //ajaxtest
         //商品测试 /api/goods/addToCart
-        System.out.println("test页面  http://localhost:" + serverPort+"/test/testHtml");
+        System.out.println("test页面  http://localhost:" + serverPort+"/test/jcqTestHtml");
+        System.out.println("test页面  http://localhost:" + serverPort+"/test/zrTestHtml");
+        System.out.println("test页面  http://localhost:" + serverPort+"/test/xlfTestHtml");
+        System.out.println("test页面  http://localhost:" + serverPort+"/test/lhyTestHtml");
 
         //首页测试 /api/home
         System.out.println("OrderInfo  http://localhost:" + serverPort+"/api/home/OrderInfo?number=2");
