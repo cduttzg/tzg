@@ -22,4 +22,9 @@ public class CartServiceImpl implements CartService {
     public List<Cart> findAll(Long buyerId) {
         return cartMapper.findAll(buyerId);
     }
+
+    @Override
+    public int insertToCart(Long buyerId,Long sellerId,Long goodsId, Integer number) {
+        return cartMapper.insertToCart(buyerId,sellerId,goodsId,number);
+    }
 }
