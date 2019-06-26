@@ -43,4 +43,10 @@ public interface GoodsMapper {
      */
     @Update("update goods set stock=#{newNumber} where id=#{goodsId}")
     int updateGoodsStock(@Param("goodsId") Long goodsId, @Param("newNumber") Integer newNumber);
+
+    /**
+     * 根据用户名查找求购信息
+     */
+    @Select("select * from goods where username =#{username} and type=5")
+    List<Goods> selectSeekGoodsByUsername(String username);
 }

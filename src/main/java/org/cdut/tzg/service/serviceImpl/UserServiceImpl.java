@@ -1,6 +1,7 @@
 package org.cdut.tzg.service.serviceImpl;
 
 import org.cdut.tzg.mapper.UserMapper;
+import org.cdut.tzg.model.Goods;
 import org.cdut.tzg.model.User;
 import org.cdut.tzg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int register(Integer id, String schoolNumber, String username, String password, String phoneNumber, String address, String email, Integer isFrozen, Integer totalSold, Integer grade, String avatar, String moneyCode, Integer role) {
-        return userMapper.insert(id,schoolNumber,username,password,phoneNumber,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role);
+    public int register(User user) {
+        return userMapper.insert(user);
     }
 
     @Override
@@ -56,5 +57,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserBySchoolNum(String schoolNum){
         return userMapper.getUserBySchoolNum(schoolNum);
+    }
+
+    @Override
+    public String findPhoneByUsername(String username) {
+        return userMapper.getUserPhoneByUsername(username);
     }
 }

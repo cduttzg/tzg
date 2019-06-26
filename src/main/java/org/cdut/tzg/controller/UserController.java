@@ -10,11 +10,9 @@ import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -62,10 +60,16 @@ public class UserController {
      */
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     @ResponseBody
-    public Map register(@RequestParam Integer id,@RequestParam String schoolNumber,@RequestParam String username,@RequestParam String password,@RequestParam String phoneNumber,@RequestParam String address
-     ,@RequestParam String email,@RequestParam Integer isFrozen,@RequestParam Integer totalSold,@RequestParam Integer grade,@RequestParam String avatar,@RequestParam String moneyCode,@RequestParam Integer role)
-    {
-        int count=userService.register(id,schoolNumber,username,password,phoneNumber,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role);
+    public Map register(@RequestBody String data)
+    {   ObjectMapper objectMapper=new ObjectMapper();
+        Map map=null;
+        try {
+            map=objectMapper.readValue(data,Map.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        User user = new User(schoolNumber,username,password,phoneNumber,address,email,role);
+        int count=userService.register(user);
         Map map=new HashMap();
         if(count!=0){
             map.put("status",0);
@@ -119,7 +123,7 @@ public class UserController {
     /**
      * 发布/删除求购
      */
-    @RequestMapping(value = "/home/handleSeek",method = RequestMethod.GET)
+    @RequestMapping(value = "/home/handleSeek",method = RequestMethod.POST)
     @ResponseBody
     public Result<Object> handleSeek(@RequestParam Boolean isPublish,@RequestParam String username,@RequestParam Integer tag,
                                      @RequestParam String title,@RequestParam String content,@RequestParam Float price,
@@ -148,5 +152,29 @@ public class UserController {
                 return Result.error(CodeMsg.DELETEGOODFAILED);
             }
         }
+    }
+    @RequestMapping(value = "/home/SeekInfo",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<Object> findAllSeekGoods(@RequestParam String username){
+        Map map=null;
+        List<Goods> seekGoods=goodsService.getAllSeekGoodsByUserName(username);
+        String userPhone=userService.findPhoneByUsername(username);
+        if (userPhone==null){
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
+
+
+        //“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX ,”商品图片”:”XXX”,”联系方式”:”XXX”
+        for(Goods good : seekGoods){
+            map=new HashMap();
+            map.put("商品标签",good.getTag());
+            map.put("商品名称",good.getTitle());
+            map.put("描述",good.getContent());
+            map.put("单价",good.getPrice());
+            map.put("数量",good.getStock());
+            map.put("商品图片",good.getImage());
+            map.put("联系方式")
+        }
+        return  null;
     }
 }

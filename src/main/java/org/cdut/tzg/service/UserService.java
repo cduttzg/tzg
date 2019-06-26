@@ -1,6 +1,7 @@
 package org.cdut.tzg.service;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.cdut.tzg.model.Goods;
 import org.cdut.tzg.model.User;
 
 import java.util.List;
@@ -23,8 +24,7 @@ public interface UserService {
     /**
      * 根据填的数据进行用户注册
      */
-    int register(Integer id,String schoolNumber,String username,String password,String phoneNumber,String address
-            ,String email,Integer isFrozen,Integer totalSold,Integer grade,String avatar,String moneyCode, Integer role);
+    int register(User user);
 
 
 
@@ -50,4 +50,9 @@ public interface UserService {
      *根据用户名查找id
      */
     Long findIdByUserName(String username);
+
+    /**
+     * 根据用户名找用户电话
+     */
+    String findPhoneByUsername(String username);
 }

@@ -9,15 +9,20 @@ import java.util.Date;
  */
 public class Goods implements Serializable {
 
-    private Long id;
-    private Long userId;
-    private Integer type;
-    private String title;
-    private String content;
-    private Float price;
-    private String image;
-    private Date createTime;
-    private Integer stock;
+    private Long id;//商品id，自增
+    private Long userId;//用户id
+    private Integer type;//商品类型
+    private String title;//商品标题
+    private String content;//商品内容描述
+    private Float price;//商品价格
+    private String image;//商品图片
+    private Date createTime;//物品创建时间
+    private Integer stock;//库存
+    private Integer tag;//求购标签
+
+    public Integer getTag() { return tag; }
+
+    public void setTag(Integer tag) { this.tag = tag; }
 
     public Long getId() {
         return id;

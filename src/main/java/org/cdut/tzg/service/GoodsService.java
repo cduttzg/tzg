@@ -30,4 +30,9 @@ public interface GoodsService {
      * 更新商品库存
      */
     int updateGoodsStock(Long goodsId,Integer newNumber);
+
+    /**
+     *根据用户名查找用户的求购信息
+     */
+    List<Goods> getAllSeekGoodsByUserName(String username);
 }

@@ -42,4 +42,9 @@ public class GoodsServiceImpl implements GoodsService {
     public int updateGoodsStock(Long goodsId,Integer newNumber) {
        return goodsMapper.updateGoodsStock(goodsId,newNumber);
     }
+
+    @Override
+    public List<Goods> getAllSeekGoodsByUserName(String username) {
+        return goodsMapper.selectSeekGoodsByUsername(username);
+    }
 }

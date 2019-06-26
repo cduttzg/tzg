@@ -1,9 +1,6 @@
 package org.cdut.tzg.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.cdut.tzg.model.User;
 
 import java.util.List;
@@ -39,10 +36,9 @@ public interface UserMapper {
     /**
      *插入用户数据
      */
-    @Insert("insert into user(id,schoolNumber,username,password,phoneNumber,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role)" +
-            " values (#{id},#{schoolNumber},#{username},#{password},#{phoneNumber},#{address},#{email},#{isFrozen},#{totalSold},#{grade},#{avatar},#{moneyCode},#{role})")
-    int insert(Integer id,String schoolNumber,String username,String password,String phoneNumber,String address
-            ,String email,Integer isFrozen,Integer totalSold,Integer grade,String avatar,String moneyCode, Integer role);
+    @Insert("insert into user(school_number,username,password,phone_number,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role)" +
+            " values (schoolNumber,username,password,phoneNumber,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role)")
+    int insert(User user);
 
     /**
      * 根据id查找用户
@@ -67,4 +63,9 @@ public interface UserMapper {
     @Select("select * from user where school_number = #{schoolNum}")
     User getUserBySchoolNum(String schoolNum);
 
+    /**
+     * 根据用户名查找用户电话
+     */
+    @Select("select phone_number from user where username = #{username}")
+    String getUserPhoneByUsername(String username);
 }
