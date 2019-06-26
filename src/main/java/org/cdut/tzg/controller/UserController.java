@@ -23,7 +23,7 @@ import java.util.*;
  * @date 2019/6/25 8:39
  */
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     @Autowired
@@ -148,5 +148,16 @@ public class UserController {
                 return Result.error(CodeMsg.DELETEGOODFAILED);
             }
         }
+    }
+
+
+    /*
+    * 订单完成
+    * */
+    @RequestMapping(value = "/saller/completeOrder",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> setOrderComplete(){
+        Map<String,Object> map = new HashMap<>();
+        return Result.success(map);
     }
 }
