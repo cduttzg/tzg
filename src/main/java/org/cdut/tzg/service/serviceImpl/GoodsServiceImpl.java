@@ -29,7 +29,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public int updateGoodsStock(Long goodsId,Integer number) {
-       return goodsMapper.updateGoodsStock(goodsId,number);
+    public int updateGoodsStock(Long goodsId,Integer newNumber) {
+       return goodsMapper.updateGoodsStock(goodsId,newNumber);
     }
 }

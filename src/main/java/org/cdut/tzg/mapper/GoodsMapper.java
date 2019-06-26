@@ -1,9 +1,6 @@
 package org.cdut.tzg.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.cdut.tzg.model.Goods;
 
 import java.util.Date;
@@ -31,6 +28,6 @@ public interface GoodsMapper {
     /**
      * 更新商品库存
      */
-    @Update("update goods set stock=#{number} where user_id=#{goodsId};")
-    int updateGoodsStock(Long goodsId,Integer number);
+    @Update("update goods set stock=#{newNumber} where id=#{goodsId}")
+    int updateGoodsStock(@Param("goodsId") Long goodsId, @Param("newNumber") Integer newNumber);
 }
