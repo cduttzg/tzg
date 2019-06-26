@@ -43,4 +43,6 @@ public interface GoodsMapper {
      */
     @Update("update goods set stock=#{newNumber} where id=#{goodsId}")
     int updateGoodsStock(@Param("goodsId") Long goodsId, @Param("newNumber") Integer newNumber);
+
+//    List<Goods> find
 }

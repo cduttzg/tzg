@@ -89,7 +89,7 @@ public class HomeController {
     @ResponseBody
     public Result<Object> orderInfo(@RequestParam Integer number) {
         List<Orders> orders = orderService.findTheLatestOrders(number);
-        Map<String,Object> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
         List<Map<String, Object>> list = new ArrayList<>();
         for (Orders order : orders) {
             Map<String, Object> map = new HashMap<>();
@@ -107,9 +107,22 @@ public class HomeController {
             map.put("订单时间", order.getCompletedTime());
             list.add(map);
         }
-        data.put("data",list);
+        data.put("data", list);
         return Result.success(data);
     }
 
+    /***
+     * URL：/api/home
+     * 描述：首页商品信息展示
+     * 方法：GET
+     * 数据：书籍商品信息*8、虚拟商品信息*8、房屋商品信息*8、其它商品信息*8、福利商品信息*1。
+     * 期望返回格式：{“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX,”卖家ID”:XXX,”商品ID”:XXX,”商品图片”:”XXX”}
+     * 例子：{“商品标签”:”书籍”,”商品名称”:”这是一本书”,”描述”:”这是一本很好看的书”,”单价”:15.9,”数量”:1,”卖家ID”:132,”商品ID”:5,”商品图片”:”XXX”}
+     */
+    @RequestMapping("")
+    @ResponseBody
+    public Result<Object> home() {
+        return Result.success(1);
+    }
 
 }
