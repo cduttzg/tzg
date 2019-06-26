@@ -41,4 +41,9 @@ public class OrderServiceImpl implements OrderService {
     public List<Orders> findTheLatestOrders(Integer number) {
         return ordersMapper.findTheLatestOrders(number);
     }
+
+    @Override
+    public int addOrders(Orders orders) {
+        return ordersMapper.addOrders(orders);
+    }
 }

@@ -31,4 +31,9 @@ public interface OrderService {
      * 获取最新提交的前 n 条订单
      */
     List<Orders> findTheLatestOrders(Integer number);
+
+    /**
+     * 立即购买 单一商品订单入库
+     */
+    int addOrders(Orders orders);
 }
