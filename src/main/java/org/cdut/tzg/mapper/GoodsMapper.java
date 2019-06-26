@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.cdut.tzg.model.Goods;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,5 +19,9 @@ public interface GoodsMapper {
      */
     @Select("select * from goods where id = #{goodId}")
     Goods findGoodsById(Long goodId);
-
+    /**
+     * 获取指定日期上架商品
+     */
+    @Select("select count(*) from goods where datediff(created_time,#{date}) = 0")
+    int getGoodsCount(Date date);
 }

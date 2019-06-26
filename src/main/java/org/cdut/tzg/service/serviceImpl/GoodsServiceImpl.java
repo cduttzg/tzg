@@ -6,6 +6,7 @@ import org.cdut.tzg.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,5 +22,9 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Goods findGoodsById(Long goodId) {
         return goodsMapper.findGoodsById(goodId);
+    }
+    @Override
+    public int getGoodsCount(Date date){
+        return goodsMapper.getGoodsCount(date);
     }
 }

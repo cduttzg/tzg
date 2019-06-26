@@ -14,6 +14,7 @@ public class TzgApplication {
         System.out.println("tzg started at http://localhost:" + serverPort);;
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=jack");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/getInfo?goodsId=3");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getData");
     }
 
 }
