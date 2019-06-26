@@ -26,6 +26,19 @@ public interface GoodsMapper {
     int getGoodsCount(Date date);
 
     /**
+     * 发布求购信息
+     */
+    @Insert("insert into goods(user_id,type,title,content,price,image,stock,tag) values" +
+            " (#{userId},5,#{title},#{content},#{price},#{image},#{stock},5)")
+    int publishSeekGood(@Param("userId")Long userId,@Param("tag")Integer tag,@Param("title")String title,@Param("content")String content,@Param("price")Float price,@Param("stock")Integer stock,@Param("image")String image);
+
+    /**
+     * 通过good中userid 、tpye、title删除求购信息
+     */
+    @Delete("delete from goods where user_id=#{userId} and title=#{title} and tag=#{tag}")
+    int deleteSeekGood(@Param("userId") Long userId,@Param("tag") Integer tag,@Param("title") String title);
+
+    /**
      * 更新商品库存
      */
     @Update("update goods set stock=#{newNumber} where id=#{goodsId}")

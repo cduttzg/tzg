@@ -27,13 +27,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     //获取指定id订单
-    public Orders getOrderById(int orderId){
+    public Orders getOrderById(Long orderId){
         return ordersMapper.getOrderById(orderId);
     }
 
     //更新指定订单号订单状态为异常
     @Override
-    public int setOrderException(int orderId){
+    public int setOrderException(Long orderId){
         return ordersMapper.setOrderException(orderId);
     }
 
