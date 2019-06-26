@@ -105,11 +105,22 @@ public class OrderController {
     * */
     @RequestMapping(value = "/getFrozenUser",method = RequestMethod.GET)
     @ResponseBody
-    public Result<List<User>> getAllFreezeUsers(){
-        List<User> list = userService.getAllFreezeUsers();
-        if (list.size() == 0)
+    public Result<List<Map<String,Object>>> getAllFreezeUsers(){
+        Map<String,Object> map = new HashMap<>();
+        List<Map<String,Object>> list = new ArrayList<>();
+        List<User> users = userService.getAllFreezeUsers();
+        if (users.size() == 0)
             return Result.error(CodeMsg.NO_FROZENUSER);
-        else
+        else{
+            for (int i=0; i<users.size();i++){
+                User user = users.get(i);
+                map.put("用户名",user.getUsername());
+                map.put("学号",user.getSchoolNumber());
+                map.put("电话",user.getPhoneNumber());
+                map.put("角色",user.getRole());
+                list.add(map);
+            }
             return Result.success(list);
+        }
     }
 }
