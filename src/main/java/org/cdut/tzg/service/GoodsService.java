@@ -21,4 +21,9 @@ public interface GoodsService {
      * 获取指定日期上架商品
      */
     int getGoodsCount(Date date);
+
+    /**
+     * 更新商品库存
+     */
+    int updateGoodsStock(Long goodsId,Integer newNumber);
 }
