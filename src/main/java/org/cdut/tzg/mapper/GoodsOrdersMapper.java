@@ -17,5 +17,5 @@ public interface GoodsOrdersMapper {
      * 通过id获取订单的详情信息
      */
     @Select("select * from goods_orders where orders_id = #{ordersId}")
-    List<GoodsOrders> findTheOrdersDetial(Integer ordersId);
+    List<GoodsOrders> findTheOrdersDetailById(Long ordersId);
 }

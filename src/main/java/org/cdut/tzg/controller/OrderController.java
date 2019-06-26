@@ -9,7 +9,6 @@ import org.cdut.tzg.result.Result;
 import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.OrderService;
 import org.cdut.tzg.service.UserService;
-import org.hibernate.validator.internal.engine.messageinterpolation.parser.ELState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +36,7 @@ public class OrderController {
     * 期望返回格式：{"网站活跃度":[xxx,xxx,xxx],"网站日交易量":[xxx,xxx,xxx],"网站总交易量":xxx,"求购标签":[{"标签名1":xxx},{"标签名2":xxx},{"标签名3":xxx},...]}
     * 例子：{"网站活跃度":[12,23,34],"网站日交易量":[12,23,34],"网站总交易量":800,"求购标签":[{"标签名1":111},{"标签名2":222},{"标签名3":333},...]}
     */
-    @RequestMapping(value = "/getData",method = RequestMethod.GET)
+    @RequestMapping(value = "/getData",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String, Object>> getAllOrders(){
         //返回数据载体
