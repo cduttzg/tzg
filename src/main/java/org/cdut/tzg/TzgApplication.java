@@ -18,6 +18,8 @@ public class TzgApplication {
         //商品测试 /api/goods/getInfo
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=jack");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/home/cartInfo?username=ffffff");
+       //商品测试 /api/goods/buyNow
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/buyNow");
 
         //后台数据连接
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getData");

@@ -1,23 +1,23 @@
 package org.cdut.tzg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.org.apache.xpath.internal.operations.Or;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.transaction.Transaction;
 import org.cdut.tzg.model.Cart;
 import org.cdut.tzg.model.Goods;
+import org.cdut.tzg.model.Orders;
 import org.cdut.tzg.model.User;
 import org.cdut.tzg.result.Result;
-import org.cdut.tzg.service.CartService;
-import org.cdut.tzg.service.GoodsService;
-import org.cdut.tzg.service.UserService;
+import org.cdut.tzg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.cdut.tzg.result.CodeMsg.STOCKOUT;
 
@@ -33,6 +33,12 @@ public class GoodsController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private GoodsOrdersService goodsOrdersService;
 
     /**
      URL：/api/goods/getInfo
@@ -114,4 +120,30 @@ public class GoodsController {
      数据：{“用户名”:”XXX”,“商品ID”:”XXX”,”数量”:XXX}
      期望返回格式：{"success":true/false,"content":"XXXX"}
      */
+    @RequestMapping(value = "/buyNow",method =RequestMethod.GET)
+    @ResponseBody
+    @Transactional
+    public Result<Object> buyNow(@RequestParam String data){
+        //解析请求体参数
+        ObjectMapper objectMapper=new ObjectMapper();
+        Map map=null;
+        try {
+            map=objectMapper.readValue(data,Map.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String username=(String)map.get("用户名");
+        Long goodsId=Long.valueOf((String)map.get("商品ID"));
+        Integer number=Integer.valueOf((String)map.get("数量"));
+
+        //orders订单入库
+        Goods buyedGoods=goodsService.findGoodsById(goodsId);//获得需要购买的商品信息
+        Orders orders=new Orders();//创建新订单
+        orders.setBuyerId(buyedGoods.getUserId());//设置订单的buyer_id
+        orders.setState(0);//待支付
+        //重新获取该orders订单以得到orders表的id 并将GoodsOrders记录入库
+        //Date date=new Date();
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        return Result.success("生成订单成功,请尽快支付");
+    }
 }
