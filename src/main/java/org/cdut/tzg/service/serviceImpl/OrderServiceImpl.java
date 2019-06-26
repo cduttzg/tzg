@@ -36,4 +36,9 @@ public class OrderServiceImpl implements OrderService {
     public int setOrderException(int orderId){
         return ordersMapper.setOrderException(orderId);
     }
+
+    @Override
+    public List<Orders> findTheLatestOrders(Integer number) {
+        return ordersMapper.findTheLatestOrders(number);
+    }
 }

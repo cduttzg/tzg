@@ -36,4 +36,11 @@ public interface OrdersMapper {
     @Update("update orders set state=3 where id = #{orderId}")
     int setOrderException(int orderId);
 
+
+    /**
+     * 获取最新提交的前 n 条订单
+     */
+    @Select("SELECT * FROM goods_orders ORDER BY created_time DESC LIMIT #{number}")
+    List<Orders> findTheLatestOrders(Integer number);
+
 }
