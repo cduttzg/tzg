@@ -36,4 +36,16 @@ public interface OrderService {
      * 立即购买 单一商品订单入库
      */
     int addOrders(Orders orders);
+    /**
+     * 根据用户id和订单id查找订单
+     */
+    Orders getOrderByIdAndUserId(Long orderId,Long userId);
+    /**
+     * 修改订单状态为已支付
+     */
+    int setStateToPaid(Long orderId,Long userId);
+    /**
+     * 修改订单状态为已完成
+     */
+    int setStateToCompleted(Long orderId,Long userId,String date);
 }

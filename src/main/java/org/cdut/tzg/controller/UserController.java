@@ -3,18 +3,19 @@ package org.cdut.tzg.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cdut.tzg.model.Goods;
+import org.cdut.tzg.model.Orders;
 import org.cdut.tzg.model.User;
 import org.cdut.tzg.result.CodeMsg;
 import org.cdut.tzg.result.Result;
 import org.cdut.tzg.service.GoodsService;
+import org.cdut.tzg.service.OrderService;
 import org.cdut.tzg.service.UserService;
+import org.cdut.tzg.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.Console;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -31,6 +32,9 @@ public class UserController {
 
     @Autowired
     private GoodsService goodsService;
+
+    @Autowired
+    private OrderService orderService;
 
     @RequestMapping("/findAll")
     @ResponseBody
@@ -152,12 +156,42 @@ public class UserController {
 
 
     /*
-    * 订单完成
+    * 订单置为完成
     * */
     @RequestMapping(value = "/saller/completeOrder",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Map<String,Object>> setOrderComplete(){
-        Map<String,Object> map = new HashMap<>();
+    public Result<Map<String,Object>> setOrderComplete(@RequestBody String data){
+        Map<String, Object> map = new HashMap<>();
+        Map maps = MapUtils.getMap(data);
+        //获取用户id
+        String userName = (String) maps.get("username");
+        Long userId = userService.findIdByUserName(userName);
+        if (userId != null) {
+            //用户存在
+            //获取订单id
+            Long orderId = Long.valueOf((Integer) maps.get("id"));
+            Orders order = orderService.getOrderByIdAndUserId(orderId, userId);
+            //订单存在
+            if (order != null) {
+                Date date = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:SS");
+                System.out.println(sdf.format(date));
+                int sign = orderService.setStateToCompleted(orderId, userId,sdf.format(date));
+                if (sign == 1) {
+                    //修改成功
+                    map.put("success", true);
+                    map.put("content", "订单已完成");
+                } else if (sign == 0) {
+                    //原本为完成状态
+                    return Result.error(CodeMsg.REPETITIVE_OPERATION);
+                }
+            } else{
+                return Result.error(CodeMsg.NO_ORDER);
+            }
+        }else {
+            //用户不存在
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
         return Result.success(map);
     }
 }
