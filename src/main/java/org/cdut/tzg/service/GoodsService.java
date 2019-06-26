@@ -22,6 +22,10 @@ public interface GoodsService {
      */
     int getGoodsCount(Date date);
 
+    int publishSeekGood(Long userId,Integer tag,String title,String content,Float price,Integer stock,String image);
+
+    int deleteSeekGood(Long userId,Integer tag,String title);
+
     /**
      * 更新商品库存
      */
