@@ -2,6 +2,7 @@ package org.cdut.tzg.service;
 
 import org.cdut.tzg.model.Goods;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,4 +14,8 @@ public interface GoodsService {
      * 通过id查找商品
      */
     Goods findGoodsById(Long goodId);
+    /**
+     * 获取指定日期上架商品
+     */
+    int getGoodsCount(Date date);
 }

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import org.cdut.tzg.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author anlan
