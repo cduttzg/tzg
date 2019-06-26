@@ -74,7 +74,9 @@ public class GoodsController {
             e.printStackTrace();
         }
         System.out.println(map);
-        return Result.success(data);
+        String username = (String) map.get("用户名");
+        System.out.println(username);
+        return Result.success(map);
 //        Goods cartGoods=goodsService.findGoodsById(goodsId);//商品
 //        System.out.println(cartGoods);
 //        if(cartGoods.getStock()-number<0){//库存不足

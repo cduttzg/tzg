@@ -14,9 +14,10 @@
         console.log("1111111110");
         $.ajax({
             url: "/api/goods/addToCart",    //请求的url地址
-            dataType: "application/json",   //返回格式为json
+            contentType :"application/json",
+            dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性
-            data: {"用户名":"jack","商品ID":"5","商品数量":1},    //参数值
+            data: JSON.stringify({"用户名":"jack","商品ID":"5","商品数量":1}),    //参数值
             type: "POST",   //请求方式
             success: function (req) {
                 //请求成功时处理
