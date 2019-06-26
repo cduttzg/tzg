@@ -23,4 +23,9 @@ public class GoodsOrdersServiceImpl implements GoodsOrdersService {
     public List<GoodsOrders> findTheOrdersDetailById(Long ordersId) {
         return goodsOrdersMapper.findTheOrdersDetailById(ordersId);
     }
+
+    @Override
+    public int addGoodsOrders(GoodsOrders goodsOrders) {
+        return goodsOrdersMapper.addGoodsOrders(goodsOrders);
+    }
 }
