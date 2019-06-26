@@ -44,5 +44,10 @@ public interface GoodsMapper {
     @Update("update goods set stock=#{newNumber} where id=#{goodsId}")
     int updateGoodsStock(@Param("goodsId") Long goodsId, @Param("newNumber") Integer newNumber);
 
-//    List<Goods> find
+    /**
+     * 根据类型查询n条商品
+     */
+    @Select("select * from goods where type = #{type} limit #{limit}")
+    List<Goods> findGoodsByTypeAndLimit(@Param("type") Integer type, @Param("limit") int limit);
+
 }
