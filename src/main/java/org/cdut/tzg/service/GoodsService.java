@@ -25,5 +25,5 @@ public interface GoodsService {
     /**
      * 更新商品库存
      */
-    int updateGoodsStock(Long goodsId,Integer number);
+    int updateGoodsStock(Long goodsId,Integer newNumber);
 }

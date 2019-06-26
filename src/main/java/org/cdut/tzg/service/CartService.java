@@ -1,6 +1,7 @@
 package org.cdut.tzg.service;
 
 import org.cdut.tzg.model.Cart;
+import org.cdut.tzg.model.Goods;
 
 import java.util.List;
 
@@ -18,5 +19,10 @@ public interface CartService {
     /**
      * 添加指定商品到购物车
      */
-    int insertToCart(Long buyerId,Long sellerId,Long goodsId,Integer number);
+    int insertToCart(Cart cart);
+
+    /**
+     * 更新购物车中某一商品的数量
+     */
+    int updateGoodsInCart(Long goodsId,Integer newNumber);
 }

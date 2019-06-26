@@ -42,4 +42,14 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllFreezeUsers(){
         return userMapper.getAllFreezeUsers();
     }
+
+    @Override
+    public int setFreezeUser(String schoolNum){
+        return userMapper.setFreezeUser(schoolNum);
+    }
+
+    @Override
+    public User getUserBySchoolNum(String schoolNum){
+        return userMapper.getUserBySchoolNum(schoolNum);
+    }
 }
