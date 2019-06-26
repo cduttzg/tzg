@@ -2,7 +2,11 @@ package org.cdut.tzg.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.cdut.tzg.model.Goods;
 import org.cdut.tzg.model.User;
+import org.cdut.tzg.result.CodeMsg;
+import org.cdut.tzg.result.Result;
+import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author anlan
@@ -26,6 +28,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private GoodsService goodsService;
 
     @RequestMapping("/findAll")
     @ResponseBody
@@ -54,20 +59,6 @@ public class UserController {
 
     /**
      * 注册用户!!!!!!未开发完
-     * @param id
-     * @param schoolNumber
-     * @param username
-     * @param password
-     * @param phoneNumber
-     * @param address
-     * @param email
-     * @param isFrozen
-     * @param totalSold
-     * @param grade
-     * @param avatar
-     * @param moneyCode
-     * @param role
-     * @return
      */
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     @ResponseBody
@@ -88,23 +79,74 @@ public class UserController {
 
     /**
      * 用户登录
-     * @param username
-     * @param password
-     * @return
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
-    Map login(@RequestParam String username,@RequestParam String password){
+    public Result<Object> login(@RequestParam String username, @RequestParam String password){
         User user=userService.findUserByName(username);
-        Map map = new LinkedHashMap();
+        Map data = new LinkedHashMap();
         if (user.getPassword().equals(password)){
-            map.put("status",0);
+            data.put("status",0);
             boolean isFrozen = (user.getIsFrozen()==0?false:true);
-            map.put("是否被冻结",isFrozen);
+            data.put("是否被冻结",isFrozen);
         }else {
-            map.put("status",1);
-            map.put("是否被冻结",true);
+            data.put("status",1);
+            data.put("是否被冻结",true);
         }
-        return map;
+        return Result.success(data);
+    }
+
+    /**
+     * 用户是否是商家
+     * @param username
+     * @return
+     */
+    @RequestMapping(value = "/home/isSaller",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Object> isSaller(@RequestParam String username){
+        User user = userService.findUserByName(username);
+        Map <String,Object> data = new LinkedHashMap<String,Object>();
+        if (user.getMoneyCode() != null){
+            data.put("isSaller",true);
+            data.put("moneyCode",user.getMoneyCode());
+        }else {
+            data.put("isSaller",false);
+            data.put("moneyCode",null);
+        }
+        return Result.success(data);
+    }
+
+    /**
+     * 发布/删除求购
+     */
+    @RequestMapping(value = "/home/handleSeek",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<Object> handleSeek(@RequestParam Boolean isPublish,@RequestParam String username,@RequestParam Integer tag,
+                                     @RequestParam String title,@RequestParam String content,@RequestParam Float price,
+                                     @RequestParam Integer stock,@RequestParam String image){
+
+        Map data = new HashMap();
+        Long userId = userService.findIdByUserName(username);
+        if(isPublish){//发布求购信息
+//            Date day=new Date();
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            int pubStatus = goodsService.publishSeekGood(userId,tag,title,content,price,stock,image);
+            if (pubStatus==1){//求购信息发布成功
+                data.put("success",true);
+                return Result.success(data);
+            }else {//求购信息发布失败
+                data.put("success",false);
+                return Result.error(CodeMsg.PUBLISHGOODFAILED);
+            }
+        }else {//删除求购信息
+            int delStatus=goodsService.deleteSeekGood(userId, tag, title);
+            if (delStatus == 1) {
+                data.put("success", true);
+                return Result.success(data);
+            } else {
+                data.put("success", false);
+                return Result.error(CodeMsg.DELETEGOODFAILED);
+            }
+        }
     }
 }
