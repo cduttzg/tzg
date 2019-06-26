@@ -2,15 +2,14 @@ package org.cdut.tzg.controller;
 
 import org.cdut.tzg.model.Goods;
 import org.cdut.tzg.model.Orders;
+import org.cdut.tzg.result.CodeMsg;
+import org.cdut.tzg.result.Result;
 import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.OrderService;
 import org.cdut.tzg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -34,7 +33,7 @@ public class OrderController {
     */
     @RequestMapping(value = "/getData",method = RequestMethod.GET)
     @ResponseBody
-    public Map<String,Object> getAllOrders(){
+    public Result<Map<String, Object>> getAllOrders(){
         //返回数据载体
         Map<String,Object> map = new HashMap<>();
         //存储每日活跃量、销售量
@@ -47,13 +46,13 @@ public class OrderController {
         Date date = new Date();
         calendar.setTime(date);
         //统计前七日的活跃度、交易量
-        for(int i=6;i>=0;i--){
+        for(int i=7;i>0;i--){
             calendar.add(calendar.DAY_OF_MONTH,-i);
             //System.out.println(sdf.format(calendar.getTime()));
             int orderCount = goodsService.getGoodsCount(calendar.getTime());
             int daySoldCount = orderService.getCompletedOrdersCount(calendar.getTime());
-            active[6-i] = orderCount;
-            daySold[6-i] = daySoldCount;
+            active[7-i] = orderCount;
+            daySold[7-i] = daySoldCount;
             calendar.setTime(date);
         }
         int ordersCount = orderService.getAllOrdersCount();
@@ -61,6 +60,35 @@ public class OrderController {
         map.put("网站日交易量",daySold);
         map.put("网站总交易量",ordersCount);
         //System.out.println(map);
-        return map;
+        return Result.success(map);
     }
+
+    /*
+    * 更新指定订单号订单状态为异常
+    * 数据：{"订单ID":"XXX"}
+    * 期望返回格式：{"success":true/false,"content":"XXXX"}
+    * */
+    @RequestMapping(value = "/manageOrder"/*,method = RequestMethod.POST*/)
+    @ResponseBody
+    public Result<Map<String,Object>> setOrderException(@RequestParam int orderId){
+        Map<String,Object> map = new HashMap<>();
+        Orders order = orderService.getOrderById(orderId);
+        if (order != null) {
+            int sign = orderService.setOrderException(orderId);
+            if (sign == 1) {
+                map.put("success", true);
+                map.put("content", "置为异常成功");
+            } else if (sign == 0) {
+                map.put("success", false);
+                map.put("content", "订单已经为异常，不要重复操作");
+            }
+        }
+        else {
+            //map.put("success",false);
+            //map.put("content","该订单不存在");
+            return Result.error(CodeMsg.FAILED);
+        }
+        return Result.success(map);
+    }
+
 }

@@ -18,4 +18,12 @@ public interface OrderService {
      * 获取指定日期订单数量
      */
     int getCompletedOrdersCount(Date date);
+    /**
+     * 获取指定id订单
+     */
+    Orders getOrderById(int orderId);
+    /**
+     * 更新指定订单号订单状态为异常
+     */
+    int setOrderException(int orderId);
 }
