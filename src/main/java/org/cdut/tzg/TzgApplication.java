@@ -28,6 +28,8 @@ public class TzgApplication {
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getFrozenUser");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/freezeUser?schoolNum=201613160833");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/addAdmin?schoolNum=201613160833");
+
+        System.out.println("\"tzg admin http://localhost:");
     }
 
 }

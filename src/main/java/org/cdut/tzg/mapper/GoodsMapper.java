@@ -47,6 +47,6 @@ public interface GoodsMapper {
     /**
      * 根据用户名查找求购信息
      */
-    @Select("select * from goods where username =#{username} and type=5")
-    List<Goods> selectSeekGoodsByUsername(String username);
+    @Select("select * from goods where user_id =#{userid} and type=5")
+    List<Goods> selectSeekGoodsByUserid(Long userid);
 }

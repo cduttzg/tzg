@@ -136,7 +136,7 @@ public class UserController {
                 return Result.error(CodeMsg.PUBLISHGOODFAILED);
             }
         }else {//删除求购信息
-            int delStatus=goodsService.deleteSeekGood(userId, tag, title);
+            int delStatus=goodsService.deleteSeekGood(userId, (Integer) map.get("商品标签"), (String) map.get("商品名称"));
             if (delStatus == 1) {
                 mapdata.put("success", true);
                 return Result.success(mapdata);
@@ -150,13 +150,13 @@ public class UserController {
     @ResponseBody
     public Result<Object> findAllSeekGoods(@RequestParam String username){
         Map map=null;
-        List<Goods> seekGoods=goodsService.getAllSeekGoodsByUserName(username);
+        Long userId=userService.findIdByUserName(username);
+        List<Goods> seekGoods=goodsService.getAllSeekGoodsByUserId(userId);
         String userPhone=userService.findPhoneByUsername(username);
         if (userPhone==null){
             return Result.error(CodeMsg.USER_UNDEFIND);
         }
-
-
+        List<Map> listdata=new ArrayList<Map>();
         //“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX ,”商品图片”:”XXX”,”联系方式”:”XXX”
         for(Goods good : seekGoods){
             map=new HashMap();
@@ -166,8 +166,9 @@ public class UserController {
             map.put("单价",good.getPrice());
             map.put("数量",good.getStock());
             map.put("商品图片",good.getImage());
-            map.put("联系方式")
+            map.put("联系方式",userPhone);
+            listdata.add(map);
         }
-        return  null;
+        return  Result.success(listdata);
     }
 }

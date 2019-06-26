@@ -44,7 +44,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public List<Goods> getAllSeekGoodsByUserName(String username) {
-        return goodsMapper.selectSeekGoodsByUsername(username);
+    public List<Goods> getAllSeekGoodsByUserId(Long userid) {
+        return goodsMapper.selectSeekGoodsByUserid(userid);
     }
 }

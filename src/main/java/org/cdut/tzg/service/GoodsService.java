@@ -34,5 +34,5 @@ public interface GoodsService {
     /**
      *根据用户名查找用户的求购信息
      */
-    List<Goods> getAllSeekGoodsByUserName(String username);
+    List<Goods> getAllSeekGoodsByUserId(Long userid);
 }
