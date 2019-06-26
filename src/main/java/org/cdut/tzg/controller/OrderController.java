@@ -1,5 +1,6 @@
 package org.cdut.tzg.controller;
 
+import com.sun.org.apache.bcel.internal.classfile.Code;
 import org.cdut.tzg.model.Goods;
 import org.cdut.tzg.model.Orders;
 import org.cdut.tzg.model.User;
@@ -85,8 +86,7 @@ public class OrderController {
                 map.put("success", true);
                 map.put("content", "置为异常成功");
             } else if (sign == 0) {
-                map.put("success", false);
-                map.put("content", "订单已经为异常，不要重复操作");
+                Result.error(CodeMsg.REPETITIVE_OPERATION);
             }
         }
         else {
@@ -122,5 +122,30 @@ public class OrderController {
             }
             return Result.success(list);
         }
+    }
+
+    /*
+    * 冻结指定用户
+    * 方法：POST
+    * 数据：{"用户学号":"XXX"}
+    * 期望返回格式：{"code":XXX,"msg":"xxx","data":"XXX"}
+    * */
+    @RequestMapping(value = "/freezeUser"/*,method = RequestMethod.POST*/)
+    @ResponseBody
+    public Result<Map<String,Object>> setFreezeUser(@RequestParam String schoolNum){
+        Map<String,Object> map = new HashMap<>();
+        User user = userService.getUserBySchoolNum(schoolNum);
+        if (user == null)
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        else {
+            int sign = userService.setFreezeUser(schoolNum);
+            if (sign ==1){
+                map.put("success",true);
+                map.put("content","用户已冻结");
+            }else{
+                Result.error(CodeMsg.REPETITIVE_OPERATION);
+            }
+        }
+        return Result.success(map);
     }
 }

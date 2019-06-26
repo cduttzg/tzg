@@ -32,4 +32,12 @@ public interface UserService {
      * 获取所有冻结用户
      */
     List<User> getAllFreezeUsers();
+    /**
+     * 冻结指定id用户
+     */
+    int setFreezeUser(String schoolNum);
+    /**
+     * 根据学号查找用户
+     */
+    User getUserBySchoolNum(String schoolNum);
 }
