@@ -3,13 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="/static/jquery-1.11.0.min.js"></script>
-
 </head>
 <body>
-<!--测试按钮分块-->
-<!--张然按钮，id=b0x-->
-<!--/api/goods/addToCart的POST方法测试-->
 <button id="b01" type="button">/api/goods/addToCart</button>
 <script>
     var btn1 = $("#b01");
@@ -26,15 +21,13 @@
                 //请求成功时处理
                 console.log(req);
             },
-            error: function () {
+            error: function (req) {
                 //请求出错处理
                 console.log(req);
             }
         });
     })
 </script>
-
-
 <!--/api/goods/buyNow的POST方法测试-->
 <button id="bbuyNow" type="button">/api/goods/buyNow</button>
 <script>
@@ -59,6 +52,5 @@
         });
     })
 </script>
-
 </body>
 </html>

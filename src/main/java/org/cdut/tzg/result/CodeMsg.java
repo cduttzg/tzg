@@ -28,6 +28,7 @@ public class CodeMsg {
     public static CodeMsg NO_ORDER = new CodeMsg(500400,"订单不存在");
     public static CodeMsg NO_FROZENUSER = new CodeMsg(500401,"暂无冻结用户");
     public static CodeMsg REPETITIVE_OPERATION = new CodeMsg(500402,"重复操作");
+    public static CodeMsg NO_ADMINISTRATOR = new CodeMsg(500403,"暂无管理员");
 
     private CodeMsg(int code, String msg) {
         this.code = code;

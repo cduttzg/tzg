@@ -66,4 +66,8 @@ public class UserServiceImpl implements UserService {
     public int deletAdministrator(String schoolNum){
         return userMapper.deletAdministrator(schoolNum);
     }
+    @Override
+    public List<User> getAllAdministrator(){
+        return userMapper.getAllAdministrator();
+    }
 }
