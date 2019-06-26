@@ -30,4 +30,9 @@ public interface GoodsService {
      * 更新商品库存
      */
     int updateGoodsStock(Long goodsId,Integer newNumber);
+
+    /**
+     * 根据类型查询n条商品
+     */
+    List<Goods> findGoodsByTypeAndLimit(Integer type, int limit);
 }
