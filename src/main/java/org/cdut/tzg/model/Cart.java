@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Cart implements Serializable {
     private Long id;
     private Long buyerId;
-    private Long SellerId;
+    private Long sellerId;
     private Long goodsId;
     private Integer number;
 
@@ -30,11 +30,11 @@ public class Cart implements Serializable {
     }
 
     public Long getSellerId() {
-        return SellerId;
+        return sellerId;
     }
 
     public void setSellerId(Long sellerId) {
-        SellerId = sellerId;
+        this.sellerId = sellerId;
     }
 
     public Long getGoodsId() {
@@ -58,7 +58,7 @@ public class Cart implements Serializable {
         return "Cart{" +
                 "id=" + id +
                 ", buyerId=" + buyerId +
-                ", SellerId=" + SellerId +
+                ", sellerId=" + sellerId +
                 ", goodsId=" + goodsId +
                 ", number=" + number +
                 '}';
