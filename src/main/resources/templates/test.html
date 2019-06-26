@@ -10,7 +10,8 @@
 <button id="b01" type="button">/api/goods/addToCart</button>
 <script>
     var btn1 = $("#b01");
-    btn1.click = function () {
+    btn1.click(function () {
+        console.log("1111111110");
         $.ajax({
             url: "/api/goods/addToCart",    //请求的url地址
             dataType: "application/json",   //返回格式为json
@@ -26,7 +27,7 @@
                 console.log(req);
             }
         });
-    }
+    })
 </script>
 </body>
 </html>

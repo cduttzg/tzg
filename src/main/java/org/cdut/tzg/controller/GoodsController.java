@@ -65,16 +65,16 @@ public class GoodsController {
     @Transactional
     @ResponseBody
     public Result<Object> addToCart(@RequestBody String data){
-        System.out.println("1111111111");
+        System.out.println(data);
         ObjectMapper objectMapper = new ObjectMapper();
-        Map<String,Object> map = null;
+        Map map = null;
         try {
              map = objectMapper.readValue(data,Map.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
         System.out.println(map);
-        return Result.success(map);
+        return Result.success(data);
 //        Goods cartGoods=goodsService.findGoodsById(goodsId);//商品
 //        System.out.println(cartGoods);
 //        if(cartGoods.getStock()-number<0){//库存不足
