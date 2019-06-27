@@ -30,12 +30,17 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public int updateGoodsInCart(Long goodsId,Integer newNumber) {
-        return cartMapper.updateGoodsInCart(goodsId,newNumber);
+    public int updateGoodsInCart(Long buyerId,Long goodsId,Integer newNumber) {
+        return cartMapper.updateGoodsInCart(buyerId,goodsId,newNumber);
     }
 
     @Override
     public List<Cart> findCartByUserId(Long userId) {
         return cartMapper.findCartByUserId(userId);
+    }
+
+    @Override
+    public Cart findCartByUserIdAndGoodsId(Long buyerId, Long goodsId) {
+        return cartMapper.findCartByUserIdAndGoodsId(buyerId,goodsId);
     }
 }
