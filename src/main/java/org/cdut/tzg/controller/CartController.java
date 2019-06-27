@@ -108,30 +108,36 @@ public class CartController {
 
     /*
     URL：/api/cart/createOrder
-    URL：/api/cart/createOrder
     描述：创建订单
     方法：POST
     数据：{“用户名”:”XXX”}
-    期望返回格式：{“sucess”:true/false,”content”:”xxxx”,”订单ID”:”xxxx”,"卖家收款码":[imgUrl,imgUrl,]}
+    期望返回格式：{“sucess”:true/false,”content”:”xxxx”,”订单ID”:”xxxx”,"卖家信息":[{"卖家用户名":"XXX",收款码":"XXX","金钱":xxx},]}
      */
     @RequestMapping(value = "/createOrder",method = RequestMethod.POST)
     @ResponseBody
     public Result<Object> createOrder(@RequestBody String data){
         Map map=MapUtils.getMap(data);
         String username=(String)map.get("用户名");
+
         User buyer=userService.findUserByName(username);
+
+        //orders订单入库
         Orders orders=new Orders();
         orders.setBuyerId(buyer.getId());
         orders.setState(0);
         orderService.addOrders(orders);
+
         //新订单入库后重新从数据库读取最新插入的一条订单(该订单)来获得订单id
         // TODO: 2019/6/27 线程安全问题
         orders=orderService.findTheLatestOrders(1).get(0);
+
+        
         List<Cart> carts=cartService.findCartByUserId(buyer.getId());
         List<String> imags=new ArrayList<>();
-        if(carts.size()==0){
+        if(carts.size()==0){//购物车为空
             return Result.error(EMPTY_CART);
         }
+        //GoodsOrder记录入库
         for(int i=0;i<carts.size();++i){
             Cart cart=carts.get(i);
             User seller=userService.findUserById(cart.getSellerId());
@@ -140,8 +146,8 @@ public class CartController {
             goodsOrders.setNumber(cart.getNumber());
             goodsOrders.setGoodsId(cart.getGoodsId());
             goodsOrders.setOrdersId(orders.getId());
-            goodsOrdersService.addGoodsOrders(goodsOrders);//
-            imags.add(seller.getAvatar());//获取该商品卖家头像
+            goodsOrdersService.addGoodsOrders(goodsOrders);//订单入库
+
         }
     }
 
