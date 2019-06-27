@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int setStateToCompleted(Long orderId,Long userId,String date){
+    public int setStateToCompleted(Long orderId,Long userId,Date date){
         return ordersMapper.setStateToCompleted(orderId,userId,date);
     }
 }

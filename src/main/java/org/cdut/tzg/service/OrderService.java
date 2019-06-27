@@ -47,5 +47,5 @@ public interface OrderService {
     /**
      * 修改订单状态为已完成
      */
-    int setStateToCompleted(Long orderId,Long userId,String date);
+    int setStateToCompleted(Long orderId,Long userId,Date date);
 }

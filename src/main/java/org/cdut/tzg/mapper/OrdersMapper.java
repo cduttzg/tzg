@@ -57,11 +57,11 @@ public interface OrdersMapper {
      * 修改订单状态为已支付
      */
     @Update("update orders set state = 1 where id = #{orderId} and buyer_id = #{userId}")
-    int setStateToPaid(Long orderId,Long userId);
+    int setStateToPaid(@Param("orderId") Long orderId,@Param("userId") Long userId);
 
     /**
      * 修改订单状态为已完成
      */
     @Update("update orders set state = 2,completed_time = #{date} where id = #{orderId} and buyer_id = #{userId}")
-    int setStateToCompleted(Long orderId,Long userId,String date);
+    int setStateToCompleted(@Param("orderId") Long orderId,@Param("userId") Long userId,@Param("date") Date date);
 }
