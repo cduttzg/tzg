@@ -3,6 +3,7 @@ package org.cdut.tzg.controller;
 
 import org.cdut.tzg.model.Cart;
 import org.cdut.tzg.model.Goods;
+import org.cdut.tzg.model.Orders;
 import org.cdut.tzg.model.User;
 import org.cdut.tzg.result.Result;
 import org.cdut.tzg.service.*;
@@ -107,4 +108,25 @@ public class CartController {
             return Result.success("数量减少1成功");
         }
     }
+
+
+    /*
+    URL：/api/cart/createOrder
+    URL：/api/cart/createOrder
+    描述：创建订单
+    方法：POST
+    数据：{“用户名”:”XXX”}
+    期望返回格式：{“sucess”:true/false,”content”:”xxxx”,”订单ID”:”xxxx”,"卖家收款码":[imgUrl,imgUrl,]}
+     */
+    @RequestMapping(value = "/createOrder",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Object> createOrder(@RequestBody String data){
+        Map map=MapUtils.getMap(data);
+        Long buyerId=Long.valueOf((String)map.get("用户名"));
+        Orders orders=new Orders();
+        orders.setBuyerId(buyerId);
+        orders.setState(0);
+        orderService.addOrders(orders);
+    }
+
 }
