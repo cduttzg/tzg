@@ -68,4 +68,9 @@ public class GoodsServiceImpl implements GoodsService {
     public int addGoods(Goods goods) {
         return goodsMapper.addGoods(goods);
     }
+
+    @Override
+    public int updateTypeState(Long goodsId, Integer state) {
+        return goodsMapper.updateTypeState(goodsId,state);
+    }
 }

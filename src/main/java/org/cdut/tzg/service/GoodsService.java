@@ -60,4 +60,12 @@ public interface GoodsService {
      * 添加商品
      */
     int addGoods(Goods goods);
+
+    /**
+     * 修改商品状态(上下架、商品种类、求购)
+     * @param goodsId
+     * @param state
+     * @return
+     */
+    int updateTypeState(Long goodsId,Integer state);
 }

@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.cdut.tzg.model.GoodsOrders;
+import org.cdut.tzg.model.Orders;
 
 import java.util.List;
 

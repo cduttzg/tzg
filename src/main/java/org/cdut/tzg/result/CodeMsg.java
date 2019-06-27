@@ -23,6 +23,7 @@ public class CodeMsg {
     //商品异常 5003xx
     public static CodeMsg STOCKOUT = new CodeMsg(500301,"库存不足");
     public static CodeMsg EMPTY_TYPE_GOODS = new CodeMsg(500302,"当前没有该类型商品");
+    public static CodeMsg NO_GOODS = new CodeMsg(500303,"商品不存在");
     //购物异常
     public static CodeMsg EMPTY_CART=new CodeMsg(500303,"当前用户购物车为空");
 
