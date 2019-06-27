@@ -24,6 +24,8 @@ public class TzgApplication {
         System.out.println("OrderInfo  http://localhost:" + serverPort+"/api/home/OrderInfo?number=2");
         System.out.println("home  http://localhost:" + serverPort+"/api/home/");
         System.out.println("home  http://localhost:" + serverPort+"/test/testPostImage");
+        System.out.println("home  http://localhost:" + serverPort+"/test/spider");
+        System.out.println(System.currentTimeMillis());
         System.out.println();
 
         //商品测试 /api/goods/
