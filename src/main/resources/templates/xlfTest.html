@@ -114,16 +114,38 @@
     })
 </script>
 
-<button id="addGoods" type="button">上架</button>
+<button id="addGoods" type="button">添加商品</button>
 <script>
     var btn1 = $("#addGoods");
+    btn1.click(function () {
+        $.ajax({
+            url: "/api/user/home/addGoods",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"username":"小红","type":2,"title":"操场空气","content":"还在为不想出门而烦恼吗？还在为空气沉闷而困惑吗？来吧，操场空气解决你的烦恼!!","image":"沙尘暴.jpeg","price":399.00,"stock":99999999}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function (req) {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
+<button id="onShelves" type="button">上架</button>
+<script>
+    var btn1 = $("#onShelves");
     btn1.click(function () {
         $.ajax({
             url: "/api/user/home/onShelves",    //请求的url地址
             contentType :"application/json",
             dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性
-            data: JSON.stringify({"username":"小红","type":2,"title":"操场空气","content":"还在为不想出门而烦恼吗？还在为空气沉闷而困惑吗？来吧，操场空气解决你的烦恼!!","image":"沙尘暴.jpeg","price":399.00,"stock":99999999}),    //参数值
+            data: JSON.stringify({"goodsId":1}),    //参数值
             type: "POST",   //请求方式
             success: function (req) {
                 //请求成功时处理

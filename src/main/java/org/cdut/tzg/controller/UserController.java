@@ -199,11 +199,11 @@ public class UserController {
     }
 
     /**
-     * 商品上架
+     * 添加新商品
      * @param data
      * @return
      */
-    @RequestMapping(value = "/home/onShelves",method = RequestMethod.POST)
+    @RequestMapping(value = "/home/addGoods",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> addGoods(@RequestBody String data){
         Map<String,Object> map = new HashMap<>();
@@ -232,6 +232,25 @@ public class UserController {
         }else
             return Result.error(CodeMsg.USER_UNDEFIND);
 
+        return Result.success(map);
+    }
+
+    @RequestMapping(value = "/home/onShelves",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> onShelves(@RequestBody String data){
+        Map<String,Object> map = new HashMap<>();
+        Map maps = MapUtils.getMap(data);
+        Long goodsId = Long.valueOf((Integer) maps.get("goodsId"));
+        Goods goods = goodsService.findGoodsById(goodsId);
+        if (goods != null){
+            int sign = goodsService.updateTypeState(goodsId,0);
+            if (sign == 1){
+                map.put("success",true);
+                map.put("content","商品下架成功");
+            }else if (sign == 0)
+                return Result.error(CodeMsg.REPETITIVE_OPERATION);
+        }else
+            Result.error(CodeMsg.NO_GOODS);
         return Result.success(map);
     }
 
