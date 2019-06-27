@@ -1,10 +1,7 @@
 package org.cdut.tzg.controller;
 
 
-import org.cdut.tzg.model.Cart;
-import org.cdut.tzg.model.Goods;
-import org.cdut.tzg.model.Orders;
-import org.cdut.tzg.model.User;
+import org.cdut.tzg.model.*;
 import org.cdut.tzg.result.Result;
 import org.cdut.tzg.service.*;
 import org.cdut.tzg.utils.MapUtils;
@@ -18,8 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.cdut.tzg.result.CodeMsg.EMPTY_CART;
-import static org.cdut.tzg.result.CodeMsg.STOCKOUT;
+import static org.cdut.tzg.result.CodeMsg.*;
 
 
 @Controller
@@ -122,11 +118,31 @@ public class CartController {
     @ResponseBody
     public Result<Object> createOrder(@RequestBody String data){
         Map map=MapUtils.getMap(data);
-        Long buyerId=Long.valueOf((String)map.get("用户名"));
+        String username=(String)map.get("用户名");
+        User buyer=userService.findUserByName(username);
         Orders orders=new Orders();
-        orders.setBuyerId(buyerId);
+        orders.setBuyerId(buyer.getId());
         orders.setState(0);
         orderService.addOrders(orders);
+        //新订单入库后重新从数据库读取最新插入的一条订单(该订单)来获得订单id
+        // TODO: 2019/6/27 线程安全问题
+        orders=orderService.findTheLatestOrders(1).get(0);
+        List<Cart> carts=cartService.findCartByUserId(buyer.getId());
+        List<String> imags=new ArrayList<>();
+        if(carts.size()==0){
+            return Result.error(EMPTY_CART);
+        }
+        for(int i=0;i<carts.size();++i){
+            Cart cart=carts.get(i);
+            User seller=userService.findUserById(cart.getSellerId());
+            GoodsOrders goodsOrders=new GoodsOrders();
+            goodsOrders.setSellerId(buyer.getId());
+            goodsOrders.setNumber(cart.getNumber());
+            goodsOrders.setGoodsId(cart.getGoodsId());
+            goodsOrders.setOrdersId(orders.getId());
+            goodsOrdersService.addGoodsOrders(goodsOrders);//
+            imags.add(seller.getAvatar());//获取该商品卖家头像
+        }
     }
 
 }
