@@ -348,32 +348,84 @@ public class UserController {
     @RequestMapping(value = "/home/orderInfo",method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> getUserOrderInfo(@RequestParam String username){
-        Long userId = userService.findIdByUserName(username);
-        Map<String,Object> mapdata = new HashMap<String,Object>();
+        Long userId = userService.findIdByUserName(username);//用户id
         if(userId == 0){
             return Result.error(CodeMsg.USER_UNDEFIND);
         }
+        List <Map<String,Object>> listdata = new ArrayList<Map<String,Object>>();
         List<Orders> orders = orderService.getOrderByBuyerId(userId);
-        System.out.println(orders);
         List<GoodsOrders> goodsOrders=new ArrayList<GoodsOrders>();//包含goodsorder
+        Map<String,Object> map;
+        List <Map<String,Object>> listseller;
+        Map<String,Object> mapseller;
+        //自己是买家时的订单
         for(Orders orders1:orders){
+            map=new HashMap<String, Object>();
+            map.put("卖家姓名",username);
+            map.put("订单时间",orders1.getCreatedTime());
+            map.put("订单状态",orders1.getState());
+            map.put("订单ID",orders1.getId());
             Long orderid=orders1.getId();
             List<GoodsOrders> goodsOrder = goodsOrdersService.findTheOrdersDetailById(orderid);
-            if (goodsOrder != null){
-                for(GoodsOrders goodsOrders1:goodsOrder){
-                    goodsOrders.add(goodsOrders1);
+            listseller = new ArrayList<Map<String,Object>>();
+            for (GoodsOrders goodsOrders1 : goodsOrder){
+                mapseller=new HashMap<String, Object>();
+                String sellername=userService.getUserNameById(goodsOrders1.getSellerId());
+                mapseller.put("卖家姓名",sellername);
+                String goodsname=goodsService.getGoodsNameById(goodsOrders1.getGoodsId());
+                mapseller.put("商品名称",goodsname);
+                listseller.add(mapseller);
+            }
+            map.put("卖家记录",listseller);
+            listdata.add(map);
+        }
+
+        //自己是卖家时的订单时
+        List<GoodsOrders> goodsOrderss = goodsOrdersService.getGoodsOrdersBySellerId(userId);//获取自己卖的商品订单
+        List<Map<String,Object>> listbuyer = new ArrayList<Map<String,Object>>();
+        List<Map<String,Object>> listbuyerrec;
+        Map<String,Object> buyermap = new HashMap<String, Object>();
+        System.out.println("1:"+goodsOrderss);
+        for (GoodsOrders goodsOrders1:goodsOrderss){
+            listbuyerrec=new ArrayList<Map<String,Object>>();
+            map=new HashMap<String, Object>();
+            Long orderid=goodsOrders1.getOrdersId();
+            Orders orders1=orderService.getOrderById(orderid);
+            String buyername = userService.getUserNameById(orders1.getBuyerId());
+            Long goodsid=goodsOrders1.getGoodsId();
+            String goodsname=goodsService.getGoodsNameById(goodsid);
+            map.put("买家姓名",buyername);
+            map.put("订单时间",orders1.getCreatedTime());
+            map.put("订单状态",orders1.getState());
+            map.put("订单ID",orderid);
+            System.out.println(map);
+            if (listbuyer.isEmpty()){//当listbuyer为空的时候，不需要合并卖家记录
+                buyermap.put("卖家姓名",username);
+                buyermap.put("商品名称",goodsname);
+            }else{
+                int index=-1;
+                for (Map<String,Object> map1:listbuyer){
+                    if(map1.get("订单ID").equals(orderid)){
+                        index = listbuyer.indexOf(map1);
+                        List<Map<String,Object>> list=(List<Map<String,Object>>) map1.get("卖家记录");
+                        Map<String,Object> map2 = new HashMap<String, Object>();
+                        Map<String,Object> map3 = new HashMap<String, Object>();
+                        map2.put("卖家姓名",username);
+                        map2.put("商品名称",goodsname);
+                        map3.put("卖家记录",map2);
+                        listbuyer.set(index,map3);
+                        break;
+                    }
                 }
             }
+            //System.out.println("buyermap:"+buyermap);
+            listbuyerrec.add(buyermap);
+            //System.out.println("listbuyerrec:"+listbuyerrec);
+            map.put("卖家记录",listbuyerrec);
         }
-        System.out.println(goodsOrders);
-        for(Orders orders1:orders){
-            for(GoodsOrders goodsOrders1:goodsOrders){
-//                if(){
-//                   mapdata.put("",)
-//                }
-            }
-        }
-        return null;
+        System.out.println("2:"+listbuyer);
+        listdata.addAll(listbuyer);
+        return Result.success(listdata);
     }
 
     /**

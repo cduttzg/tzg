@@ -71,4 +71,10 @@ public interface UserService {
      * 更新用户信息
      */
     int updateUserInformation(String username,String phoneNum,String email,String address,String avatar,String moneyCode);
+
+    /**
+     * 根据用户id查找用户姓名
+     */
+    String getUserNameById(Long userid);
+
 }

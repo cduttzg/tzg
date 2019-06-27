@@ -103,4 +103,10 @@ public interface UserMapper {
                               @Param("avatar") String avatar,
                               @Param("moneyCode") String moneyCode);
 
+    /**
+     * 根据用户id查找用户姓名
+     */
+    @Select("select username from user where id = #{userid}")
+    String getUserNameById(@Param("userid") Long userid);
+
 }

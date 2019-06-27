@@ -20,6 +20,13 @@ public interface GoodsMapper {
     Goods findGoodsById(Long goodId);
 
     /**
+     * 通过goodsid查找商品name
+     */
+    @Select("select title from goods where id = #{goodsid}")
+    String getGoodsNameById(Long goodsid);
+
+
+    /**
      * 获取指定日期上架商品
      */
     @Select("select count(*) from goods where datediff(created_time,#{date}) = 0")
@@ -71,4 +78,6 @@ public interface GoodsMapper {
      */
     @Select("select * from goods where type != 5 and user_id = #{userid}")
     List<Goods> getPutGoods(Long userid);
+
+
 }
