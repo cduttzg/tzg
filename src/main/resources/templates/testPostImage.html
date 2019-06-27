@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+    <head></head>
+    <body>
+        <input id='file' type='file' />
+        <button id='upLoadFile'>up load file</button>
+        <button id='login'>login</button>
+        <script>
+            window.onload = function(){
+                let formData = new FormData();
+                let fileField = document.getElementById('file');
+                formData.append('username','123');
+                formData.append('avatar',fileField.files[0]);
+                let url = '';
+                let posts = Post(url, formData);
+                console.log(posts);
+            }
+            function Post(url, data){
+                return fetch(url, {
+                    method : "POST",
+                    headers : new Headers({
+                        'Content-Type': 'application/json'
+                    }),
+                    body : data
+                }).then(response => {
+                    return handlResponse(url, response);
+                }).catch(error => {
+                    console.error(`Requset failed. Url=${url}. Message=${error}`);
+                    return {
+                        error : {
+                            messge : 'request failed'
+                        }
+                    };
+                });
+            }
+        </script>
+    </body>
+</html>
