@@ -25,11 +25,16 @@ public interface CartService {
     /**
      * 更新购物车中某一商品的数量
      */
-    int updateGoodsInCart(Long goodsId,Integer newNumber);
+    int updateGoodsInCart(Long buyerId,Long goodsId,Integer newNumber);
 
 
     /**
      * 根据用户id获取该用户的购物车信息
      */
     List<Cart> findCartByUserId(Long userId);
+
+    /**
+     * 根据用户id和商品id获得唯一商品(购物车不允许同一id商品出现多次 只允许对它在购物车中的数量进行修改)
+     */
+    Cart findCartByUserIdAndGoodsId(Long buyerId,Long goodsId);
 }

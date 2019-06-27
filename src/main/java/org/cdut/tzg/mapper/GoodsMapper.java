@@ -20,6 +20,13 @@ public interface GoodsMapper {
     Goods findGoodsById(Long goodId);
 
     /**
+     * 通过goodsid查找商品name
+     */
+    @Select("select title from goods where id = #{goodsid}")
+    String getGoodsNameById(Long goodsid);
+
+
+    /**
      * 获取指定日期上架商品
      */
     @Select("select count(*) from goods where datediff(created_time,#{date}) = 0")
@@ -66,5 +73,22 @@ public interface GoodsMapper {
     @Select("select * from goods where type = #{type} limit #{limit}")
     List<Goods> findGoodsByTypeAndLimit(@Param("type") Integer type, @Param("limit") int limit);
 
+    /**
+     * 根据用户id获取当前用户的上架信息
+     */
+    @Select("select * from goods where type != 5 and user_id = #{userid}")
+    List<Goods> getPutGoods(Long userid);
+
+    /**
+     * 添加商品
+     */
+    @Insert("insert into goods(user_id,type,title,content,price,image,stock,tag) values " +
+            "(#{userId},#{type},#{title},#{content},#{price},#{image},#{stock},#{tag})")
+    int addGoods(Goods goods);
+    /**
+     * 修改商品状态(上下架、商品种类、求购)
+     */
+    @Update("update goods set type = #{state} where id = #{goodsId}")
+    int updateTypeState(@Param("goodsId") Long goodsId,@Param("state") Integer state);
 
 }

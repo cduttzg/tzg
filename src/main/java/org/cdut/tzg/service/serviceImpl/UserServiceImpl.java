@@ -83,4 +83,9 @@ public class UserServiceImpl implements UserService {
     public int updateUserInformation(String username,String phoneNum,String email,String address,String avatar,String moneyCode){
         return userMapper.updateUserInformation(username,phoneNum,email,address,avatar,moneyCode);
     }
+
+    @Override
+    public String getUserNameById(Long userid) {
+        return userMapper.getUserNameById(userid);
+    }
 }

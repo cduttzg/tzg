@@ -63,4 +63,24 @@ public class GoodsServiceImpl implements GoodsService {
     public List<Goods> findGoodsByTypeAndLimit(Integer type, int limit) {
         return goodsMapper.findGoodsByTypeAndLimit(type,limit);
     }
+
+    @Override
+    public List<Goods> getPutGoods(Long userid) {
+        return goodsMapper.getPutGoods(userid);
+    }
+
+    @Override
+    public String getGoodsNameById(Long goodsid) {
+        return goodsMapper.getGoodsNameById(goodsid);
+    }
+
+    @Override
+    public int addGoods(Goods goods) {
+        return goodsMapper.addGoods(goods);
+    }
+
+    @Override
+    public int updateTypeState(Long goodsId, Integer state) {
+        return goodsMapper.updateTypeState(goodsId,state);
+    }
 }

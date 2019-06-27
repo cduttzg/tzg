@@ -39,13 +39,14 @@ public class TzgApplication {
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/cart/cartInfo?username=%e5%b0%8f%e6%96%8c");
         System.out.println();
 
-        //后台数据连接
+        //后台数据连接 /api/backstage/
         System.out.println("-----------后台数据连接----------");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getFrozenUser");
         //个人中心测试/api/user
         System.out.println("-----------个人中心测试----------");
-        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/SeekInfo?username=rose");//根据用户姓名查询用户求购信息
-        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/message?username=rock");//根据用户姓名查找用户信息
+        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/SeekInfo?username=rose" +":根据用户姓名查询用户求购信息");//根据用户姓名查询用户求购信息
+        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/message?username=rock" + ":根据用户姓名查找用户信息");//根据用户姓名查找用户信息
+        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/goodsInfo?username=zacky" + ":根据用户名查找该用户的上架信息");//根据用户名查找该用户的上架信息
     }
 
 }
