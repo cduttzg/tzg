@@ -46,4 +46,19 @@ public class OrderServiceImpl implements OrderService {
     public int addOrders(Orders orders) {
         return ordersMapper.addOrders(orders);
     }
+
+    @Override
+    public Orders getOrderByIdAndUserId(Long orderId,Long userId){
+        return ordersMapper.getOrderByIdAndUserId(orderId,userId);
+    }
+
+    @Override
+    public int setStateToPaid(Long orderId,Long userId){
+        return ordersMapper.setStateToPaid(orderId,userId);
+    }
+
+    @Override
+    public int setStateToCompleted(Long orderId,Long userId,String date){
+        return ordersMapper.setStateToCompleted(orderId,userId,date);
+    }
 }

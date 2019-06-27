@@ -1,9 +1,6 @@
 package org.cdut.tzg.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.cdut.tzg.model.Orders;
 
 import java.util.Date;
@@ -49,4 +46,22 @@ public interface OrdersMapper {
      */
     @Insert("insert into orders (buyer_id,state) values(#{buyerId},#{state})")
     int addOrders(Orders orders);
+
+    /**
+     * 根据用户id和订单id查找订单
+     */
+    @Select("select * from orders where id = #{orderId} and buyer_id = #{userId}")
+    Orders getOrderByIdAndUserId(@Param("orderId") Long orderId,@Param("userId") Long userId);
+
+    /**
+     * 修改订单状态为已支付
+     */
+    @Update("update orders set state = 1 where id = #{orderId} and buyer_id = #{userId}")
+    int setStateToPaid(Long orderId,Long userId);
+
+    /**
+     * 修改订单状态为已完成
+     */
+    @Update("update orders set state = 2,completed_time = #{date} where id = #{orderId} and buyer_id = #{userId}")
+    int setStateToCompleted(Long orderId,Long userId,String date);
 }
