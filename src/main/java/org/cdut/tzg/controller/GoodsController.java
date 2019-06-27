@@ -1,10 +1,6 @@
 package org.cdut.tzg.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.xpath.internal.operations.Or;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.transaction.Transaction;
+
 import org.cdut.tzg.model.*;
 import org.cdut.tzg.result.Result;
 import org.cdut.tzg.service.*;
@@ -14,9 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.rmi.CORBA.Util;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+
 import java.util.*;
 
 import static org.cdut.tzg.result.CodeMsg.*;
