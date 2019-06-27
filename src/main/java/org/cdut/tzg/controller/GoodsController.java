@@ -86,7 +86,7 @@ public class GoodsController {
             List<Cart> allCartGoods=cartService.findAll(buyer.getId());//获取到该用户的购物车所有商品信息
             for(int i=0;i<allCartGoods.size();++i){//遍历查找是否存在相同商品
                 if(goodsId==allCartGoods.get(i).getGoodsId()){
-                    cartService.updateGoodsInCart(goodsId,buyedNumber+allCartGoods.get(i).getNumber());
+                    cartService.updateGoodsInCart(buyer.getId(),goodsId,buyedNumber+allCartGoods.get(i).getNumber());
                     return Result.success("添加到购物车成功");
                 }
             }
