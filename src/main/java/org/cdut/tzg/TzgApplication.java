@@ -23,12 +23,18 @@ public class TzgApplication {
         System.out.println("-------------首页测试--------");
         System.out.println("OrderInfo  http://localhost:" + serverPort+"/api/home/OrderInfo?number=2");
         System.out.println("home  http://localhost:" + serverPort+"/api/home/");
+        System.out.println("home  http://localhost:" + serverPort+"/test/testPostImage");
         System.out.println();
 
         //商品测试 /api/goods/
         System.out.println("-------------商品测试-----------");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/getInfo?goodsId=5");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/gallery?type=1");
+        System.out.println();
+        //购物车测试 /api/cart/
+        System.out.println("-------------购物车测试-----------");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/cart/cartInfo?username=jack");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/cart/cartInfo?username=%e5%b0%8f%e6%96%8c");
         System.out.println();
 
         //后台数据连接

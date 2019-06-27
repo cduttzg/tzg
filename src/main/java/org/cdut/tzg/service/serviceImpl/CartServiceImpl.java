@@ -33,4 +33,9 @@ public class CartServiceImpl implements CartService {
     public int updateGoodsInCart(Long goodsId,Integer newNumber) {
         return cartMapper.updateGoodsInCart(goodsId,newNumber);
     }
+
+    @Override
+    public List<Cart> findCartByUserId(Long userId) {
+        return cartMapper.findCartByUserId(userId);
+    }
 }

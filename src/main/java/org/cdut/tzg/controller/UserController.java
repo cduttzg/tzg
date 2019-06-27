@@ -199,6 +199,38 @@ public class UserController {
     }
 
     /**
+     * 更新用户信息
+     * @param data
+     * @return
+     */
+    @RequestMapping(value = "/home/updateMessage",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> updateUserInformation(@RequestBody String data){
+        Map<String,Object> map = new HashMap<>();
+        Map maps = MapUtils.getMap(data);
+        String username = (String)maps.get("username");
+        User user = userService.findUserByName(username);
+        if (user != null){
+            String phoneNum = (String) maps.get("phoneNum");
+            String email = (String) maps.get("email");
+            String address = (String) maps.get("address");
+            String avatar = (String) maps.get("avatar");
+            String moneyCode = (String) maps.get("moneyCode");
+            if (!moneyCode.isEmpty())
+                map.put("beSaller",true);
+            else map.put("beSaller",false);
+            int sign = userService.updateUserInformation(username,phoneNum,email,address,avatar,moneyCode);
+            if (sign == 1){
+                map.put("success",true);
+                map.put("content","信息修改成功");
+            }else if (sign == 0)
+                return Result.error(CodeMsg.REPETITIVE_OPERATION);
+        }else
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        return Result.success(map);
+    }
+
+    /**
      * 订单置为已支付
      * @param data
      * @return
