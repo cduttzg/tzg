@@ -63,4 +63,9 @@ public class GoodsServiceImpl implements GoodsService {
     public List<Goods> findGoodsByTypeAndLimit(Integer type, int limit) {
         return goodsMapper.findGoodsByTypeAndLimit(type,limit);
     }
+
+    @Override
+    public int addGoods(Goods goods) {
+        return goodsMapper.addGoods(goods);
+    }
 }

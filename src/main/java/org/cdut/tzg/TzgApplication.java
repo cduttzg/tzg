@@ -37,7 +37,7 @@ public class TzgApplication {
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/cart/cartInfo?username=%e5%b0%8f%e6%96%8c");
         System.out.println();
 
-        //后台数据连接
+        //后台数据连接 /api/backstage/
         System.out.println("-----------后台数据连接----------");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getFrozenUser");
         //个人中心测试/api/user
