@@ -65,6 +65,11 @@ public interface GoodsMapper {
      */
     @Select("select * from goods where type = #{type} limit #{limit}")
     List<Goods> findGoodsByTypeAndLimit(@Param("type") Integer type, @Param("limit") int limit);
-
+    /**
+     * 添加商品
+     */
+    @Insert("insert into goods(user_id,type,title,content,price,image,stock,tag) values " +
+            "(#{userId},#{type},#{title},#{content},#{price},#{image},#{stock},#{tag})")
+    int addGoods(Goods goods);
 
 }

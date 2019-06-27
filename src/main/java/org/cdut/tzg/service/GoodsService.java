@@ -56,4 +56,8 @@ public interface GoodsService {
      * 根据类型查询n条商品
      */
     List<Goods> findGoodsByTypeAndLimit(Integer type, int limit);
+    /**
+     * 添加商品
+     */
+    int addGoods(Goods goods);
 }
