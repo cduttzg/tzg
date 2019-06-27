@@ -234,4 +234,30 @@ public class UserController {
         }
         return Result.success(map);
     }
+
+
+    /**
+     *方法：GET
+     * 数据：{“用户名”:”XXX” }
+     * 期望返回格式：{“学号”:”XXX” ,”用户名”:”XXX” ,”手机号码”:”XXX” ,”电子邮箱”:”XXX” ,”收货地址”:”XXX” ,”用户评分”:5,”头像”:”XXX” ,”总卖出量”:100}
+     */
+    @RequestMapping(value = "/home/message",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<Object> getUserMessage(@RequestParam String username){
+        User user = userService.findUserByName(username);//根据用户名查找用户信息
+        if (user == null){//查找用户失败，则返回"未找到该用户"
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }else {//查找成功
+            Map<String,Object> datamap = new HashMap();
+            datamap.put("学号",user.getSchoolNumber());
+            datamap.put("用户名",user.getUsername());
+            datamap.put("手机号码",user.getPhoneNumber());
+            datamap.put("电子邮箱",user.getEmail());
+            datamap.put("收货地址",user.getAddress());
+            datamap.put("用户评分",(int)user.getGrade());
+            datamap.put("头像",user.getAvatar());
+            datamap.put("总卖出量",(int)user.getTotalSold());
+            return Result.success(datamap);
+        }
+    }
 }
