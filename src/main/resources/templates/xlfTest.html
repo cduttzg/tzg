@@ -136,6 +136,28 @@
         });
     })
 </script>
+<button id="offShelves" type="button">下架</button>
+<script>
+    var btn1 = $("#offShelves");
+    btn1.click(function () {
+        $.ajax({
+            url: "/api/user/home/offShelves",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"goodsId":1}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function (req) {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
 <button id="b21" type="button">修改用户信息</button>
 <script>
     var btn1 = $("#b21");

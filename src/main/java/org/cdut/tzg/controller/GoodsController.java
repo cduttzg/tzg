@@ -79,8 +79,7 @@ public class GoodsController {
             User buyer=userService.findUserByName(username);//买家
             User seller=userService.findUserById(cartGoods.getUserId());//卖家
             //从商品表更新库存
-            // TODO: 2019/6/26 所有更新商品表库存操作都留在订单支付完后进行
-            //goodsService.updateGoodsStock(cartGoods.getId(),cartGoods.getStock()-buyedNumber);
+            goodsService.updateGoodsStock(cartGoods.getId(),cartGoods.getStock()-buyedNumber);
             //添加到购物车表
             //寻找购物车中是否存在该商品
             List<Cart> allCartGoods=cartService.findAll(buyer.getId());//获取到该用户的购物车所有商品信息
@@ -120,6 +119,11 @@ public class GoodsController {
 
         //orders订单入库
         Goods buyedGoods=goodsService.findGoodsById(goodsId);//获得需要购买的商品信息
+
+        if(buyedGoods.getStock()<number) {//库存不足
+            return Result.error(STOCKOUT);
+        }
+
         Orders orders=new Orders();//创建新订单
         orders.setBuyerId(userService.findUserByName(username).getId());//设置订单的buyer_id
         orders.setState(0);//待支付
@@ -139,15 +143,11 @@ public class GoodsController {
         goodsOrders.setNumber(number);
         goodsOrdersService.addGoodsOrders(goodsOrders);
 
-        //库存操作
-        if(buyedGoods.getStock()<number) {//库存不足
-            return Result.error(STOCKOUT);
-        }
         //更新商品表库存
         goodsService.updateGoodsStock(buyedGoods.getId(), buyedGoods.getStock() - number);
         //库存是否为0
         if(buyedGoods.getStock()==number){
-            // TODO: 2019/6/27 下架商品
+            goodsService.updateTypeState(goodsId,-1);
         }
 
         //获取交易付款消息

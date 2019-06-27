@@ -198,6 +198,11 @@ public class UserController {
         return  Result.success(listdata);
     }
 
+    /**
+     * 商品上架
+     * @param data
+     * @return
+     */
     @RequestMapping(value = "/home/onShelves",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> addGoods(@RequestBody String data){
@@ -230,6 +235,31 @@ public class UserController {
         return Result.success(map);
     }
 
+    /**
+     * 商品下架
+     * @param data
+     * @return
+     */
+    @RequestMapping(value = "/home/offShelves",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> offShelves(@RequestBody String data){
+        Map<String,Object> map = new HashMap<>();
+        Map maps = MapUtils.getMap(data);
+        Long goodsId = Long.valueOf((Integer) maps.get("goodsId"));
+        Goods goods = goodsService.findGoodsById(goodsId);
+        if (goods != null){
+            int sign = goodsService.updateTypeState(goodsId,-1);
+            if (sign == 1){
+                map.put("success",true);
+                map.put("content","商品下架成功");
+            }else if (sign == 0){
+                return Result.error(CodeMsg.REPETITIVE_OPERATION);
+            }
+        }else
+            return Result.error(CodeMsg.NO_GOODS);
+
+        return Result.success(map);
+    }
     /**
      * 更新用户信息
      * @param data

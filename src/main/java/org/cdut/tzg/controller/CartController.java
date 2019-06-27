@@ -121,34 +121,36 @@ public class CartController {
 
         User buyer=userService.findUserByName(username);
 
+        List<Cart> carts=cartService.findCartByUserId(buyer.getId());
+        if(carts.size()==0){//购物车为空
+            return Result.error(EMPTY_CART);
+        }
+
+        List<GoodsOrders> goodsOrdersList=new ArrayList<>();
+        for(int i=0;i<carts.size();++i){
+            Cart cart=carts.get(i);
+            Goods goods=goodsService.findGoodsById(cart.getGoodsId());
+            if(cart.getNumber()<goods.getStock()){
+                return Result.error(STOCKOUT);
+            }
+            GoodsOrders goodsOrders=new GoodsOrders();
+            goodsOrders.setGoodsId(cart.getGoodsId());
+            goodsOrders.setNumber(cart.getNumber());
+            goodsOrders.setSellerId(cart.getSellerId());
+            goodsOrdersList.add(goodsOrders);
+        }
         //orders订单入库
         Orders orders=new Orders();
         orders.setBuyerId(buyer.getId());
         orders.setState(0);
         orderService.addOrders(orders);
 
-        //新订单入库后重新从数据库读取最新插入的一条订单(该订单)来获得订单id
-        // TODO: 2019/6/27 线程安全问题
+        //新订单入库后重新从数据库读取最新插入的一条订单(就是该订单)来获得订单id
+        // TODO: 2019/6/27 存在线程安全问题
         orders=orderService.findTheLatestOrders(1).get(0);
 
-        
-        List<Cart> carts=cartService.findCartByUserId(buyer.getId());
-        List<String> imags=new ArrayList<>();
-        if(carts.size()==0){//购物车为空
-            return Result.error(EMPTY_CART);
-        }
         //GoodsOrder记录入库
-        for(int i=0;i<carts.size();++i){
-            Cart cart=carts.get(i);
-            User seller=userService.findUserById(cart.getSellerId());
-            GoodsOrders goodsOrders=new GoodsOrders();
-            goodsOrders.setSellerId(buyer.getId());
-            goodsOrders.setNumber(cart.getNumber());
-            goodsOrders.setGoodsId(cart.getGoodsId());
-            goodsOrders.setOrdersId(orders.getId());
-            goodsOrdersService.addGoodsOrders(goodsOrders);//订单入库
 
-        }
     }
 
 }
