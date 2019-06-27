@@ -194,10 +194,49 @@ public class UserController {
         return  Result.success(listdata);
     }
 
+    /**
+     * 订单置为已支付
+     * @param data
+     * @return
+     */
+    @RequestMapping(value = "/saller/paidOrder",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> setStateToPaid(@RequestBody String data){
+        Map<String,Object> map = new HashMap<>();
+        Map maps = MapUtils.getMap(data);
+        String userName = (String) maps.get("username");
+        Long userId = userService.findIdByUserName(userName);
+        if (userId != null) {
+            //用户存在
+            //获取订单id
+            Long orderId = Long.valueOf((Integer) maps.get("id"));
+            Orders order = orderService.getOrderByIdAndUserId(orderId, userId);
+            //订单存在
+            if (order != null) {
+                int sign = orderService.setStateToPaid(orderId, userId);
+                if (sign == 1) {
+                    //修改成功
+                    map.put("success", true);
+                    map.put("content", "订单已支付");
+                } else if (sign == 0) {
+                    //原本为已支付状态
+                    return Result.error(CodeMsg.REPETITIVE_OPERATION);
+                }
+            } else{
+                return Result.error(CodeMsg.NO_ORDER);
+            }
+        }else {
+            //用户不存在
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
+        return Result.success(map);
+    }
 
-    /*
-    * 订单置为完成
-    * */
+    /**
+     * 订单置为完成
+     * @param data
+     * @return
+     */
     @RequestMapping(value = "/saller/completeOrder",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> setOrderComplete(@RequestBody String data){
@@ -213,10 +252,7 @@ public class UserController {
             Orders order = orderService.getOrderByIdAndUserId(orderId, userId);
             //订单存在
             if (order != null) {
-                Date date = new Date();
-                SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:SS");
-                System.out.println(sdf.format(date));
-                int sign = orderService.setStateToCompleted(orderId, userId,sdf.format(date));
+                int sign = orderService.setStateToCompleted(orderId, userId,new Date());
                 if (sign == 1) {
                     //修改成功
                     map.put("success", true);
