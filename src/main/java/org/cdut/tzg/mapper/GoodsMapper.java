@@ -66,5 +66,9 @@ public interface GoodsMapper {
     @Select("select * from goods where type = #{type} limit #{limit}")
     List<Goods> findGoodsByTypeAndLimit(@Param("type") Integer type, @Param("limit") int limit);
 
-
+    /**
+     * 根据用户id获取当前用户的上架信息
+     */
+    @Select("select * from goods where type != 5 and user_id = #{userid}")
+    List<Goods> getPutGoods(Long userid);
 }

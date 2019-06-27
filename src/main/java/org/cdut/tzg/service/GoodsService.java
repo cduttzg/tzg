@@ -56,4 +56,9 @@ public interface GoodsService {
      * 根据类型查询n条商品
      */
     List<Goods> findGoodsByTypeAndLimit(Integer type, int limit);
+
+    /**
+     * 根据用户id获取当前用户的上架信息
+     */
+    List<Goods> getPutGoods(Long userid);
 }

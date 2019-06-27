@@ -3,10 +3,12 @@ package org.cdut.tzg.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cdut.tzg.model.Goods;
+import org.cdut.tzg.model.GoodsOrders;
 import org.cdut.tzg.model.Orders;
 import org.cdut.tzg.model.User;
 import org.cdut.tzg.result.CodeMsg;
 import org.cdut.tzg.result.Result;
+import org.cdut.tzg.service.GoodsOrdersService;
 import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.OrderService;
 import org.cdut.tzg.service.UserService;
@@ -35,6 +37,9 @@ public class UserController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private GoodsOrdersService goodsOrdersService;
 
     @RequestMapping("/findAll")
     @ResponseBody
@@ -337,17 +342,65 @@ public class UserController {
      * 描述：获取当前用户的订单
      * 方法：GET
      * 数据：{“用户名”:”XXX”}
-     * 期望返回格式：[{“买家姓名”:”XXX”,”卖家姓名”:["xxx","xxx"...],”商品名称”:["xxx","xxx"...],”订单时间”:”XXX”,”订单状态”:已付款/已完成/异常,”订单ID”:”xxx”},]
+     * 期望返回格式：[{“买家姓名”:”XXX”,“卖家记录”：[{”卖家姓名”:"xxx",”商品名称”:"xxx"},{”卖家姓名”:"xxx",”商品名称”:"xxx"}],”订单时间”:”XXX”,”订单状态”:已付款/已完成/异常,”订单ID”:”xxx”},]
      */
     @RequestMapping(value = "/home/orderInfo",method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> getUserOrderInfo(@RequestParam String username){
         Long userId = userService.findIdByUserName(username);
+        Map<String,Object> mapdata = new HashMap<String,Object>();
         if(userId == 0){
             return Result.error(CodeMsg.USER_UNDEFIND);
         }
         List<Orders> orders = orderService.getOrderByBuyerId(userId);
         System.out.println(orders);
+        List<GoodsOrders> goodsOrders=new ArrayList<GoodsOrders>();//包含goodsorder
+        for(Orders orders1:orders){
+            Long orderid=orders1.getId();
+            List<GoodsOrders> goodsOrder = goodsOrdersService.findTheOrdersDetailById(orderid);
+            if (goodsOrder != null){
+                for(GoodsOrders goodsOrders1:goodsOrder){
+                    goodsOrders.add(goodsOrders1);
+                }
+            }
+        }
+        System.out.println(goodsOrders);
+        for(Orders orders1:orders){
+            for(GoodsOrders goodsOrders1:goodsOrders){
+//                if(){
+//                   mapdata.put("",)
+//                }
+            }
+        }
         return null;
+    }
+
+    /**
+     *描述：获取当前用户上架商品信息
+     * 方法：GET
+     * 数据：{“用户名”:”XXX”}
+     * 期望返回格式：[{”商品图片”:”XXX”, ”描述”:”XXX”,”单价”:XXX,”数量”:XXX,”商品ID”:”xxx”},]
+     */
+    @RequestMapping(value = "/home/goodsInfo",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<Object> goodsInfo(@RequestParam String username){
+        Long userid = userService.findIdByUserName(username);
+        if (userid == 0){
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
+        Map<String,Object> mapdata;
+        List<Map<String,Object>> list= new ArrayList<Map<String,Object>>();
+        List<Goods> goods = goodsService.getPutGoods(userid);
+        System.out.println(goods);
+        for(Goods good:goods){
+            mapdata= new HashMap<String, Object>();
+            mapdata.put("商品图片",good.getImage());
+            mapdata.put("描述",good.getContent());
+            mapdata.put("单价",good.getPrice());
+            mapdata.put("数量",good.getStock());
+            mapdata.put("商品ID",good.getId());
+            list.add(mapdata);
+        }
+        return Result.success(list);
     }
 }
