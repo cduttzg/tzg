@@ -10,10 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.ws.Response;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.cdut.tzg.result.CodeMsg.*;
 
@@ -127,30 +124,74 @@ public class CartController {
         }
 
         List<GoodsOrders> goodsOrdersList=new ArrayList<>();
+        List<Map<String,Object>> GoodsListInCart=new ArrayList<>();//记录每个购物车商品的信息和卖家信息
         for(int i=0;i<carts.size();++i){
             Cart cart=carts.get(i);
             Goods goods=goodsService.findGoodsById(cart.getGoodsId());
-            if(cart.getNumber()<goods.getStock()){
+            User seller=userService.findUserById(cart.getSellerId());
+            if(cart.getNumber()>goods.getStock()){
                 return Result.error(STOCKOUT);
             }
+            //存下购物车中每一项GoodsOrders的信息
             GoodsOrders goodsOrders=new GoodsOrders();
             goodsOrders.setGoodsId(cart.getGoodsId());
             goodsOrders.setNumber(cart.getNumber());
             goodsOrders.setSellerId(cart.getSellerId());
             goodsOrdersList.add(goodsOrders);
+
+            Map<String,Object> sellerInfo=new HashMap<>();//卖家信息
+            sellerInfo.put("卖家用户名",seller.getUsername());
+            sellerInfo.put("收款码",seller.getMoneyCode());
+            sellerInfo.put("金钱",goods.getPrice()*cart.getNumber());
+            GoodsListInCart.add(sellerInfo);
         }
+
         //orders订单入库
         Orders orders=new Orders();
         orders.setBuyerId(buyer.getId());
-        orders.setState(0);
+        orders.setState(0);//待支付
         orderService.addOrders(orders);
 
         //新订单入库后重新从数据库读取最新插入的一条订单(就是该订单)来获得订单id
         // TODO: 2019/6/27 存在线程安全问题
         orders=orderService.findTheLatestOrders(1).get(0);
 
+        Map<String,Object> moneyResult=new HashMap<>();//返回结果中的username=money键值对
         //GoodsOrder记录入库
+        for(int i=0;i<carts.size();++i){
+            GoodsOrders goodsOrders=goodsOrdersList.get(i);
+            goodsOrders.setOrdersId(orders.getId());//设置订单号
+            goodsOrdersService.addGoodsOrders(goodsOrders);//入库
 
+            Goods goods=goodsService.findGoodsById(goodsOrders.getGoodsId());
+            //更新商品库存
+            goodsService.updateGoodsStock(goodsOrders.getGoodsId(),goods.getStock()-goodsOrders.getNumber());
+
+            //构造价格的返回结果
+            Map<String,Object> sellerInfo=GoodsListInCart.get(i);
+            String sellerName=(String)sellerInfo.get("卖家用户名");
+            Float money=(Float)sellerInfo.get("金钱");
+            if(moneyResult.containsKey(sellerName)){//如果moneyResult中有该用户了 则相加
+                Float tempMoney=(Float)moneyResult.get(sellerName);
+                money+=tempMoney;
+            }
+            moneyResult.put(sellerName,money);//更新相同卖家的金钱
+        }
+        //清空购物车
+        cartService.clearBuyerCart(buyer.getId());
+
+        //构造返回结果
+        List<Map<String,Object>> result=new ArrayList<>();//返回结果
+        for(Object perSeller:moneyResult.keySet()){//对每个卖家
+            User seller=userService.findUserByName((String)perSeller);
+            Float money=(Float)moneyResult.get(perSeller);
+            Map<String,Object> resultMap=new HashMap<>();
+            resultMap.put("卖家用户名",(String)perSeller);
+            resultMap.put("收款码",seller.getMoneyCode());
+            resultMap.put("金钱",money);
+            result.add(resultMap);
+        }
+        return Result.success(result);
     }
 
 }

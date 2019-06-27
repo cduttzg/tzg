@@ -53,7 +53,7 @@
         });
     })
 </script>
-<!--/api/goods/buyNow的POST方法测试-->
+<!--/api/cart/updateCartInfo的POST方法测试-->
 <button id="bUpdateCart" type="button">/api/cart/updateCartInfo</button>
 <script>
     var btn1 = $("#bUpdateCart");
@@ -65,6 +65,31 @@
             dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性
             data: JSON.stringify({"用户名":"小红","商品ID":"5","add":false}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function () {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
+<br>
+<!--/api/cart/createOrder的POST方法测试-->
+<button id="bCreateOrder" type="button">/api/cart/createOrder</button>
+<script>
+    var btn1 = $("#bCreateOrder");
+    btn1.click(function () {
+        console.log("--start--");
+        $.ajax({
+            url: "/api/cart/createOrder",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"用户名":"提莫"}),    //参数值
             type: "POST",   //请求方式
             success: function (req) {
                 //请求成功时处理
