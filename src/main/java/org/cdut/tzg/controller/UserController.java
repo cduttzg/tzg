@@ -216,9 +216,10 @@ public class UserController {
             String address = (String) maps.get("address");
             String avatar = (String) maps.get("avatar");
             String moneyCode = (String) maps.get("moneyCode");
-            if (!moneyCode.isEmpty())
+            if (moneyCode.equals(""))
+                map.put("beSaller",false);
+            else
                 map.put("beSaller",true);
-            else map.put("beSaller",false);
             int sign = userService.updateUserInformation(username,phoneNum,email,address,avatar,moneyCode);
             if (sign == 1){
                 map.put("success",true);
