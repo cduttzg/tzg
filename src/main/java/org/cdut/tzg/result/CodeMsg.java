@@ -13,8 +13,8 @@ public class CodeMsg {
 
     //求购信息异常
     public static  CodeMsg PUBLISHGOODFAILED = new CodeMsg(600601,"发布求购信息错误");
-    public static  CodeMsg DELETEGOODFAILED = new CodeMsg(600602,"删除求购信息错误");
-
+    public static  CodeMsg DELETEGOODFAILED = new CodeMsg(600602,"删除求购信息错误,求购信息不存在");
+    public static  CodeMsg EXITSEEKGOODS = new CodeMsg(600603,"求购信息已经存在，请勿重复发布");
     //通用异常
     //首页异常5002xx
     public static CodeMsg USER_UNDEFIND = new CodeMsg(500201,"未找到该用户");
@@ -22,6 +22,7 @@ public class CodeMsg {
 
     //商品异常 5003xx
     public static CodeMsg STOCKOUT = new CodeMsg(500301,"库存不足");
+    public static CodeMsg EMPTY_TYPE_GOODS = new CodeMsg(500302,"当前没有该类型商品");
 
     //后台数据获取异常5004xx
     public static CodeMsg NO_ORDER = new CodeMsg(500400,"订单不存在");

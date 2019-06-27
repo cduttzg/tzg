@@ -30,8 +30,7 @@ public interface GoodsMapper {
      */
     @Insert("insert into goods(user_id,type,title,content,price,image,stock,tag) values" +
             " (#{userId},5,#{title},#{content},#{price},#{image},#{stock},5)")
-    int publishSeekGood(@Param("userId")Long userId,@Param("tag")Integer tag,@Param("title")String title,@Param("content")String content,@Param("price")Float price,@Param("stock")Integer stock,@Param("image")String image);
-
+    int publishSeekGood(Goods good);
     /**
      * 通过good中userid 、tpye、title删除求购信息
      */
@@ -39,10 +38,27 @@ public interface GoodsMapper {
     int deleteSeekGood(@Param("userId") Long userId,@Param("tag") Integer tag,@Param("title") String title);
 
     /**
+     * 通过good中userid 、tpye、title查找求购信息是否已经存在
+     */
+    @Select("select * from goods where user_id=#{userId} and title=#{title} and tag=#{tag}")
+    Goods isExitSeekGoods(@Param("userId") Long userId,@Param("tag") Integer tag,@Param("title") String title);
+    /**
      * 更新商品库存
      */
     @Update("update goods set stock=#{newNumber} where id=#{goodsId}")
     int updateGoodsStock(@Param("goodsId") Long goodsId, @Param("newNumber") Integer newNumber);
+
+    /**
+     * 根据用户名查找求购信息
+     */
+    @Select("select * from goods where user_id =#{userid} and type=5")
+    List<Goods> selectSeekGoodsByUserid(Long userid);
+
+    /**
+     * 根据种类信息取得所有相同种类的商品
+     */
+    @Select("select * from goods where type=#{type}")
+    List<Goods> findSameTypeGoodsByType(Integer type);
 
     /**
      * 根据类型查询n条商品

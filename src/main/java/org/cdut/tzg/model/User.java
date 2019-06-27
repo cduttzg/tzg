@@ -23,21 +23,14 @@ public class User implements Serializable {
     private String moneyCode;
     private Integer role;
 
-    public User(Long id, String schoolNumber, String username, String password, String phoneNumber,
-         String address, String email,Integer isForzen, Integer totalSold, Integer grade,
-         String avatar, String moneyCode, Integer role){
-        this.id=id;
+    public User(String schoolNumber, String username, String password, String phoneNumber,
+         String address, String email, Integer role){
         this.schoolNumber=schoolNumber;
         this.username=username;
         this.password=password;
         this.phoneNumber=phoneNumber;
         this.address=address;
         this.email=email;
-        this.isFrozen=isForzen;
-        this.totalSold=totalSold;
-        this.grade=grade;
-        this.avatar=avatar;
-        this.moneyCode=moneyCode;
         this.role=role;
     }
     public User(){}
