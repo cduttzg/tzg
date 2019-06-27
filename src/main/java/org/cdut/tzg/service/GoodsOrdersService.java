@@ -19,4 +19,11 @@ public interface GoodsOrdersService {
      * 商品订单关系信息(OrdersGoods)入库
      */
     int addGoodsOrders(GoodsOrders goodsOrders);
+
+    /**
+     * 通过sellerid查找订单信息
+     */
+    List<GoodsOrders> getGoodsOrdersBySellerId(Long sellerid);
+
+
 }

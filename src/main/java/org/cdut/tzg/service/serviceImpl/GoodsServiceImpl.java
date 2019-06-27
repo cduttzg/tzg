@@ -65,6 +65,16 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public List<Goods> getPutGoods(Long userid) {
+        return goodsMapper.getPutGoods(userid);
+    }
+
+    @Override
+    public String getGoodsNameById(Long goodsid) {
+        return goodsMapper.getGoodsNameById(goodsid);
+    }
+
+    @Override
     public int addGoods(Goods goods) {
         return goodsMapper.addGoods(goods);
     }

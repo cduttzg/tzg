@@ -56,8 +56,19 @@ public interface GoodsService {
      * 根据类型查询n条商品
      */
     List<Goods> findGoodsByTypeAndLimit(Integer type, int limit);
+
     /**
-     * 添加商品
+     * 根据用户id获取当前用户的上架信息
+     */
+    List<Goods> getPutGoods(Long userid);
+
+
+    /**
+     * 通过goodsid查找商品name
+     */
+    String getGoodsNameById(Long goodsid);
+    /**
+     * 添加新商品
      */
     int addGoods(Goods goods);
 
