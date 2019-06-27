@@ -41,7 +41,8 @@ public class TzgApplication {
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getFrozenUser");
         //个人中心测试/api/user
         System.out.println("-----------个人中心测试----------");
-        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/SeekInfo?username=rose");
+        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/SeekInfo?username=rose");//根据用户姓名查询用户求购信息
+        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/message?username=rock");//根据用户姓名查找用户信息
     }
 
 }

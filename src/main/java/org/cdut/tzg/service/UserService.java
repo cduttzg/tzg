@@ -67,4 +67,8 @@ public interface UserService {
      * 获取所有管理员
      */
     List<User> getAllAdministrator();
+    /**
+     * 更新用户信息
+     */
+    int updateUserInformation(String username,String phoneNum,String email,String address,String avatar,String moneyCode);
 }

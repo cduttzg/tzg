@@ -68,12 +68,19 @@ public class UserServiceImpl implements UserService {
     public int setAdministrator(String schoolNum){
         return userMapper.setAdministrator(schoolNum);
     }
+
     @Override
     public int deletAdministrator(String schoolNum){
         return userMapper.deletAdministrator(schoolNum);
     }
+
     @Override
     public List<User> getAllAdministrator(){
         return userMapper.getAllAdministrator();
+    }
+
+    @Override
+    public int updateUserInformation(String username,String phoneNum,String email,String address,String avatar,String moneyCode){
+        return userMapper.updateUserInformation(username,phoneNum,email,address,avatar,moneyCode);
     }
 }
