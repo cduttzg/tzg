@@ -90,15 +90,19 @@ public class UserController {
         Map map=MapUtils.getMap(data);
         User user=userService.findUserByName((String)map.get("用户名"));
         Map mapdata = new LinkedHashMap();
-        if (user.getPassword().equals((String)map.get("密码"))){
-            mapdata.put("status",0);
-            boolean isFrozen = (user.getIsFrozen()==0?false:true);
-            mapdata.put("是否被冻结",isFrozen);
-        }else {
-            mapdata.put("status",1);
-            mapdata.put("是否被冻结",true);
+        if(user ==null){
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }else{
+            if (user.getPassword().equals((String)map.get("密码"))){
+                mapdata.put("status",0);
+                boolean isFrozen = (user.getIsFrozen()==0?false:true);
+                mapdata.put("是否被冻结",isFrozen);
+            }else {
+                mapdata.put("status",1);
+                mapdata.put("是否被冻结",true);
+            }
+            return Result.success(mapdata);
         }
-        return Result.success(mapdata);
     }
 
     /**
@@ -212,9 +216,10 @@ public class UserController {
             String address = (String) maps.get("address");
             String avatar = (String) maps.get("avatar");
             String moneyCode = (String) maps.get("moneyCode");
-            if (!moneyCode.isEmpty())
+            if (moneyCode.equals(""))
+                map.put("beSaller",false);
+            else
                 map.put("beSaller",true);
-            else map.put("beSaller",false);
             int sign = userService.updateUserInformation(username,phoneNum,email,address,avatar,moneyCode);
             if (sign == 1){
                 map.put("success",true);
@@ -327,5 +332,23 @@ public class UserController {
             datamap.put("总卖出量",(int)user.getTotalSold());
             return Result.success(datamap);
         }
+    }
+
+    /**
+     * 描述：获取当前用户的订单
+     * 方法：GET
+     * 数据：{“用户名”:”XXX”}
+     * 期望返回格式：[{“买家姓名”:”XXX”,”卖家姓名”:["xxx","xxx"...],”商品名称”:["xxx","xxx"...],”订单时间”:”XXX”,”订单状态”:已付款/已完成/异常,”订单ID”:”xxx”},]
+     */
+    @RequestMapping(value = "/home/orderInfo",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<Object> getUserOrderInfo(@RequestParam String username){
+        Long userId = userService.findIdByUserName(username);
+        if(userId == 0){
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
+        List<Orders> orders = orderService.getOrderByBuyerId(userId);
+        System.out.println(orders);
+        return null;
     }
 }

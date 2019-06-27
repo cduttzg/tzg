@@ -66,4 +66,5 @@ public interface GoodsMapper {
     @Select("select * from goods where type = #{type} limit #{limit}")
     List<Goods> findGoodsByTypeAndLimit(@Param("type") Integer type, @Param("limit") int limit);
 
+
 }

@@ -1,5 +1,6 @@
 package org.cdut.tzg.service;
 
+import org.apache.ibatis.annotations.Select;
 import org.cdut.tzg.model.Orders;
 
 import java.util.Date;
@@ -48,4 +49,9 @@ public interface OrderService {
      * 修改订单状态为已完成
      */
     int setStateToCompleted(Long orderId,Long userId,Date date);
+
+    /**
+     * 根据指定用户买家id获取订单信息
+     */
+    List<Orders> getOrderByBuyerId(Long buyerId);
 }
