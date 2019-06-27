@@ -79,5 +79,16 @@ public interface GoodsMapper {
     @Select("select * from goods where type != 5 and user_id = #{userid}")
     List<Goods> getPutGoods(Long userid);
 
+    /**
+     * 添加商品
+     */
+    @Insert("insert into goods(user_id,type,title,content,price,image,stock,tag) values " +
+            "(#{userId},#{type},#{title},#{content},#{price},#{image},#{stock},#{tag})")
+    int addGoods(Goods goods);
+    /**
+     * 修改商品状态(上下架、商品种类、求购)
+     */
+    @Update("update goods set type = #{state} where id = #{goodsId}")
+    int updateTypeState(@Param("goodsId") Long goodsId,@Param("state") Integer state);
 
 }

@@ -1,8 +1,10 @@
 package org.cdut.tzg.controller;
 
 import org.cdut.tzg.model.*;
+import org.cdut.tzg.result.CodeMsg;
 import org.cdut.tzg.result.Result;
 import org.cdut.tzg.service.*;
+import org.cdut.tzg.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -154,6 +156,39 @@ public class HomeController {
             list.add(map);
         }
         return list;
+    }
+
+    /**
+     * 更新用户信息
+     * @param data
+     * @return
+     */
+    @RequestMapping(value = "/home/updateMessage",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> updateUserInformation(@RequestBody String data){
+        Map<String,Object> map = new HashMap<>();
+        Map maps = MapUtils.getMap(data);
+        String username = (String)maps.get("username");
+        User user = userService.findUserByName(username);
+        if (user != null){
+            String phoneNum = (String) maps.get("phoneNum");
+            String email = (String) maps.get("email");
+            String address = (String) maps.get("address");
+            String avatar = (String) maps.get("avatar");
+            String moneyCode = (String) maps.get("moneyCode");
+            if (moneyCode.equals(""))
+                map.put("beSaller",false);
+            else
+                map.put("beSaller",true);
+            int sign = userService.updateUserInformation(username,phoneNum,email,address,avatar,moneyCode);
+            if (sign == 1){
+                map.put("success",true);
+                map.put("content","信息修改成功");
+            }else if (sign == 0)
+                return Result.error(CodeMsg.REPETITIVE_OPERATION);
+        }else
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        return Result.success(map);
     }
 
 }

@@ -81,15 +81,9 @@ public class OrderController {
     @RequestMapping(value = "/manageOrder",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> setOrderException(@RequestBody String data){
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map maps = null;
-        try {
-            maps = objectMapper.readValue(data,Map.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Long orderId = Long.valueOf((Integer) maps.get("orderId"));
         Map<String,Object> map = new HashMap<>();
+        Map maps = MapUtils.getMap(data);
+        Long orderId = Long.valueOf((Integer) maps.get("orderId"));
         Orders order = orderService.getOrderById(orderId);
         if (order != null) {
             int sign = orderService.setOrderException(orderId);

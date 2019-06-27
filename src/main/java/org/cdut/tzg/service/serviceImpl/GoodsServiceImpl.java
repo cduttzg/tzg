@@ -73,4 +73,14 @@ public class GoodsServiceImpl implements GoodsService {
     public String getGoodsNameById(Long goodsid) {
         return goodsMapper.getGoodsNameById(goodsid);
     }
+
+    @Override
+    public int addGoods(Goods goods) {
+        return goodsMapper.addGoods(goods);
+    }
+
+    @Override
+    public int updateTypeState(Long goodsId, Integer state) {
+        return goodsMapper.updateTypeState(goodsId,state);
+    }
 }

@@ -204,6 +204,87 @@ public class UserController {
     }
 
     /**
+     * 添加新商品
+     * @param data
+     * @return
+     */
+    @RequestMapping(value = "/home/addGoods",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> addGoods(@RequestBody String data){
+        Map<String,Object> map = new HashMap<>();
+        Map maps = MapUtils.getMap(data);
+        String username = (String) maps.get("username");
+        User user = userService.findUserByName(username);
+        if (user != null){
+            Goods goods = new Goods();
+            goods.setUserId(user.getId());
+            Integer type = (Integer) maps.get("type");
+            goods.setType((Integer) maps.get("type"));
+            goods.setTitle((String) maps.get("title"));
+            goods.setContent((String) maps.get("content"));
+            goods.setPrice(Float.valueOf((Integer) maps.get("price")));
+            goods.setImage((String) maps.get("image"));
+            goods.setStock((Integer) maps.get("stock"));
+            goods.setTag(-1);
+            int sign = goodsService.addGoods(goods);
+            System.out.println(goods);
+            if (sign == 1){
+                map.put("success",true);
+                map.put("content","上架成功");
+            }else if (sign == 0)
+                //再次上架
+                return Result.error(CodeMsg.REPETITIVE_OPERATION);
+        }else
+            return Result.error(CodeMsg.USER_UNDEFIND);
+
+        return Result.success(map);
+    }
+
+    @RequestMapping(value = "/home/onShelves",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> onShelves(@RequestBody String data){
+        Map<String,Object> map = new HashMap<>();
+        Map maps = MapUtils.getMap(data);
+        Long goodsId = Long.valueOf((Integer) maps.get("goodsId"));
+        Goods goods = goodsService.findGoodsById(goodsId);
+        if (goods != null){
+            int sign = goodsService.updateTypeState(goodsId,0);
+            if (sign == 1){
+                map.put("success",true);
+                map.put("content","商品下架成功");
+            }else if (sign == 0)
+                return Result.error(CodeMsg.REPETITIVE_OPERATION);
+        }else
+            Result.error(CodeMsg.NO_GOODS);
+        return Result.success(map);
+    }
+
+    /**
+     * 商品下架
+     * @param data
+     * @return
+     */
+    @RequestMapping(value = "/home/offShelves",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> offShelves(@RequestBody String data){
+        Map<String,Object> map = new HashMap<>();
+        Map maps = MapUtils.getMap(data);
+        Long goodsId = Long.valueOf((Integer) maps.get("goodsId"));
+        Goods goods = goodsService.findGoodsById(goodsId);
+        if (goods != null){
+            int sign = goodsService.updateTypeState(goodsId,-1);
+            if (sign == 1){
+                map.put("success",true);
+                map.put("content","商品下架成功");
+            }else if (sign == 0){
+                return Result.error(CodeMsg.REPETITIVE_OPERATION);
+            }
+        }else
+            return Result.error(CodeMsg.NO_GOODS);
+
+        return Result.success(map);
+    }
+    /**
      * 更新用户信息
      * @param data
      * @return
