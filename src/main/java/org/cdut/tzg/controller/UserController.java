@@ -194,10 +194,49 @@ public class UserController {
         return  Result.success(listdata);
     }
 
+    /**
+     * 订单置为已支付
+     * @param data
+     * @return
+     */
+    @RequestMapping(value = "/saller/paidOrder",method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Map<String,Object>> setStateToPaid(@RequestBody String data){
+        Map<String,Object> map = new HashMap<>();
+        Map maps = MapUtils.getMap(data);
+        String userName = (String) maps.get("username");
+        Long userId = userService.findIdByUserName(userName);
+        if (userId != null) {
+            //用户存在
+            //获取订单id
+            Long orderId = Long.valueOf((Integer) maps.get("id"));
+            Orders order = orderService.getOrderByIdAndUserId(orderId, userId);
+            //订单存在
+            if (order != null) {
+                int sign = orderService.setStateToPaid(orderId, userId);
+                if (sign == 1) {
+                    //修改成功
+                    map.put("success", true);
+                    map.put("content", "订单已支付");
+                } else if (sign == 0) {
+                    //原本为已支付状态
+                    return Result.error(CodeMsg.REPETITIVE_OPERATION);
+                }
+            } else{
+                return Result.error(CodeMsg.NO_ORDER);
+            }
+        }else {
+            //用户不存在
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
+        return Result.success(map);
+    }
 
-    /*
-    * 订单置为完成
-    * */
+    /**
+     * 订单置为完成
+     * @param data
+     * @return
+     */
     @RequestMapping(value = "/saller/completeOrder",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> setOrderComplete(@RequestBody String data){
@@ -213,10 +252,7 @@ public class UserController {
             Orders order = orderService.getOrderByIdAndUserId(orderId, userId);
             //订单存在
             if (order != null) {
-                Date date = new Date();
-                SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:SS");
-                System.out.println(sdf.format(date));
-                int sign = orderService.setStateToCompleted(orderId, userId,sdf.format(date));
+                int sign = orderService.setStateToCompleted(orderId, userId,new Date());
                 if (sign == 1) {
                     //修改成功
                     map.put("success", true);
@@ -233,5 +269,31 @@ public class UserController {
             return Result.error(CodeMsg.USER_UNDEFIND);
         }
         return Result.success(map);
+    }
+
+
+    /**
+     *方法：GET
+     * 数据：{“用户名”:”XXX” }
+     * 期望返回格式：{“学号”:”XXX” ,”用户名”:”XXX” ,”手机号码”:”XXX” ,”电子邮箱”:”XXX” ,”收货地址”:”XXX” ,”用户评分”:5,”头像”:”XXX” ,”总卖出量”:100}
+     */
+    @RequestMapping(value = "/home/message",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<Object> getUserMessage(@RequestParam String username){
+        User user = userService.findUserByName(username);//根据用户名查找用户信息
+        if (user == null){//查找用户失败，则返回"未找到该用户"
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }else {//查找成功
+            Map<String,Object> datamap = new HashMap();
+            datamap.put("学号",user.getSchoolNumber());
+            datamap.put("用户名",user.getUsername());
+            datamap.put("手机号码",user.getPhoneNumber());
+            datamap.put("电子邮箱",user.getEmail());
+            datamap.put("收货地址",user.getAddress());
+            datamap.put("用户评分",(int)user.getGrade());
+            datamap.put("头像",user.getAvatar());
+            datamap.put("总卖出量",(int)user.getTotalSold());
+            return Result.success(datamap);
+        }
     }
 }

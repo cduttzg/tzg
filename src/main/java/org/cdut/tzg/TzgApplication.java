@@ -33,14 +33,11 @@ public class TzgApplication {
 
         //后台数据连接
         System.out.println("-----------后台数据连接----------");
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getData");
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/manageOrder?orderId=100");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getFrozenUser");
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/freezeUser?schoolNum=201613160833");
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/addAdmin?schoolNum=201613160833");
         //个人中心测试/api/user
         System.out.println("-----------个人中心测试----------");
-        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/SeekInfo?username=rose");
+        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/SeekInfo?username=rose");//根据用户姓名查询用户求购信息
+        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/message?username=rock");//根据用户姓名查找用户信息
     }
 
 }
