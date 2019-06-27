@@ -18,7 +18,7 @@ public class Goods implements Serializable {
     private String image;//商品图片
     private Date createTime;//物品创建时间
     private Integer stock;//库存
-    private Integer tag;//求购标签
+    private Integer tag;//求购标签 0：水票， 1：书籍， 2：寝室神器，3：租房，4：文具，5：电脑办公，6：游戏道具，7：体育用具，8：乐器，9：电器，10：装饰品，11：其他，
 
     public Integer getTag() { return tag; }
 
