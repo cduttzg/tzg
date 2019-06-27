@@ -1,5 +1,6 @@
 package org.cdut.tzg.service;
 
+import org.apache.ibatis.annotations.Select;
 import org.cdut.tzg.model.Cart;
 import org.cdut.tzg.model.Goods;
 
@@ -25,4 +26,10 @@ public interface CartService {
      * 更新购物车中某一商品的数量
      */
     int updateGoodsInCart(Long goodsId,Integer newNumber);
+
+
+    /**
+     * 根据用户id获取该用户的购物车信息
+     */
+    List<Cart> findCartByUserId(Long userId);
 }

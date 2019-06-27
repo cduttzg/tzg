@@ -153,13 +153,13 @@ public class GoodsController {
     @RequestMapping(value = "/gallery",method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> gallary(@RequestParam Integer type){
-        Map<String,Object> map=new HashMap<>();
         List<Map<String,Object>> list=new ArrayList<>();//返回的数组
         List<Goods> goodsList=goodsService.findSameTypeGoodsByType(type);//该类型所有商品数组
         if(goodsList.size()==0){
             return Result.error(EMPTY_TYPE_GOODS);
         }
         for(int i=0;i<goodsList.size();++i){
+            Map<String,Object> map=new HashMap<>();
             Goods goods=goodsList.get(i);
             map.put("商品标签",goods.getType());
             map.put("商品名称",goods.getTitle());

@@ -33,4 +33,10 @@ public interface CartMapper {
      */
     @Insert("update cart set number=#{newNumber} where goods_id=#{goodsId}")
     int updateGoodsInCart(@Param("goodsId")Long goodsId,@Param("newNumber")Integer newNumber);
+
+    /**
+     * 根据用户id获取该用户的购物车信息
+     */
+    @Select("select * from cart where buyer_id=#{userId}")
+    List<Cart> findCartByUserId(Long userId);
 }
