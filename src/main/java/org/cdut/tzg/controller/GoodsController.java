@@ -1,10 +1,6 @@
 package org.cdut.tzg.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.xpath.internal.operations.Or;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.transaction.Transaction;
+
 import org.cdut.tzg.model.*;
 import org.cdut.tzg.result.Result;
 import org.cdut.tzg.service.*;
@@ -14,9 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.rmi.CORBA.Util;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+
 import java.util.*;
 
 import static org.cdut.tzg.result.CodeMsg.*;
@@ -159,13 +153,13 @@ public class GoodsController {
     @RequestMapping(value = "/gallery",method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> gallary(@RequestParam Integer type){
-        Map<String,Object> map=new HashMap<>();
         List<Map<String,Object>> list=new ArrayList<>();//返回的数组
         List<Goods> goodsList=goodsService.findSameTypeGoodsByType(type);//该类型所有商品数组
         if(goodsList.size()==0){
             return Result.error(EMPTY_TYPE_GOODS);
         }
         for(int i=0;i<goodsList.size();++i){
+            Map<String,Object> map=new HashMap<>();
             Goods goods=goodsList.get(i);
             map.put("商品标签",goods.getType());
             map.put("商品名称",goods.getTitle());

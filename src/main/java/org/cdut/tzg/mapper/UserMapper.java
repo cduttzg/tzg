@@ -1,9 +1,6 @@
 package org.cdut.tzg.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.cdut.tzg.model.User;
 
 import java.util.List;
@@ -89,5 +86,21 @@ public interface UserMapper {
      */
     @Select("select username,phone_number from user where role = 1 order by school_number")
     List<User> getAllAdministrator();
+
+    /**
+     * 更新用户信息
+     */
+    @Update("update user set phone_number = #{phoneNum}," +
+            "email = #{email}," +
+            "address = #{address}," +
+            "avatar = #{avatar}," +
+            "money_code = #{moneyCode}" +
+            "where username = #{username}")
+    int updateUserInformation(@Param("username") String username,
+                              @Param("phoneNum") String phoneNum,
+                              @Param("email") String email,
+                              @Param("address") String address,
+                              @Param("avatar") String avatar,
+                              @Param("moneyCode") String moneyCode);
 
 }

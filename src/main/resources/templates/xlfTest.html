@@ -6,50 +6,7 @@
     <script src="/static/jquery-1.11.0.min.js"></script>
 </head>
 <body>
-<button id="b21" type="button">订单完成</button>
-<script>
-    var btn1 = $("#b21");
-    btn1.click(function () {
-        $.ajax({
-            url: "/api/user/saller/completeOrder",    //请求的url地址
-            contentType :"application/json",
-            dataType:"json",
-            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
-            data: JSON.stringify({"username":"小红","id":8}),    //参数值
-            type: "POST",   //请求方式
-            success: function (req) {
-                //请求成功时处理
-                console.log(req);
-            },
-            error: function (req) {
-                //请求出错处理
-                console.log(req);
-            }
-        });
-    })
-</script>
-<button id="b22" type="button">订单支付</button>
-<script>
-    var btn1 = $("#b22");
-    btn1.click(function () {
-        $.ajax({
-            url: "/api/user/saller/paidOrder",    //请求的url地址
-            contentType :"application/json",
-            dataType:"json",
-            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
-            data: JSON.stringify({"username":"小红","id":8}),    //参数值
-            type: "POST",   //请求方式
-            success: function (req) {
-                //请求成功时处理
-                console.log(req);
-            },
-            error: function (req) {
-                //请求出错处理
-                console.log(req);
-            }
-        });
-    })
-</script>
+
 <!--
     URL：/api/user/login         （已完成 谢礼峰）
     描述：用户登陆
@@ -150,6 +107,73 @@
                 console.log(req);
             },
             error: function () {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
+
+<button id="b21" type="button">修改用户信息</button>
+<script>
+    var btn1 = $("#b21");
+    btn1.click(function () {
+        $.ajax({
+            url: "/api/user/home/updateMessage",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"username":"小红","phoneNum":"99999999999","email":"http://","address":"东拉西扯星球","avatar":"个性头像","moneyCode":"非主流头像"}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function (req) {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
+<button id="b22" type="button">订单完成</button>
+<script>
+    var btn1 = $("#b22");
+    btn1.click(function () {
+        $.ajax({
+            url: "/api/user/saller/completeOrder",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"username":"小红","id":8}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function (req) {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
+<button id="b23" type="button">订单支付</button>
+<script>
+    var btn1 = $("#b23");
+    btn1.click(function () {
+        $.ajax({
+            url: "/api/user/saller/paidOrder",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"username":"小红","id":8}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function (req) {
                 //请求出错处理
                 console.log(req);
             }
