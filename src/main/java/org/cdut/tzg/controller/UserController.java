@@ -162,7 +162,7 @@ public class UserController {
             }
         }
     }
-    
+
     @RequestMapping(value = "/home/SeekInfo",method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> findAllSeekGoods(@RequestParam String username){
