@@ -61,4 +61,9 @@ public class OrderServiceImpl implements OrderService {
     public int setStateToCompleted(Long orderId,Long userId,Date date){
         return ordersMapper.setStateToCompleted(orderId,userId,date);
     }
+
+    @Override
+    public List<Orders> getOrderByBuyerId(Long buyerId) {
+        return ordersMapper.getOrderByBuyerId(buyerId);
+    }
 }

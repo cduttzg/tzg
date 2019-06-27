@@ -64,4 +64,10 @@ public interface OrdersMapper {
      */
     @Update("update orders set state = 2,completed_time = #{date} where id = #{orderId} and buyer_id = #{userId}")
     int setStateToCompleted(@Param("orderId") Long orderId,@Param("userId") Long userId,@Param("date") Date date);
+
+    /**
+     * 根据指定用户买家id获取订单信息
+     */
+    @Select("select * from orders where buyer_id = #{buyerId}")
+    List<Orders> getOrderByBuyerId(Long buyerId);
 }
