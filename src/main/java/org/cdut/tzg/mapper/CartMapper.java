@@ -31,12 +31,18 @@ public interface CartMapper {
     /**
      * 更新购物车某个商品的库存
      */
-    @Insert("update cart set number=#{newNumber} where goods_id=#{goodsId}")
-    int updateGoodsInCart(@Param("goodsId")Long goodsId,@Param("newNumber")Integer newNumber);
+    @Insert("update cart set number=#{newNumber} where buyer_id=#{buyerId} and goods_id=#{goodsId}")
+    int updateGoodsInCart(@Param("buyerId")Long buyerId,@Param("goodsId")Long goodsId,@Param("newNumber")Integer newNumber);
 
     /**
      * 根据用户id获取该用户的购物车信息
      */
     @Select("select * from cart where buyer_id=#{userId}")
     List<Cart> findCartByUserId(Long userId);
+
+    /**
+     * 根据用户id和商品id获得唯一商品(购物车不允许同一id商品出现多次 只允许对它在购物车中的数量进行修改)
+     */
+    @Select("select * from cart where buyer_id=#{buyerId} and goods_id=#{goodsId}")
+    Cart findCartByUserIdAndGoodsId(@Param("buyerId") Long buyerId,@Param("goodsId")Long goodsId);
 }
