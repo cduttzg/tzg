@@ -13,10 +13,12 @@ import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.OrderService;
 import org.cdut.tzg.service.UserService;
 import org.cdut.tzg.utils.CDUTUtils;
+import org.cdut.tzg.utils.ImageUtils;
 import org.cdut.tzg.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -24,6 +26,7 @@ import java.util.*;
 
 import static org.cdut.tzg.result.CodeMsg.NOT_STUDENT;
 import static org.cdut.tzg.result.CodeMsg.USERNAME_REPEAT;
+import static org.cdut.tzg.utils.ImageUtils.DEFAULT_IMAGE_URL;
 
 /**
  * @author anlan
@@ -45,30 +48,6 @@ public class UserController {
     @Autowired
     private GoodsOrdersService goodsOrdersService;
 
-    @RequestMapping("/findAll")
-    @ResponseBody
-    public List<User> findAll(){
-        List<User> users = userService.findAll();
-        return users;
-    }
-
-    @RequestMapping("/find")
-    @ResponseBody
-    public String find(){
-        Map<String,String> map = new HashMap<String,String>();
-        map.put("1111","1111");
-        map.put("2222","2222");
-        map.put("3333","3333");
-        String test = null;
-        ObjectMapper obj = new ObjectMapper();
-        try {
-             test = obj.writeValueAsString(map);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        System.out.println(test);
-        return test;
-    }
 
     /**
      * URL： /api/user/register
@@ -148,18 +127,18 @@ public class UserController {
         }
     }
     /**
-     * URL： /api/user/home/isSaller
+     * URL： /api/user/home/isSeller
      * 描述：用户是否是商家
      * 方法：POST
      * 数据：{“用户名”:”XXX”}
      * 返回：
-     *  不是卖家：{"code":200,"msg":"success","data":{"isSaller":false,"moneyCode":null}}
-     *  是卖家：{"code":200,"msg":"success","data":{"isSaller":true,"moneyCode":"zacky的收款码"}}
+     *  不是卖家：{"code":200,"msg":"success","data":{"isSeller":false,"moneyCode":null}}
+     *  是卖家：{"code":200,"msg":"success","data":{"isSeller":true,"moneyCode":"zacky的收款码"}}
      *  输入的用户不存在：{"code":500201,"msg":"未找到该用户","data":null}
      */
-    @RequestMapping(value = "/home/isSaller",method = RequestMethod.POST)
+    @RequestMapping(value = "/home/isSeller",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Object> isSaller(@RequestBody String data){
+    public Result<Object> isSeller(@RequestBody String data){
         Map map=MapUtils.getMap(data);
         User user = userService.findUserByName((String) map.get("用户名"));//通过用户名查找用户信息
         if(user == null){
@@ -167,10 +146,10 @@ public class UserController {
         }
         Map <String,Object> mapdata = new LinkedHashMap<String,Object>();//最后返回的data信息
         if (user.getMoneyCode() != null){   //用户上传了付款码，则是商家
-            mapdata.put("isSaller",true);
+            mapdata.put("isSeller",true);
             mapdata.put("moneyCode",user.getMoneyCode());
         }else {
-            mapdata.put("isSaller",false);
+            mapdata.put("isSeller",false);
             mapdata.put("moneyCode",null);
         }
         return Result.success(mapdata);
@@ -190,52 +169,50 @@ public class UserController {
     @RequestMapping(value = "/home/handleSeek",method = RequestMethod.POST)
     @ResponseBody
     public Result<Object> handleSeek(@RequestParam("data") String data,@RequestParam(value = "img",required = false) MultipartFile file){
-        System.out.println(data);
-        System.out.println();
-//        Map map;
-//        map = data;
-//        System.out.println(map.entrySet());
-        System.out.println(file.getOriginalFilename());
+        Map map = MapUtils.getMap(data);
         Map mapdata = new HashMap();
-//        Long userId = userService.findIdByUserName((String) data.get("用户名"));
-//        if(userId == null){
-//            return Result.error(CodeMsg.USER_UNDEFIND);
-//        }
-//        if((Boolean) data.get("发布")){//发布求购信息
-//            Goods exitSeekGoods=goodsService.isExitSeekGoods(userId, (Integer) data.get("商品标签"), (String) data.get("商品名称"));
-//            if (exitSeekGoods==null){ //求购信息不存在的时候
-//                Goods good=new Goods();
-//                good.setUserId(userId);
-//                good.setTag((Integer) data.get("商品标签"));
-//                good.setTitle((String) data.get("商品名称"));
-//                good.setContent((String) data.get("描述"));
-//                good.setPrice(Float.parseFloat(data.get("单价").toString()));
-//                good.setStock((Integer) data.get("数量"));
-//                good.setImage((String) data.get("img"));
-//                int pubStatus = goodsService.publishSeekGood(good);
-//                if (pubStatus==1){//求购信息发布成功
-//                    mapdata.put("success",true);
-//                    return Result.success(mapdata);
-//                }else {//求购信息发布失败
-//                    mapdata.put("success",false);
-//                    return Result.error(CodeMsg.PUBLISHGOODFAILED);
-//                }
-//            }else {//求购信息已经存在
-//                mapdata.put("success",false);
-//                return Result.error(CodeMsg.EXITSEEKGOODS);
-//            }
-//
-//        }else {//删除求购信息
-//            int delStatus=goodsService.deleteSeekGood(userId, (Integer) data.get("商品标签"), (String) data.get("商品名称"));
-//            if (delStatus == 1) {//删除求购信息成功
-//                mapdata.put("success", true);
-//                return Result.success(mapdata);
-//            } else {//删除求购信息失败
-//                mapdata.put("success", false);
-//                return Result.error(CodeMsg.DELETEGOODFAILED);
-//            }
-//        }
-        return Result.success(mapdata);
+        User user = userService.findUserByName((String) map.get("用户名"));
+        Long userId = user.getId();
+        if(userId == null){
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
+        if((Boolean) map.get("发布")){//发布求购信息
+            Integer tag = (Integer) map.get("商品标签");
+            String goodsTitle = (String) map.get("商品名称");
+            Goods exitSeekGoods=goodsService.isExitSeekGoods(userId, tag, goodsTitle);
+            if (exitSeekGoods==null){ //求购信息不存在的时候
+                Goods good=new Goods();
+                good.setUserId(userId);
+                good.setTag(tag);
+                good.setTitle(goodsTitle);
+                good.setContent((String) map.get("描述"));
+                good.setPrice(Float.parseFloat(map.get("单价").toString()));
+                good.setStock((Integer) map.get("数量"));
+                String imageUrl = ImageUtils.upload(file,user.getSchoolNumber());;
+                good.setImage(imageUrl);
+                int pubStatus = goodsService.publishSeekGood(good);
+                if (pubStatus==1){//求购信息发布成功
+                    mapdata.put("success",true);
+                    return Result.success(mapdata);
+                }else {//求购信息发布失败
+                    mapdata.put("success",false);
+                    return Result.error(CodeMsg.PUBLISHGOODFAILED);
+                }
+            }else {//求购信息已经存在
+                mapdata.put("success",false);
+                return Result.error(CodeMsg.EXITSEEKGOODS);
+            }
+
+        }else {//删除求购信息
+            int delStatus=goodsService.deleteSeekGood(userId, (Integer) map.get("商品标签"), (String) map.get("商品名称"));
+            if (delStatus == 1) {//删除求购信息成功
+                mapdata.put("success", true);
+                return Result.success(mapdata);
+            } else {//删除求购信息失败
+                mapdata.put("success", false);
+                return Result.error(CodeMsg.DELETEGOODFAILED);
+            }
+        }
     }
 
     /*
@@ -376,30 +353,45 @@ public class UserController {
     * 描述：更新用户信息
     * 方法：POST
     * 数据：formData-->{"data":{“用户名”:”XXX”,”手机号码”:”XXX” ,”电子邮箱”:”XXX” ,”收货地址”:”XXX”},"img":[file,]}   img-->收款码、用户头像
-    * 期望返回格式：{“success”:false/true,”content”:”xxx”,”beSaller”:false/true}
+    * 期望返回格式：{“success”:false/true,”content”:”xxx”,”beSeller”:false/true}
     * 返回值：
-    * {"code":200,"msg":"success","data":{"success":true,"beSaller":false,"content":"信息修改成功"}}
+    * {"code":200,"msg":"success","data":{"success":true,"beSeller":false,"content":"信息修改成功"}}
     * {"code": 500402, "msg": "重复操作", data: null}
     * {"code": 500201, "msg": "未找到该用户", "data": null}
     * */
     @RequestMapping(value = "/home/updateMessage",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Map<String,Object>> updateUserInformation(@RequestBody String data){
+    public Result<Map<String,Object>> updateUserInformation(@RequestParam("data") String data,@RequestParam(value = "img",required = false) MultipartFile[] files){
         Map<String,Object> map = new HashMap<>();
+        System.out.println(data);
         Map maps = MapUtils.getMap(data);
-        String username = (String)maps.get("username");
+        System.out.println(maps.entrySet());
+        System.out.println(Arrays.toString(files));
+        System.out.println(files.length);
+        for(int i=0;i<files.length;i++){
+            if(files[i].getOriginalFilename().equals("nullFile")){
+                files[i] = null;
+            }
+        }
+        String username = (String)maps.get("用户名");
         User user = userService.findUserByName(username);
         if (user != null){
-            String phoneNum = (String) maps.get("phoneNum");
-            String email = (String) maps.get("email");
-            String address = (String) maps.get("address");
-            String avatar = (String) maps.get("avatar");
-            String moneyCode = (String) maps.get("moneyCode");
-            if (moneyCode.equals(""))
-                map.put("beSaller",false);
-            else
-                map.put("beSaller",true);
-            int sign = userService.updateUserInformation(username,phoneNum,email,address,avatar,moneyCode);
+            String phoneNum = (String) maps.get("手机号码");
+            String email = (String) maps.get("电子邮箱");
+            String address = (String) maps.get("收货地址");
+            //若没有上传新的头像就使用以前的头像
+            String avatarUrl = user.getAvatar();
+            System.out.println(avatarUrl);
+            if(files[0]!=null)
+                avatarUrl = ImageUtils.upload(files[0],user.getSchoolNumber());
+            map.put("beSeller",false);
+            //若没有上传新的二维码就使用以前的二维码或者null
+            String moneyCode = user.getMoneyCode();
+            if(files[1]!=null){
+                moneyCode = ImageUtils.upload(files[1],user.getSchoolNumber());
+                map.put("beSeller",true);
+            }
+            int sign = userService.updateUserInformation(username,phoneNum,email,address,avatarUrl,moneyCode);
             if (sign == 1){
                 map.put("success",true);
                 map.put("content","信息修改成功");

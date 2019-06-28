@@ -1,32 +1,46 @@
 <!doctype html>
 <html>
-    <head></head>
+    <head>
+    </head>
     <body>
         <input id='file' type='file' />
+        <input id='file2' type='file' />
         <button id='upLoadFile'>up load file</button>
         <button id='login'>login</button>
         <script>
+
+            function Map2JSONString(MapOBJ){
+                let json = {};
+                const it = MapOBJ.entries();
+                for(let i of MapOBJ.entries()){
+                    json[i[0]]=i[1];
+                }
+                return JSON.stringify(json);
+            }
+
             let btn_1 = document.getElementById('upLoadFile');
             btn_1.onclick=function () {
                 let formData = new FormData();
                 let fileField = document.getElementById('file');
+                let fileField2 = document.getElementById('file2');
                 let map = new Map();
-                map.set('发布',true);
-                map.set('商品标签','1');
-                map.set('商品名称','二手可口可乐');
-                map.set('描述','这是1800年的可乐哟');
-                map.set('单价',123.0);
-                map.set('数量',2);
-                console.log(map);
-                console.log(JSON.stringify(map));
-                formData.append("data",map);
-                formData.append('img',fileField.files[0]);
+                map.set('用户名','小红');
+                map.set('手机号码','18081245642');
+                map.set('电子邮箱','anlan1996@qq.com');
+                map.set('收货地址','成都理工大学');
+                formData.append("data",Map2JSONString(map));
 
-                let url = '/api/user/home/handleSeek';
+                let file1;
+                file1 = fileField.files[0] || (new File(['file'],"nullFile"));
+                let file2;
+                file2 = fileField2.files[0] || (new File(['file'],"nullFile"));
+                formData.append('img',file1);
+                formData.append('img',file2);
+
+                console.log(file1);
+                let url = '/api/user/home/updateMessage';
                 let posts = Post(url, formData);
-                console.log(formData);
-                console.log(JSON.stringify(formData));
-                console.log(posts);
+                console.log(JSON.stringify(posts));
             }
             let btn_2 = document.getElementById('login');
             btn_2.onclick=function () {
@@ -59,7 +73,12 @@
             function handlResponse(url, response){
                 if(response.status < 500){
                     let a = response.json();
-                    console.log(a)
+                    a.then(res=>{
+                        console.log(res);
+                        console.log(JSON.stringify(res));
+                    })
+                    console.log(a);
+                    console.log(JSON.stringify(a));
                     return a;
                 }else{
                     console.error(`Requset failed. Url=${url}. Message=${response.statusText}`);
