@@ -17,7 +17,6 @@ import org.cdut.tzg.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -132,15 +131,15 @@ public class UserController {
         User user=userService.findUserByName((String)map.get("用户名"));
         Map mapdata = new LinkedHashMap();
         if(user ==null){
-            return Result.error(CodeMsg.USER_UNDEFIND);
+            return Result.error(CodeMsg.USER_UNDEFIND);//用户名为空，返回查找用户失败
         }else{
-            if (user.getPassword().equals((String)map.get("密码"))){
+            if (user.getPassword().equals((String)map.get("密码"))){ //密码不正确则返回失败信息
                 mapdata.put("status",0);
                 boolean isFrozen = (user.getIsFrozen()==0?false:true);
                 mapdata.put("是否被冻结",isFrozen);
                 mapdata.put("角色",user.getRole());
                 return Result.success(mapdata);
-            }else {
+            }else { //密码成功则显示登陆成功
                 mapdata.put("status",1);
                 mapdata.put("是否被冻结",true);
                 return Result.error(CodeMsg.PASSWD_ERROE);
@@ -162,12 +161,12 @@ public class UserController {
     @ResponseBody
     public Result<Object> isSaller(@RequestBody String data){
         Map map=MapUtils.getMap(data);
-        User user = userService.findUserByName((String) map.get("用户名"));
+        User user = userService.findUserByName((String) map.get("用户名"));//通过用户名查找用户信息
         if(user == null){
             return Result.error(CodeMsg.USER_UNDEFIND);
         }
-        Map <String,Object> mapdata = new LinkedHashMap<String,Object>();
-        if (user.getMoneyCode() != null){
+        Map <String,Object> mapdata = new LinkedHashMap<String,Object>();//最后返回的data信息
+        if (user.getMoneyCode() != null){   //用户上传了付款码，则是商家
             mapdata.put("isSaller",true);
             mapdata.put("moneyCode",user.getMoneyCode());
         }else {
@@ -253,14 +252,13 @@ public class UserController {
     public Result<Object> findAllSeekGoods(@RequestParam String username){
         Map map=null;
         Long userId=userService.findIdByUserName(username);
-        List<Goods> seekGoods=goodsService.getAllSeekGoodsByUserId(userId);
-        String userPhone=userService.findPhoneByUsername(username);
+        List<Goods> seekGoods=goodsService.getAllSeekGoodsByUserId(userId);//根据用户id查找求购信息
+        String userPhone=userService.findPhoneByUsername(username);//根据用户名查找用户电话
         if (userPhone==null){
             return Result.error(CodeMsg.USER_UNDEFIND);
         }
         List<Map> listdata=new ArrayList<Map>();
-        //“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX ,”商品图片”:”XXX”,”联系方式”:”XXX”
-        for(Goods good : seekGoods){
+        for(Goods good : seekGoods){ //根据查找到的求购记录，构造商品数组
             map=new HashMap();
             map.put("商品标签",good.getTag());
             map.put("商品名称",good.getTitle());
