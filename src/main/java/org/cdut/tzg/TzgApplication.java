@@ -31,12 +31,12 @@ public class TzgApplication {
 
         //商品测试 /api/goods/
         System.out.println("-------------商品测试-----------");
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/getInfo?goodsId=5");
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/gallery?type=1");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/getInfo?goodsId=36");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/goods/gallery?type=4");
         System.out.println();
         //购物车测试 /api/cart/
         System.out.println("-------------购物车测试-----------");
-        System.out.println("tzg admin http://localhost:" + serverPort+"/api/cart/cartInfo?username=jack");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/cart/cartInfo?username=提莫");
         System.out.println("tzg admin http://localhost:" + serverPort+"/api/cart/cartInfo?username=%e5%b0%8f%e6%96%8c");
         System.out.println();
 
