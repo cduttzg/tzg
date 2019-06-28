@@ -71,7 +71,14 @@ public class UserController {
     }
 
     /**
-     * 注册用户
+     * URL： /api/user/register
+     * 描述：用户注册
+     * 方法：POST
+     * 数据：data:{“学号”:XXX,”用户名”:”XXX”,”密码（HASH加密）”:”XXX”,"教务处密码":"xxxxx",”手机号”:”XXX”,”邮箱”:”XXXX”,”地址”:”XXX”}
+     * 返回：
+     *  {code: 500502, msg: "用户名已存在", data: null}
+     *  {code: 500501, msg: "你不是成都理工的学生", data: null}
+     *  {code: 200, msg: "success", data: {content: "注册成功", status: 0}}
      */
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     @ResponseBody
@@ -94,7 +101,12 @@ public class UserController {
         user.setTotalSold(0);
         user.setGrade(0);
         user.setRole(0);
-        int count=userService.register(user);
+        int count=0;
+        try {
+            count = userService.register(user);
+        }catch (Exception e){
+            System.out.println(e);
+        }
         if(count==0)
             return Result.error(USERNAME_REPEAT);
         mapdata.put("status",0);
