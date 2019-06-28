@@ -133,8 +133,7 @@ public class OrderController {
         if (users.size() == 0)
             return Result.error(CodeMsg.NO_FROZENUSER);
         else{
-            for (int i=0; i<users.size();i++){
-                User user = users.get(i);
+            for (User user: users){
                 Map<String,Object> map = new HashMap<>();
                 map.put("用户名",user.getUsername());
                 map.put("学号",user.getSchoolNumber());
@@ -251,8 +250,7 @@ public class OrderController {
         if (users.size() == 0)
             return Result.error(CodeMsg.NO_ADMINISTRATOR);
         List<Map<String,String>> list = new ArrayList<>();
-        for (int i=0; i<users.size(); i++){
-            User user = users.get(i);
+        for (User user:users){
             Map<String,String> map = new HashMap<>();
             map.put("用户名",user.getUsername());
             map.put("电话",user.getPhoneNumber());
