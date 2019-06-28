@@ -36,6 +36,12 @@ public class HomeController {
     @Autowired
     private GoodsOrdersService goodsOrdersService;
 
+    @RequestMapping("/index")
+    public String index(){
+        return "index";
+    }
+
+
     /***
      *
      * URL：/api/home/cartInfo
