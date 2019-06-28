@@ -21,6 +21,7 @@
             success: function (req) {
                 //请求成功时处理
                 console.log(req);
+                console.log(JSON.stringify(req));
             },
             error: function (req) {
                 //请求出错处理
@@ -45,6 +46,7 @@
             success: function (req) {
                 //请求成功时处理
                 console.log(req);
+                console.log(JSON.stringify(req));
             },
             error: function () {
                 //请求出错处理
@@ -64,11 +66,12 @@
             contentType :"application/json",
             dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性
-            data: JSON.stringify({"用户名":"小红","商品ID":"5","add":false}),    //参数值
+            data: JSON.stringify({"用户名":"jack","商品ID":"1","add":true}),    //参数值
             type: "POST",   //请求方式
             success: function (req) {
                 //请求成功时处理
                 console.log(req);
+                console.log(JSON.stringify(req));
             },
             error: function () {
                 //请求出错处理
@@ -94,6 +97,7 @@
             success: function (req) {
                 //请求成功时处理
                 console.log(req);
+                console.log(JSON.stringify(req));
             },
             error: function () {
                 //请求出错处理

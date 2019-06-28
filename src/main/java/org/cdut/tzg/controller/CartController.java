@@ -42,7 +42,10 @@ public class CartController {
      * 方法：GET
      * 数据：{“用户名”:”XXX”}
      * 期望返回格式：[{“商品ID”:”XXX”,”商品图片”:”XXX”, ”描述”:”XXX”,”单价”:XXX,”数量”:XXX,”卖家名称”:”XXX”,”商品库存”:XXX},]
-     * 例子：[{“商品ID”:”41655”,”商品图片”:”XXX”, ”描述”:”这是一本书”,”单价”:15.5,”数量”:2, ”卖家名称”:”张三”,”商品库存”:XXX},]
+     *
+     * 返回：
+     * 成功：{"code":200,"msg":"success","data":[{"数量":6,"商品ID":33,"卖家名称":"凯凯","商品图片":null,"单价":40.0,"描述":"提莫快来买蘑菇","商品库存":928},{"数量":1,"商品ID":34,"卖家名称":"凯凯","商品图片":"","单价":800.0,"描述":"提莫不出攻速鞋？","商品库存":974}]}
+     * 失败：该用户购物车为空：{"code":500501,"msg":"当前用户购物车为空","data":null}
      */
     @RequestMapping(value = "/cartInfo",method = RequestMethod.GET)
     @ResponseBody
@@ -52,9 +55,11 @@ public class CartController {
         if(carts.size()<=0){
             return Result.error(EMPTY_CART);
         }
+        System.out.println(carts);
         List<Map<String,Object>> list=new ArrayList<>();
         for(int i=0;i<carts.size();++i){//遍历购物车数组 得到每条购物车记录中的商品和卖家信息
             Cart cart=carts.get(i);//当前商品
+            System.out.println(cart);
             Goods goods=goodsService.findGoodsById(cart.getGoodsId());//当前购物车该商品的信息
             User seller=userService.findUserById(cart.getSellerId());//当前购物车中该商品的买家信息
             Map<String,Object> map=new HashMap<>();
@@ -66,16 +71,23 @@ public class CartController {
             map.put("卖家名称",seller.getUsername());
             map.put("商品库存",goods.getStock());
             list.add(map);
+            System.out.println(map);
         }
         return Result.success(list);
     }
 
     /*
      *URL：/api/cart/updateCartInfo
-    描述：更新购物车信息
-    方法：POST
-    数据：{“用户名”:”XXX”,“商品ID”:”XXX”,”add”:true/false}
-    期望返回格式：{“success”:true/false,”content”:”xxxx”}
+    *描述：更新购物车信息
+    *方法：POST
+    *数据：{“用户名”:”XXX”,“商品ID”:”XXX”,”add”:true/false}
+    *期望返回格式：{“success”:true/false,”content”:”xxxx”}
+    *
+    * 返回：
+    * 成功：购物车中该商品数量加一：{"code":200,"msg":"success","data":{"success":true,"content":"数量增加1成功"}}
+    * 成功：购物车中该商品数量减一：{"code":200,"msg":"success","data":{"success":true,"content":"数量减少1成功"}}
+    * 失败：购物车中该商品增加时库存不足：{"code":500301,"msg":"库存不足","data":null}
+    * 失败：当前该用户购物车为空：{"code":500501,"msg":"当前用户购物车为空","data":null}
     */
     @RequestMapping(value = "/updateCartInfo",method = RequestMethod.POST)
     @ResponseBody
@@ -87,28 +99,44 @@ public class CartController {
         User buyer=userService.findUserByName(username);
         Goods goods=goodsService.findGoodsById(goodsId);
         Cart cart=cartService.findCartByUserIdAndGoodsId(buyer.getId(),goods.getId());
+        if(cart==null){
+            return Result.error(EMPTY_CART);//购物车中没有这个商品
+        }
         if(add){//增加数量
             if(cart.getNumber()+1>goods.getStock()){
                 return Result.error(STOCKOUT);//库存不足
             }
             else {
                 cartService.updateGoodsInCart(buyer.getId(),goods.getId(),cart.getNumber()+1);
-                return Result.success("数量增加1成功");
+                Map<String,Object> result=new HashMap<>();
+                result.put("success",true);
+                result.put("content","数量增加1成功");
+                return Result.success(result);
             }
         }
         else {//减少数量
             cartService.updateGoodsInCart(buyer.getId(),goodsId,cart.getNumber()-1);
-            return Result.success("数量减少1成功");
+            Map<String,Object> result=new HashMap<>();
+            result.put("success",true);
+            result.put("content","数量减少1成功");
+            return Result.success(result);
         }
     }
 
 
     /*
-    URL：/api/cart/createOrder
-    描述：创建订单
-    方法：POST
-    数据：{“用户名”:”XXX”}
-    期望返回格式：{“sucess”:true/false,”content”:”xxxx”,”订单ID”:”xxxx”,"卖家信息":[{"卖家用户名":"XXX",收款码":"XXX","金钱":xxx},]}
+    *URL：/api/cart/createOrder
+    *描述：创建订单
+    *方法：POST
+    *数据：{“用户名”:”XXX”}
+    *期望返回格式：{“sucess”:true/false,”content”:”xxxx”,”订单ID”:”xxxx”,"卖家信息":[{"卖家用户名":"XXX",收款码":"XXX","金钱":xxx},]}
+    *
+    * 返回：
+    *
+    * 成功：{"code":200,"msg":"success","data":{"success":true,"卖家信息":[{"收款码":null,"卖家用户名":"root","金钱":128},{"收款码":"凯凯的收款码","卖家用户名":"凯凯","金钱":8240},{"收款码":"zacky的收款码","卖家用户名":"zacky","金钱":10},{"收款码":"jack的收款码","卖家用户名":"jack","金钱":100}],"订单ID":25,"content":"订单已成功创建，请尽快支付"}}
+    * 失败：当前用户购物车为空：{"code":500501,"msg":"当前用户购物车为空","data":null}
+    * 失败：当前用户购物车中某(多)种商品库存不足了：{"code":500301,"msg":"库存不足","data":null}
+    *
      */
     @RequestMapping(value = "/createOrder",method = RequestMethod.POST)
     @ResponseBody
@@ -181,7 +209,7 @@ public class CartController {
         cartService.clearBuyerCart(buyer.getId());
 
         //构造返回结果
-        List<Map<String,Object>> result=new ArrayList<>();//返回结果
+        List<Map<String,Object>> resultList=new ArrayList<>();//返回结果
         for(Object perSeller:moneyResult.keySet()){//对每个卖家
             User seller=userService.findUserByName((String)perSeller);
             Float money=(Float)moneyResult.get(perSeller);
@@ -189,8 +217,13 @@ public class CartController {
             resultMap.put("卖家用户名",(String)perSeller);
             resultMap.put("收款码",seller.getMoneyCode());
             resultMap.put("金钱",money);
-            result.add(resultMap);
+            resultList.add(resultMap);
         }
+        Map<String,Object> result=new HashMap<>();
+        result.put("success",true);
+        result.put("content","订单已成功创建，请尽快支付");
+        result.put("订单ID",orders.getId());
+        result.put("卖家信息",resultList);
         return Result.success(result);
     }
 
