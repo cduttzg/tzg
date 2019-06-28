@@ -24,14 +24,19 @@ public class CodeMsg {
     public static CodeMsg STOCKOUT = new CodeMsg(500301,"库存不足");
     public static CodeMsg EMPTY_TYPE_GOODS = new CodeMsg(500302,"当前没有该类型商品");
     public static CodeMsg NO_GOODS = new CodeMsg(500303,"商品不存在");
-    //购物异常
-    public static CodeMsg EMPTY_CART=new CodeMsg(500303,"当前用户购物车为空");
+
+    //购物异常 5005xx
+    public static CodeMsg EMPTY_CART=new CodeMsg(500501,"当前用户购物车为空");
 
     //后台数据获取异常5004xx
     public static CodeMsg NO_ORDER = new CodeMsg(500400,"订单不存在");
     public static CodeMsg NO_FROZENUSER = new CodeMsg(500401,"暂无冻结用户");
     public static CodeMsg REPETITIVE_OPERATION = new CodeMsg(500402,"重复操作");
     public static CodeMsg NO_ADMINISTRATOR = new CodeMsg(500403,"暂无管理员");
+
+    //个人中心异常 5005xx
+    public static CodeMsg NOT_STUDENT = new CodeMsg(500501,"你不是成都理工的学生");
+    public static CodeMsg USERNAME_REPEAT = new CodeMsg(500502,"用户名已存在");
 
     private CodeMsg(int code, String msg) {
         this.code = code;

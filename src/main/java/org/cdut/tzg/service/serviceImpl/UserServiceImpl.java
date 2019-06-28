@@ -31,7 +31,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int register(User user) {
-        return userMapper.insert(user);
+        int res = 0;
+        try {
+            res = userMapper.insert(user);
+        } catch (Exception e){
+            System.out.println(e);
+        }
+        return res;
     }
 
     @Override

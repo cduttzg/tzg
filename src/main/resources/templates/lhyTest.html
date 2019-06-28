@@ -7,5 +7,35 @@
 </head>
 <body>
 
+
+<!--URL：/api/user/register-->
+<!--描述：用户注册-->
+<!--方法：POST-->
+<!--数据：{“学号”:XXX,”用户名”:”XXX”,”密码（HASH加密）”:”XXX”,"教务处密码":"xxxxx",”手机号”:”XXX”,”邮箱”:”XXXX”,”地址”:”XXX”}-->
+
+
+<button id="register" type="button">注册</button>
+<script>
+    var loginbtn = $("#register");
+    loginbtn.click(function () {
+        $.ajax({
+            url: "/api/user/register",    //请求的url地址
+            contentType: "application/json",
+            dataType: "json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({"用户名": "faker", "密码": "11","学号":"201613160618","教务处密码":"510922199608255211","手机号":18081245642,"邮箱":"anlan1996@qq.com","地址":"cdut"}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function (req) {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
+
 </body>
 </html>

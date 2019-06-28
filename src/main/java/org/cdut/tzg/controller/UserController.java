@@ -12,6 +12,7 @@ import org.cdut.tzg.service.GoodsOrdersService;
 import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.OrderService;
 import org.cdut.tzg.service.UserService;
+import org.cdut.tzg.utils.CDUTUtils;
 import org.cdut.tzg.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static org.cdut.tzg.result.CodeMsg.NOT_STUDENT;
+import static org.cdut.tzg.result.CodeMsg.USERNAME_REPEAT;
 
 /**
  * @author anlan
@@ -67,23 +71,47 @@ public class UserController {
     }
 
     /**
-     * 注册用户!!!!!!未开发完
+     * URL： /api/user/register
+     * 描述：用户注册
+     * 方法：POST
+     * 数据：data:{“学号”:XXX,”用户名”:”XXX”,”密码（HASH加密）”:”XXX”,"教务处密码":"xxxxx",”手机号”:”XXX”,”邮箱”:”XXXX”,”地址”:”XXX”}
+     * 返回：
+     *  {code: 500502, msg: "用户名已存在", data: null}
+     *  {code: 500501, msg: "你不是成都理工的学生", data: null}
+     *  {code: 200, msg: "success", data: {content: "注册成功", status: 0}}
      */
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     @ResponseBody
-    public Map register(@RequestBody String data)
+    public Result<Object> register(@RequestBody String data)
     {   Map map = MapUtils.getMap(data);
-        User user = new User(String.valueOf(map.get("学号")),String.valueOf(map.get("用户名")),String.valueOf(map.get("密码")),String.valueOf(map.get("手机号")),String.valueOf(map.get("地址")),String.valueOf(map.get("邮箱")),(Integer)(map.get("角色")));
-        int count=userService.register(user);
+        String schoolNumber = (String) map.get("学号");
+        String schoolPassword = (String) map.get("教务处密码");
         Map mapdata=new HashMap();
-        if(count!=0){
-            mapdata.put("status",0);
-            mapdata.put("content","注册成功！");
-        }else{
-            mapdata.put("status",1);
-            mapdata.put("content","注册失败！");
+        boolean isStudent = CDUTUtils.isStudent(schoolNumber,schoolPassword);
+        if(!isStudent)
+            return Result.error(NOT_STUDENT);
+        User user = new User();
+        user.setUsername(String.valueOf(map.get("用户名")));
+        user.setSchoolNumber(String.valueOf(map.get("学号")));
+        user.setPassword(String.valueOf(map.get("密码")));
+        user.setPhoneNumber(String.valueOf(map.get("手机号")));
+        user.setAddress(String.valueOf(map.get("地址")));
+        user.setEmail(String.valueOf(map.get("邮箱")));
+        user.setIsFrozen(0);
+        user.setTotalSold(0);
+        user.setGrade(0);
+        user.setRole(0);
+        int count=0;
+        try {
+            count = userService.register(user);
+        }catch (Exception e){
+            System.out.println(e);
         }
-        return mapdata;
+        if(count==0)
+            return Result.error(USERNAME_REPEAT);
+        mapdata.put("status",0);
+        mapdata.put("content","注册成功");
+        return Result.success(mapdata);
     }
 
     /**
@@ -430,7 +458,7 @@ public class UserController {
     @ResponseBody
     public Result<Object> getUserOrderInfo(@RequestParam String username){
         Long userId = userService.findIdByUserName(username);//用户id
-        if(userId == 0){
+        if(userId == null){
             return Result.error(CodeMsg.USER_UNDEFIND);
         }
         List <Map<String,Object>> listdata = new ArrayList<Map<String,Object>>();
@@ -465,9 +493,10 @@ public class UserController {
         List<GoodsOrders> goodsOrderss = goodsOrdersService.getGoodsOrdersBySellerId(userId);//获取自己卖的商品订单
         List<Map<String,Object>> listbuyer = new ArrayList<Map<String,Object>>();
         List<Map<String,Object>> listbuyerrec;
-        Map<String,Object> buyermap = new HashMap<String, Object>();
-        System.out.println("1:"+goodsOrderss);
+        Map<String,Object> buyermap;
+        //System.out.println("1:"+goodsOrderss);
         for (GoodsOrders goodsOrders1:goodsOrderss){
+            buyermap= new HashMap<String, Object>();
             listbuyerrec=new ArrayList<Map<String,Object>>();
             map=new HashMap<String, Object>();
             Long orderid=goodsOrders1.getOrdersId();
@@ -475,36 +504,35 @@ public class UserController {
             String buyername = userService.getUserNameById(orders1.getBuyerId());
             Long goodsid=goodsOrders1.getGoodsId();
             String goodsname=goodsService.getGoodsNameById(goodsid);
+            //System.out.println(goodsname);
             map.put("买家姓名",buyername);
             map.put("订单时间",orders1.getCreatedTime());
             map.put("订单状态",orders1.getState());
             map.put("订单ID",orderid);
-            System.out.println(map);
-            if (listbuyer.isEmpty()){//当listbuyer为空的时候，不需要合并卖家记录
-                buyermap.put("卖家姓名",username);
-                buyermap.put("商品名称",goodsname);
-            }else{
-                int index=-1;
+            int index = -1;
+           // System.out.println(map);
+            if (!listbuyer.isEmpty()){//当listbuyer为空的时候，不需要合并卖家记录
                 for (Map<String,Object> map1:listbuyer){
                     if(map1.get("订单ID").equals(orderid)){
                         index = listbuyer.indexOf(map1);
                         List<Map<String,Object>> list=(List<Map<String,Object>>) map1.get("卖家记录");
                         Map<String,Object> map2 = new HashMap<String, Object>();
-                        Map<String,Object> map3 = new HashMap<String, Object>();
                         map2.put("卖家姓名",username);
                         map2.put("商品名称",goodsname);
-                        map3.put("卖家记录",map2);
-                        listbuyer.set(index,map3);
+                        list.add(map2);
+                        listbuyer.get(index).replace("卖家记录",list);
                         break;
                     }
                 }
             }
-            //System.out.println("buyermap:"+buyermap);
-            listbuyerrec.add(buyermap);
-            //System.out.println("listbuyerrec:"+listbuyerrec);
-            map.put("卖家记录",listbuyerrec);
+            if(index == -1){
+                buyermap.put("卖家姓名",username);
+                buyermap.put("商品名称",goodsname);
+                listbuyerrec.add(buyermap);
+                map.put("卖家记录",listbuyerrec);
+                listbuyer.add(map);
+            }
         }
-        System.out.println("2:"+listbuyer);
         listdata.addAll(listbuyer);
         return Result.success(listdata);
     }

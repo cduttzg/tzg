@@ -1,9 +1,6 @@
 package org.cdut.tzg.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.cdut.tzg.model.Cart;
 import org.cdut.tzg.model.Goods;
 
@@ -45,4 +42,10 @@ public interface CartMapper {
      */
     @Select("select * from cart where buyer_id=#{buyerId} and goods_id=#{goodsId}")
     Cart findCartByUserIdAndGoodsId(@Param("buyerId") Long buyerId,@Param("goodsId")Long goodsId);
+
+    /**
+     * 清空买家的购物车(创建订单后)
+     */
+    @Delete("delete from cart where buyer_id=#{buyerId}")
+    int clearBuyerCart(Long buyerId);
 }

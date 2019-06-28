@@ -43,4 +43,9 @@ public class CartServiceImpl implements CartService {
     public Cart findCartByUserIdAndGoodsId(Long buyerId, Long goodsId) {
         return cartMapper.findCartByUserIdAndGoodsId(buyerId,goodsId);
     }
+
+    @Override
+    public int clearBuyerCart(Long buyerId) {
+        return cartMapper.clearBuyerCart(buyerId);
+    }
 }
