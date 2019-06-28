@@ -119,9 +119,9 @@ public class UserController {
      * 方法：POST
      * 数据：{“用户名”:”XXX”,”密码（HASH加密）”}
      * 返回：
-     *  {code: 500502, msg: "用户名已存在", data: null}
-     *  {code: 500501, msg: "你不是成都理工的学生", data: null}
-     *  {code: 200, msg: "success", data: {content: "注册成功", status: 0}}
+     *  {code: 200, msg: "success", data:{status: 0, 是否被冻结: false, 角色: 1}}
+     *  {code: 600603, msg: "密码错误", data: null}
+     *  {code: 500201, msg: "未找到该用户", data: null}
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
@@ -137,11 +137,13 @@ public class UserController {
                 boolean isFrozen = (user.getIsFrozen()==0?false:true);
                 mapdata.put("是否被冻结",isFrozen);
                 mapdata.put("角色",user.getRole());
+                return Result.success(mapdata);
             }else {
                 mapdata.put("status",1);
                 mapdata.put("是否被冻结",true);
+                return Result.error(CodeMsg.PASSWD_ERROE);
             }
-            return Result.success(mapdata);
+
         }
     }
 
