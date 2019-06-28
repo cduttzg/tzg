@@ -14,6 +14,7 @@ import org.cdut.tzg.service.OrderService;
 import org.cdut.tzg.service.UserService;
 import org.cdut.tzg.utils.CDUTUtils;
 import org.cdut.tzg.utils.MapUtils;
+import org.cdut.tzg.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -529,7 +530,7 @@ public class UserController {
      * 方法：GET
      * 数据：{“用户名”:”XXX”}
      * 返回：
-     * 用户存在订单：{"code":200,"msg":"success","data":[{"买家姓名":"小红","订单ID":4,"订单状态":1,"卖家记录":[{"商品名称":"东苑E12套间一套三合租","卖家姓名":"rock"}],"订单时间":"2019-06-25T16:26:44.000+0000"}]}
+     * 用户存在订单：{"code":200,"msg":"success","data":[{"买家姓名":"小红","订单ID":4,"订单状态":1,"卖家记录":[{"商品名称":"东苑E12套间一套三合租","卖家姓名":"rock"}],"订单时间":"2019-6-26"}]}
      * 用户不存在订单：{"code":200,"msg":"success","data":[]}
      */
     @RequestMapping(value = "/home/orderInfo",method = RequestMethod.GET)
@@ -549,7 +550,7 @@ public class UserController {
         for(Orders orders1:orders){
             map=new HashMap<String, Object>();
             map.put("卖家姓名",username);
-            map.put("订单时间",orders1.getCreatedTime());
+            map.put("订单时间", TimeUtils.date2Day(orders1.getCreatedTime()));
             map.put("订单状态",orders1.getState());
             map.put("订单ID",orders1.getId());
             Long orderid=orders1.getId();
@@ -584,7 +585,7 @@ public class UserController {
             String goodsname=goodsService.getGoodsNameById(goodsid);
             //System.out.println(goodsname);
             map.put("买家姓名",buyername);
-            map.put("订单时间",orders1.getCreatedTime());
+            map.put("订单时间",TimeUtils.date2Day(orders1.getCreatedTime()));
             map.put("订单状态",orders1.getState());
             map.put("订单ID",orderid);
             int index = -1;
