@@ -207,7 +207,7 @@
     var btn1 = $("#b22");
     btn1.click(function () {
         $.ajax({
-            url: "/api/user/saller/completeOrder",    //请求的url地址
+            url: "/api/user/buyer/completeOrder",    //请求的url地址
             contentType :"application/json",
             dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性
@@ -229,7 +229,7 @@
     var btn1 = $("#b23");
     btn1.click(function () {
         $.ajax({
-            url: "/api/user/saller/paidOrder",    //请求的url地址
+            url: "/api/user/buyer/paidOrder",    //请求的url地址
             contentType :"application/json",
             dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性

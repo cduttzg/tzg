@@ -12,9 +12,9 @@ import java.util.List;
  */
 public interface OrderService {
     /**
-     * 获取总订单数量
+     * 获取所以完成的订单数量
      */
-    int getAllOrdersCount();
+    int getAllCompletedOrdersCount();
     /**
      * 获取指定日期订单数量
      */

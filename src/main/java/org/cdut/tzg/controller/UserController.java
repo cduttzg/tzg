@@ -322,7 +322,7 @@ public class UserController {
      * @param data
      * @return
      */
-    @RequestMapping(value = "/saller/paidOrder",method = RequestMethod.POST)
+    @RequestMapping(value = "/buyer/paidOrder",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> setStateToPaid(@RequestBody String data){
         Map<String,Object> map = new HashMap<>();
@@ -360,7 +360,7 @@ public class UserController {
      * @param data
      * @return
      */
-    @RequestMapping(value = "/saller/completeOrder",method = RequestMethod.POST)
+    @RequestMapping(value = "/buyer/completeOrder",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> setOrderComplete(@RequestBody String data){
         Map<String, Object> map = new HashMap<>();

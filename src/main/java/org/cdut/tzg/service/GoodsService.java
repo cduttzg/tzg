@@ -79,4 +79,8 @@ public interface GoodsService {
      * @return
      */
     int updateTypeState(Long goodsId,Integer state);
+    /**
+     * 获取指定标签的商品数量
+     */
+    int getGoodsNumByTags(Integer tag);
 }

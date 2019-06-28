@@ -12,6 +12,7 @@ import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.OrderService;
 import org.cdut.tzg.service.UserService;
 import org.cdut.tzg.utils.MapUtils;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -64,10 +65,19 @@ public class OrderController {
             daySold[7-i] = daySoldCount;
             calendar.setTime(date);
         }
-        int ordersCount = orderService.getAllOrdersCount();
+        //统计各种求购标签的商品数量
+        List<Map<String,Integer>> list = new ArrayList<>();
+        String[] tags = new String[]{"水票","书籍","寝室神器","租房","文具","电脑办公","游戏道具","体育用具","乐器","电器","装饰品","其他"};
+        for (int i=0; i<12; i++){
+            Map<String, Integer> tagmap = new HashMap<>();
+            tagmap.put(tags[i],goodsService.getGoodsNumByTags(i));
+            list.add(tagmap);
+        }
+        int ordersCount = orderService.getAllCompletedOrdersCount();
         map.put("网站活跃度",active);
         map.put("网站日交易量",daySold);
         map.put("网站总交易量",ordersCount);
+        map.put("求购数量",list);
         //System.out.println(map);
         return Result.success(map);
     }

@@ -83,4 +83,9 @@ public class GoodsServiceImpl implements GoodsService {
     public int updateTypeState(Long goodsId, Integer state) {
         return goodsMapper.updateTypeState(goodsId,state);
     }
+
+    @Override
+    public int getGoodsNumByTags(Integer tag) {
+        return goodsMapper.getGoodsNumByTags(tag);
+    }
 }
