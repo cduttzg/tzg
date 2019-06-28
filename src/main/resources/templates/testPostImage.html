@@ -10,12 +10,22 @@
             btn_1.onclick=function () {
                 let formData = new FormData();
                 let fileField = document.getElementById('file');
-                formData.append('username','123');
-                formData.append('avatar',fileField.files[0]);
-                console.log(formData.get("username"));
-                console.log(formData.get("avatar"));
-                let url = '/test/image';
+                let map = new Map();
+                map.set('发布',true);
+                map.set('商品标签','1');
+                map.set('商品名称','二手可口可乐');
+                map.set('描述','这是1800年的可乐哟');
+                map.set('单价',123.0);
+                map.set('数量',2);
+                console.log(map);
+                console.log(JSON.stringify(map));
+                formData.append("data",map);
+                formData.append('img',fileField.files[0]);
+
+                let url = '/api/user/home/handleSeek';
                 let posts = Post(url, formData);
+                console.log(formData);
+                console.log(JSON.stringify(formData));
                 console.log(posts);
             }
             let btn_2 = document.getElementById('login');

@@ -17,6 +17,7 @@ import org.cdut.tzg.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -182,57 +183,60 @@ public class UserController {
      * 方法：POST
      * 数据：{"data":{"发布":true/false,”用户名”:”XXX”,“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX },"img":file} img-->商品图片
      * 返回：
-     * 未找到该用户：{"code":500201,"msg":"未找到该用户","data":null}
-     * 发布求购信息成功：{"code":200,"msg":"success","data":{"success":true}}
-     * 发布的求购信息已经存在：{"code":600603,"msg":"求购信息已经存在，请勿重复发布","data":null}
-     * 删除求购信息：{"code":200,"msg":"success","data":{"success":true}}
+     *  未找到该用户：{"code":500201,"msg":"未找到该用户","data":null}
+     *  发布求购信息成功：{"code":200,"msg":"success","data":{"success":true}}
+     *  发布的求购信息已经存在：{"code":600603,"msg":"求购信息已经存在，请勿重复发布","data":null}
+     *  删除求购信息：{"code":200,"msg":"success","data":{"success":true}}
      */
     @RequestMapping(value = "/home/handleSeek",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Object> handleSeek(@RequestBody String data){
-        Map map=MapUtils.getMap(data);
+    public Result<Object> handleSeek(@RequestParam("data") String data,@RequestParam(value = "img",required = false) MultipartFile file){
+        System.out.println(data);
+        System.out.println();
+//        Map map;
+//        map = data;
+//        System.out.println(map.entrySet());
+        System.out.println(file.getOriginalFilename());
         Map mapdata = new HashMap();
-        Long userId = userService.findIdByUserName((String) map.get("用户名"));
-        if(userId == null){
-            return Result.error(CodeMsg.USER_UNDEFIND);
-        }
-        if((Boolean) map.get("发布")){//发布求购信息
-//            Date day=new Date();
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            //int pubStatus = goodsService.publishSeekGood(userId,(Integer) map.get("商品标签"),(String) map.get("商品名称"),(String) map.get("描述"),Float.parseFloat(map.get("单价").toString()),(Integer) map.get("数量"),(String) map.get("商品图片"));
-            Goods exitSeekGoods=goodsService.isExitSeekGoods(userId, (Integer) map.get("商品标签"), (String) map.get("商品名称"));
-            if (exitSeekGoods==null){ //求购信息不存在的时候
-                Goods good=new Goods();
-                good.setUserId(userId);
-                good.setTag((Integer) map.get("商品标签"));
-                good.setTitle((String) map.get("商品名称"));
-                good.setContent((String) map.get("描述"));
-                good.setPrice(Float.parseFloat(map.get("单价").toString()));
-                good.setStock((Integer) map.get("数量"));
-                good.setImage((String) map.get("img"));
-                int pubStatus = goodsService.publishSeekGood(good);
-                if (pubStatus==1){//求购信息发布成功
-                    mapdata.put("success",true);
-                    return Result.success(mapdata);
-                }else {//求购信息发布失败
-                    mapdata.put("success",false);
-                    return Result.error(CodeMsg.PUBLISHGOODFAILED);
-                }
-            }else {//求购信息已经存在
-                mapdata.put("success",false);
-                return Result.error(CodeMsg.EXITSEEKGOODS);
-            }
-
-        }else {//删除求购信息
-            int delStatus=goodsService.deleteSeekGood(userId, (Integer) map.get("商品标签"), (String) map.get("商品名称"));
-            if (delStatus == 1) {//删除求购信息成功
-                mapdata.put("success", true);
-                return Result.success(mapdata);
-            } else {//删除求购信息失败
-                mapdata.put("success", false);
-                return Result.error(CodeMsg.DELETEGOODFAILED);
-            }
-        }
+//        Long userId = userService.findIdByUserName((String) data.get("用户名"));
+//        if(userId == null){
+//            return Result.error(CodeMsg.USER_UNDEFIND);
+//        }
+//        if((Boolean) data.get("发布")){//发布求购信息
+//            Goods exitSeekGoods=goodsService.isExitSeekGoods(userId, (Integer) data.get("商品标签"), (String) data.get("商品名称"));
+//            if (exitSeekGoods==null){ //求购信息不存在的时候
+//                Goods good=new Goods();
+//                good.setUserId(userId);
+//                good.setTag((Integer) data.get("商品标签"));
+//                good.setTitle((String) data.get("商品名称"));
+//                good.setContent((String) data.get("描述"));
+//                good.setPrice(Float.parseFloat(data.get("单价").toString()));
+//                good.setStock((Integer) data.get("数量"));
+//                good.setImage((String) data.get("img"));
+//                int pubStatus = goodsService.publishSeekGood(good);
+//                if (pubStatus==1){//求购信息发布成功
+//                    mapdata.put("success",true);
+//                    return Result.success(mapdata);
+//                }else {//求购信息发布失败
+//                    mapdata.put("success",false);
+//                    return Result.error(CodeMsg.PUBLISHGOODFAILED);
+//                }
+//            }else {//求购信息已经存在
+//                mapdata.put("success",false);
+//                return Result.error(CodeMsg.EXITSEEKGOODS);
+//            }
+//
+//        }else {//删除求购信息
+//            int delStatus=goodsService.deleteSeekGood(userId, (Integer) data.get("商品标签"), (String) data.get("商品名称"));
+//            if (delStatus == 1) {//删除求购信息成功
+//                mapdata.put("success", true);
+//                return Result.success(mapdata);
+//            } else {//删除求购信息失败
+//                mapdata.put("success", false);
+//                return Result.error(CodeMsg.DELETEGOODFAILED);
+//            }
+//        }
+        return Result.success(mapdata);
     }
 
     /*
