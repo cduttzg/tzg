@@ -90,5 +90,10 @@ public interface GoodsMapper {
      */
     @Update("update goods set type = #{state} where id = #{goodsId}")
     int updateTypeState(@Param("goodsId") Long goodsId,@Param("state") Integer state);
+    /**
+     * 获取指定求购标签的商品数量
+     */
+    @Select("select count(*) from goods where tag = #{tag}")
+    int getGoodsNumByTags(Integer tag);
 
 }
