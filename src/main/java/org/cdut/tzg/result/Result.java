@@ -46,5 +46,6 @@ public class Result<T> {
     public T getData() {
         return data;
     }
+
 }
 

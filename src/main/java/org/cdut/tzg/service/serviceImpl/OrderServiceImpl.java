@@ -16,8 +16,8 @@ public class OrderServiceImpl implements OrderService {
 
     //获取所有订单数量
     @Override
-    public int getAllOrdersCount(){
-        return ordersMapper.getAllOrdersCount();
+    public int getAllCompletedOrdersCount(){
+        return ordersMapper.getAllCompletedOrdersCount();
     }
 
     //获取指定日期订单数量

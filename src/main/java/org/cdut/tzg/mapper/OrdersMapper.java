@@ -14,10 +14,10 @@ import java.util.List;
 public interface OrdersMapper {
 
     /**
-     * 获取总订单数量
+     * 获取所以完成的订单数量
      */
-    @Select("select count(*) from orders")
-    int getAllOrdersCount();
+    @Select("select count(*) from orders where state = 2")
+    int getAllCompletedOrdersCount();
     /**
      * 获取指定日期订单数量
      */

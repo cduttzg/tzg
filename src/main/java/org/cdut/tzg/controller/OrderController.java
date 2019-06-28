@@ -12,6 +12,7 @@ import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.OrderService;
 import org.cdut.tzg.service.UserService;
 import org.cdut.tzg.utils.MapUtils;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -35,10 +36,12 @@ public class OrderController {
     @Autowired
     private UserService userService;
 
-    /**
-    * 获取后台订单信息
+    /*
+    * 描述：获取后台数据
+    * 方法：GET
     * 期望返回格式：{"网站活跃度":[xxx,xxx,xxx],"网站日交易量":[xxx,xxx,xxx],"网站总交易量":xxx,"求购标签":[{"标签名1":xxx},{"标签名2":xxx},{"标签名3":xxx},...]}
-    * 例子：{"网站活跃度":[12,23,34],"网站日交易量":[12,23,34],"网站总交易量":800,"求购标签":[{"标签名1":111},{"标签名2":222},{"标签名3":333},...]}
+    * 返回值：
+    * {code: 200, msg: "success", data: {"网站活跃度":[12,23,34],"网站日交易量":[12,23,34],"网站总交易量":800,"求购标签":[{"标签名1":111},{"标签名2":222},{"标签名3":333},...]}}
     */
     @RequestMapping(value = "/getData",method = RequestMethod.POST)
     @ResponseBody
@@ -64,19 +67,32 @@ public class OrderController {
             daySold[7-i] = daySoldCount;
             calendar.setTime(date);
         }
-        int ordersCount = orderService.getAllOrdersCount();
+        //统计各种求购标签的商品数量
+        List<Map<String,Integer>> list = new ArrayList<>();
+        String[] tags = new String[]{"水票","书籍","寝室神器","租房","文具","电脑办公","游戏道具","体育用具","乐器","电器","装饰品","其他"};
+        for (int i=0; i<12; i++){
+            Map<String, Integer> tagmap = new HashMap<>();
+            tagmap.put(tags[i],goodsService.getGoodsNumByTags(i));
+            list.add(tagmap);
+        }
+        int ordersCount = orderService.getAllCompletedOrdersCount();
         map.put("网站活跃度",active);
         map.put("网站日交易量",daySold);
         map.put("网站总交易量",ordersCount);
+        map.put("求购数量",list);
         //System.out.println(map);
         return Result.success(map);
     }
 
     /*
-    * 更新指定订单号订单状态为异常
+    * 描述：订单置为异常
     * 方法：POST
     * 数据：{"订单ID":"XXX"}
-    * 期望返回格式：{"success":true/false,"content":"XXXX"}
+    * 期望返回格式：{"code":XXX,"msg":"xxx","data":"XXX"}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"置为异常成功"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500400, "msg": "订单不存在", data: null}
     * */
     @RequestMapping(value = "/manageOrder",method = RequestMethod.POST)
     @ResponseBody
@@ -101,10 +117,13 @@ public class OrderController {
     }
 
     /*
-    * 获取所有冻结用户
+    * 描述：获取冻结用户
     * 方法：GET
     * 数据：null
-    * 期望返回格式：{"用户名":"XXX","电话":"xxx","角色":0/1/2}
+    * 期望返回格式：{"用户名":"XXX","学号":"XXXXX","电话":"xxx","角色":0/1/2}
+    * 返回值：
+    * {"code":200,"msg":"success","data":[{"角色":0,"电话":"12312324562","用户名":"小李","学号":"201613160833"}]}
+    * {"code": 500401, "msg": "暂无冻结用户", "data": null}
     * */
     @RequestMapping(value = "/getFrozenUser",method = RequestMethod.GET)
     @ResponseBody
@@ -128,10 +147,14 @@ public class OrderController {
     }
 
     /*
-    * 冻结指定用户
+    * 描述：冻结用户
     * 方法：POST
     * 数据：{"用户学号":"XXX"}
     * 期望返回格式：{"code":XXX,"msg":"xxx","data":"XXX"}
+    * 返回值：
+    * {"code": 200, "msg": "success", "data": {"success":true,"content":"用户已冻结"}}
+    * {"code": 500201, "msg": "未找到该用户", "data": null}
+    * {"code": 500402, "msg": "重复操作", data: null}
     * */
     @RequestMapping(value = "/freezeUser",method = RequestMethod.POST)
     @ResponseBody
@@ -155,10 +178,14 @@ public class OrderController {
     }
 
     /*
-    * 根据学号设置管理员
+    * 描述：添加管理员
     * 方法：POST
     * 数据：{"用户学号":"XXX"}
     * 期望返回格式：{"code":XXX,"msg":"xxx","data":"XXX"}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"该用户升级为管理员"}}
+    * {"code": 500201, "msg": "未找到该用户", "data": null}
+    * {"code": 500402, "msg": "重复操作", data: null}
     * */
     @RequestMapping(value = "/addAdmin",method = RequestMethod.POST)
     @ResponseBody
@@ -181,7 +208,14 @@ public class OrderController {
         return Result.success(map);
     }
     /*
-    * 删除管理员
+    * 描述：删除管理员
+    * 方法：POST
+    * 数据：{"用户学号":"XXX"}
+    * 期望返回格式：{"code":XXX,"msg":"xxx","data":"XXX"}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"删除管理员成功"}}
+    * {"code": 500201, "msg": "未找到该用户", "data": null}
+    * {"code": 500402, "msg": "重复操作", data: null}
     * */
     @RequestMapping(value = "/deletAdmin",method = RequestMethod.POST)
     @ResponseBody
@@ -202,7 +236,13 @@ public class OrderController {
         return Result.success(map);
     }
     /*
-    * 获取所有管理员
+    * 描述：获取所有管理员
+    * 方法：GET
+    * 数据：null
+    * 期望返回格式：{"用户名":"XXX","电话":"xxx"}
+    * 返回值：
+    * {"code":200,"msg":"success","data":[{"电话":"13568043079","用户名":"rock"},{"电话":"12345678987","用户名":"jack"},{"电话":"15196684789","用户名":"zacky"}]}
+    * {"code": 500403, "msg": "暂无管理员", data: null}
     * */
     @RequestMapping(value = "/getAdmin",method = RequestMethod.POST)
     @ResponseBody

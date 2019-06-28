@@ -36,7 +36,7 @@ public interface GoodsMapper {
      * 发布求购信息
      */
     @Insert("insert into goods(user_id,type,title,content,price,image,stock,tag) values" +
-            " (#{userId},5,#{title},#{content},#{price},#{image},#{stock},5)")
+            " (#{userId},5,#{title},#{content},#{price},#{image},#{stock},#{tag})")
     int publishSeekGood(Goods good);
     /**
      * 通过good中userid 、tpye、title删除求购信息
@@ -74,7 +74,7 @@ public interface GoodsMapper {
     List<Goods> findGoodsByTypeAndLimit(@Param("type") Integer type, @Param("limit") int limit);
 
     /**
-     * 根据用户id获取当前用户的上架信息
+     * 根据用户id获取当前用户的所有商品信息
      */
     @Select("select * from goods where type != 5 and user_id = #{userid}")
     List<Goods> getPutGoods(Long userid);
@@ -90,5 +90,10 @@ public interface GoodsMapper {
      */
     @Update("update goods set type = #{state} where id = #{goodsId}")
     int updateTypeState(@Param("goodsId") Long goodsId,@Param("state") Integer state);
+    /**
+     * 获取指定求购标签的商品数量
+     */
+    @Select("select count(*) from goods where tag = #{tag}")
+    int getGoodsNumByTags(Integer tag);
 
 }

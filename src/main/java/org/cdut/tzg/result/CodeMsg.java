@@ -18,7 +18,7 @@ public class CodeMsg {
     //通用异常
     //首页异常5002xx
     public static CodeMsg USER_UNDEFIND = new CodeMsg(500201,"未找到该用户");
-    public static CodeMsg NO_ORDERS = new CodeMsg(500202,"最近无订单");
+    public static CodeMsg NO_ORDERS = new CodeMsg(500202,"没有订单");
 
     //商品异常 5003xx
     public static CodeMsg STOCKOUT = new CodeMsg(500301,"库存不足");
@@ -37,6 +37,7 @@ public class CodeMsg {
     //个人中心异常 5005xx
     public static CodeMsg NOT_STUDENT = new CodeMsg(500501,"你不是成都理工的学生");
     public static CodeMsg USERNAME_REPEAT = new CodeMsg(500502,"用户名已存在");
+    public static CodeMsg PASSWD_ERROE = new CodeMsg(600603,"密码错误");
 
     private CodeMsg(int code, String msg) {
         this.code = code;

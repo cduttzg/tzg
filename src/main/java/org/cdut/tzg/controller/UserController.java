@@ -14,6 +14,7 @@ import org.cdut.tzg.service.OrderService;
 import org.cdut.tzg.service.UserService;
 import org.cdut.tzg.utils.CDUTUtils;
 import org.cdut.tzg.utils.MapUtils;
+import org.cdut.tzg.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -115,7 +116,14 @@ public class UserController {
     }
 
     /**
-     * 用户登录
+     * URL： /api/user/login
+     * 描述：用户登录
+     * 方法：POST
+     * 数据：{“用户名”:”XXX”,”密码（HASH加密）”}
+     * 返回：
+     *  {code: 200, msg: "success", data:{status: 0, 是否被冻结: false, 角色: 1}}
+     *  {code: 600603, msg: "密码错误", data: null}
+     *  {code: 500201, msg: "未找到该用户", data: null}
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
@@ -124,30 +132,42 @@ public class UserController {
         User user=userService.findUserByName((String)map.get("用户名"));
         Map mapdata = new LinkedHashMap();
         if(user ==null){
-            return Result.error(CodeMsg.USER_UNDEFIND);
+            return Result.error(CodeMsg.USER_UNDEFIND);//用户名为空，返回查找用户失败
         }else{
-            if (user.getPassword().equals((String)map.get("密码"))){
+            if (user.getPassword().equals((String)map.get("密码"))){ //密码不正确则返回失败信息
                 mapdata.put("status",0);
                 boolean isFrozen = (user.getIsFrozen()==0?false:true);
                 mapdata.put("是否被冻结",isFrozen);
-            }else {
+                mapdata.put("角色",user.getRole());
+                return Result.success(mapdata);
+            }else { //密码成功则显示登陆成功
                 mapdata.put("status",1);
                 mapdata.put("是否被冻结",true);
+                return Result.error(CodeMsg.PASSWD_ERROE);
             }
-            return Result.success(mapdata);
+
         }
     }
-
     /**
-     * 用户是否是商家
+     * URL： /api/user/home/isSaller
+     * 描述：用户是否是商家
+     * 方法：POST
+     * 数据：{“用户名”:”XXX”}
+     * 返回：
+     *  不是卖家：{"code":200,"msg":"success","data":{"isSaller":false,"moneyCode":null}}
+     *  是卖家：{"code":200,"msg":"success","data":{"isSaller":true,"moneyCode":"zacky的收款码"}}
+     *  输入的用户不存在：{"code":500201,"msg":"未找到该用户","data":null}
      */
     @RequestMapping(value = "/home/isSaller",method = RequestMethod.POST)
     @ResponseBody
     public Result<Object> isSaller(@RequestBody String data){
         Map map=MapUtils.getMap(data);
-        User user = userService.findUserByName((String) map.get("用户名"));
-        Map <String,Object> mapdata = new LinkedHashMap<String,Object>();
-        if (user.getMoneyCode() != null){
+        User user = userService.findUserByName((String) map.get("用户名"));//通过用户名查找用户信息
+        if(user == null){
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
+        Map <String,Object> mapdata = new LinkedHashMap<String,Object>();//最后返回的data信息
+        if (user.getMoneyCode() != null){   //用户上传了付款码，则是商家
             mapdata.put("isSaller",true);
             mapdata.put("moneyCode",user.getMoneyCode());
         }else {
@@ -158,7 +178,15 @@ public class UserController {
     }
 
     /**
-     * 发布/删除求购
+     *  URL： /api/user/home/handleSeek
+     * 描述：发布/删除求购
+     * 方法：POST
+     * 数据：{"data":{"发布":true/false,”用户名”:”XXX”,“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX },"img":file} img-->商品图片
+     * 返回：
+     * 未找到该用户：{"code":500201,"msg":"未找到该用户","data":null}
+     * 发布求购信息成功：{"code":200,"msg":"success","data":{"success":true}}
+     * 发布的求购信息已经存在：{"code":600603,"msg":"求购信息已经存在，请勿重复发布","data":null}
+     * 删除求购信息：{"code":200,"msg":"success","data":{"success":true}}
      */
     @RequestMapping(value = "/home/handleSeek",method = RequestMethod.POST)
     @ResponseBody
@@ -166,11 +194,11 @@ public class UserController {
         Map map=MapUtils.getMap(data);
         Map mapdata = new HashMap();
         Long userId = userService.findIdByUserName((String) map.get("用户名"));
+        if(userId == null){
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
         if((Boolean) map.get("发布")){//发布求购信息
-//            Date day=new Date();
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            //int pubStatus = goodsService.publishSeekGood(userId,(Integer) map.get("商品标签"),(String) map.get("商品名称"),(String) map.get("描述"),Float.parseFloat(map.get("单价").toString()),(Integer) map.get("数量"),(String) map.get("商品图片"));
-            Goods exitSeekGoods=goodsService.isExitSeekGoods(userId, (Integer) map.get("商品标签"), (String) map.get("商品名称"));
+           Goods exitSeekGoods=goodsService.isExitSeekGoods(userId, (Integer) map.get("商品标签"), (String) map.get("商品名称"));
             if (exitSeekGoods==null){ //求购信息不存在的时候
                 Goods good=new Goods();
                 good.setUserId(userId);
@@ -179,8 +207,8 @@ public class UserController {
                 good.setContent((String) map.get("描述"));
                 good.setPrice(Float.parseFloat(map.get("单价").toString()));
                 good.setStock((Integer) map.get("数量"));
-                good.setImage((String) map.get("商品图片"));
-                int pubStatus = goodsService.publishSeekGood(good);
+                good.setImage((String) map.get("img"));
+                int pubStatus = goodsService.publishSeekGood(good);//发布求购信息
                 if (pubStatus==1){//求购信息发布成功
                     mapdata.put("success",true);
                     return Result.success(mapdata);
@@ -205,19 +233,27 @@ public class UserController {
         }
     }
 
+    /*
+     * URL： /api/user/home/SeekInfo
+     * 描述：查看已发布求购
+     * 方法：GET
+     * 数据：{"用户名":"XXX"}
+     * 返回：
+     * 存在求购信息：{"code":200,"msg":"success","data":[{"商品名称":"求购TypeC充电线","数量":993,"单价":20.0,"商品图片":null,"联系方式":"13568043079","商品标签":5,"描述":"最近自己的Type-c充电线坏了，求购一条，亲们速速联系！感激不尽！"}]}
+     * 不存在求购信息：{"code":200,"msg":"success","data":[]}
+     */
     @RequestMapping(value = "/home/SeekInfo",method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> findAllSeekGoods(@RequestParam String username){
         Map map=null;
         Long userId=userService.findIdByUserName(username);
-        List<Goods> seekGoods=goodsService.getAllSeekGoodsByUserId(userId);
-        String userPhone=userService.findPhoneByUsername(username);
+        List<Goods> seekGoods=goodsService.getAllSeekGoodsByUserId(userId);//根据用户id查找求购信息
+        String userPhone=userService.findPhoneByUsername(username);//根据用户名查找用户电话
         if (userPhone==null){
             return Result.error(CodeMsg.USER_UNDEFIND);
         }
         List<Map> listdata=new ArrayList<Map>();
-        //“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX ,”商品图片”:”XXX”,”联系方式”:”XXX”
-        for(Goods good : seekGoods){
+        for(Goods good : seekGoods){ //根据查找到的求购记录，构造商品数组
             map=new HashMap();
             map.put("商品标签",good.getTag());
             map.put("商品名称",good.getTitle());
@@ -231,11 +267,15 @@ public class UserController {
         return  Result.success(listdata);
     }
 
-    /**
-     * 添加新商品
-     * @param data
-     * @return
-     */
+    /*
+    * 描述：用户添加新商品
+    * 方法：POST
+    * 数据：formData-->{"data":{”用户名”:”XXX”,“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX },"img":file}  img-->商品图片
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"添加商品完成"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500201, "msg": "未找到该用户", "data": null}
+    * */
     @RequestMapping(value = "/home/addGoods",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> addGoods(@RequestBody String data){
@@ -258,7 +298,7 @@ public class UserController {
             System.out.println(goods);
             if (sign == 1){
                 map.put("success",true);
-                map.put("content","上架成功");
+                map.put("content","添加商品完成");
             }else if (sign == 0)
                 //再次上架
                 return Result.error(CodeMsg.REPETITIVE_OPERATION);
@@ -267,7 +307,17 @@ public class UserController {
 
         return Result.success(map);
     }
-
+    /*
+    * 描述：用户将商品上架
+    * 方法：POST
+    * 数据:{"商品ID":""xxxx","商品标签":xxx}
+    * 例子：{“商品ID”:1,"商品标签":1}
+    * 期望返回值:{"success":"true","content":"商品重新上架完成"}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"商品上架完成"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500303, "msg": "商品不存在", data: null}
+    * */
     @RequestMapping(value = "/home/onShelves",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> onShelves(@RequestBody String data){
@@ -279,7 +329,7 @@ public class UserController {
             int sign = goodsService.updateTypeState(goodsId,0);
             if (sign == 1){
                 map.put("success",true);
-                map.put("content","商品下架成功");
+                map.put("content","商品上架完成");
             }else if (sign == 0)
                 return Result.error(CodeMsg.REPETITIVE_OPERATION);
         }else
@@ -287,11 +337,16 @@ public class UserController {
         return Result.success(map);
     }
 
-    /**
-     * 商品下架
-     * @param data
-     * @return
-     */
+    /*
+    * 描述：用户将商品下架
+    * 方法：POST
+    * 数据：{“商品ID”:”xxxx”,”下架”:true}------>>>{"商品ID":"xxx"}
+    * 期望返回格式：{“success”:false/true,”content”:”xxx”}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"商品下架完成"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500303, "msg": "商品不存在", data: null}
+    * */
     @RequestMapping(value = "/home/offShelves",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> offShelves(@RequestBody String data){
@@ -303,7 +358,7 @@ public class UserController {
             int sign = goodsService.updateTypeState(goodsId,-1);
             if (sign == 1){
                 map.put("success",true);
-                map.put("content","商品下架成功");
+                map.put("content","商品下架完成");
             }else if (sign == 0){
                 return Result.error(CodeMsg.REPETITIVE_OPERATION);
             }
@@ -312,11 +367,16 @@ public class UserController {
 
         return Result.success(map);
     }
-    /**
-     * 更新用户信息
-     * @param data
-     * @return
-     */
+    /*
+    * 描述：更新用户信息
+    * 方法：POST
+    * 数据：formData-->{"data":{“用户名”:”XXX”,”手机号码”:”XXX” ,”电子邮箱”:”XXX” ,”收货地址”:”XXX”},"img":[file,]}   img-->收款码、用户头像
+    * 期望返回格式：{“success”:false/true,”content”:”xxx”,”beSaller”:false/true}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"beSaller":false,"content":"信息修改成功"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500201, "msg": "未找到该用户", "data": null}
+    * */
     @RequestMapping(value = "/home/updateMessage",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> updateUserInformation(@RequestBody String data){
@@ -345,12 +405,18 @@ public class UserController {
         return Result.success(map);
     }
 
-    /**
-     * 订单置为已支付
-     * @param data
-     * @return
-     */
-    @RequestMapping(value = "/saller/paidOrder",method = RequestMethod.POST)
+    /*
+    * 描述：支付完成
+    * 方法：POST
+    * 数据：{“买家用户名”:”xxx”,”订单ID”:”xxx”}
+    * 期望返回格式：{“success”:false/true,”content”:”xxx”}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"订单已支付"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500400, "msg": "订单不存在", data: null}
+    * {"code": 500201, "msg": "未找到该用户", "data": null}
+    * */
+    @RequestMapping(value = "/buyer/paidOrder",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> setStateToPaid(@RequestBody String data){
         Map<String,Object> map = new HashMap<>();
@@ -383,12 +449,18 @@ public class UserController {
         return Result.success(map);
     }
 
-    /**
-     * 订单置为完成
-     * @param data
-     * @return
-     */
-    @RequestMapping(value = "/saller/completeOrder",method = RequestMethod.POST)
+    /*
+    * 描述：收货完成
+    * 方法：POST
+    * 数据：{“买家用户名”:”xxx”,”订单ID”:”xxx”}
+    * 期望返回格式：{“success”:false/true,”content”:”xxx”}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"订单已完成"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500400, "msg": "订单不存在", data: null}
+    * {"code": 500201, "msg": "未找到该用户", "data": null}
+    * */
+    @RequestMapping(value = "/buyer/completeOrder",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> setOrderComplete(@RequestBody String data){
         Map<String, Object> map = new HashMap<>();
@@ -424,9 +496,13 @@ public class UserController {
 
 
     /**
-     *方法：GET
+     * URL：/api/user/home/message
+     * 描述：获取当前用户信息
+     * 方法：GET
      * 数据：{“用户名”:”XXX” }
-     * 期望返回格式：{“学号”:”XXX” ,”用户名”:”XXX” ,”手机号码”:”XXX” ,”电子邮箱”:”XXX” ,”收货地址”:”XXX” ,”用户评分”:5,”头像”:”XXX” ,”总卖出量”:100}
+     * 返回：
+     * 查找用户信息成功：{"code":200,"msg":"success","data":{"头像":null,"总卖出量":0,"用户评分":10,"手机号码":"13568043079","学号":"201613160810","用户名":"rock","电子邮箱":"134562","收货地址":"成都"}}
+     * 查找用户信息失败：{"code":500201,"msg":"未找到该用户","data":null}
      */
     @RequestMapping(value = "/home/message",method = RequestMethod.GET)
     @ResponseBody
@@ -449,10 +525,13 @@ public class UserController {
     }
 
     /**
+     * URL：/api/user/home/orderInfo
      * 描述：获取当前用户的订单
      * 方法：GET
      * 数据：{“用户名”:”XXX”}
-     * 期望返回格式：[{“买家姓名”:”XXX”,“卖家记录”：[{”卖家姓名”:"xxx",”商品名称”:"xxx"},{”卖家姓名”:"xxx",”商品名称”:"xxx"}],”订单时间”:”XXX”,”订单状态”:已付款/已完成/异常,”订单ID”:”xxx”},]
+     * 返回：
+     * 用户存在订单：{"code":200,"msg":"success","data":[{"买家姓名":"小红","订单ID":4,"订单状态":1,"卖家记录":[{"商品名称":"东苑E12套间一套三合租","卖家姓名":"rock"}],"订单时间":"2019-6-26"}]}
+     * 用户不存在订单：{"code":200,"msg":"success","data":[]}
      */
     @RequestMapping(value = "/home/orderInfo",method = RequestMethod.GET)
     @ResponseBody
@@ -471,13 +550,13 @@ public class UserController {
         for(Orders orders1:orders){
             map=new HashMap<String, Object>();
             map.put("卖家姓名",username);
-            map.put("订单时间",orders1.getCreatedTime());
+            map.put("订单时间", TimeUtils.date2Day(orders1.getCreatedTime()));
             map.put("订单状态",orders1.getState());
             map.put("订单ID",orders1.getId());
             Long orderid=orders1.getId();
             List<GoodsOrders> goodsOrder = goodsOrdersService.findTheOrdersDetailById(orderid);
             listseller = new ArrayList<Map<String,Object>>();
-            for (GoodsOrders goodsOrders1 : goodsOrder){
+            for (GoodsOrders goodsOrders1 : goodsOrder){//查找到的订单id相同时，显示在在通一个订单中
                 mapseller=new HashMap<String, Object>();
                 String sellername=userService.getUserNameById(goodsOrders1.getSellerId());
                 mapseller.put("卖家姓名",sellername);
@@ -506,14 +585,14 @@ public class UserController {
             String goodsname=goodsService.getGoodsNameById(goodsid);
             //System.out.println(goodsname);
             map.put("买家姓名",buyername);
-            map.put("订单时间",orders1.getCreatedTime());
+            map.put("订单时间",TimeUtils.date2Day(orders1.getCreatedTime()));
             map.put("订单状态",orders1.getState());
             map.put("订单ID",orderid);
             int index = -1;
            // System.out.println(map);
             if (!listbuyer.isEmpty()){//当listbuyer为空的时候，不需要合并卖家记录
                 for (Map<String,Object> map1:listbuyer){
-                    if(map1.get("订单ID").equals(orderid)){
+                    if(map1.get("订单ID").equals(orderid)){//找到相同的订单id，则应该显示在同一个订单
                         index = listbuyer.indexOf(map1);
                         List<Map<String,Object>> list=(List<Map<String,Object>>) map1.get("卖家记录");
                         Map<String,Object> map2 = new HashMap<String, Object>();
@@ -546,23 +625,27 @@ public class UserController {
     @RequestMapping(value = "/home/goodsInfo",method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> goodsInfo(@RequestParam String username){
-        Long userid = userService.findIdByUserName(username);
-        if (userid == 0){
+        User user = userService.findUserByName(username);
+        if (user != null) {
+            List<Map<String, Object>> list = new ArrayList<>();
+            List<Goods> goods = goodsService.getPutGoods(user.getId());
+            //System.out.println(goods);
+            for (Goods good : goods) {
+                Map<String, Object> mapdata = new HashMap<String, Object>();
+                mapdata.put("商品图片", good.getImage());
+                mapdata.put("描述", good.getContent());
+                mapdata.put("单价", good.getPrice());
+                mapdata.put("数量", good.getStock());
+                mapdata.put("商品ID", good.getId());
+                if (good.getType() == -1){
+                    mapdata.put("上架",false);
+                }else {
+                    mapdata.put("上架",true);
+                }
+                list.add(mapdata);
+            }
+            return Result.success(list);
+        }else
             return Result.error(CodeMsg.USER_UNDEFIND);
-        }
-        Map<String,Object> mapdata;
-        List<Map<String,Object>> list= new ArrayList<Map<String,Object>>();
-        List<Goods> goods = goodsService.getPutGoods(userid);
-        System.out.println(goods);
-        for(Goods good:goods){
-            mapdata= new HashMap<String, Object>();
-            mapdata.put("商品图片",good.getImage());
-            mapdata.put("描述",good.getContent());
-            mapdata.put("单价",good.getPrice());
-            mapdata.put("数量",good.getStock());
-            mapdata.put("商品ID",good.getId());
-            list.add(mapdata);
-        }
-        return Result.success(list);
     }
 }
