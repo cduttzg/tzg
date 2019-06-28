@@ -18,7 +18,7 @@ public class CodeMsg {
     //通用异常
     //首页异常5002xx
     public static CodeMsg USER_UNDEFIND = new CodeMsg(500201,"未找到该用户");
-    public static CodeMsg NO_ORDERS = new CodeMsg(500202,"最近无订单");
+    public static CodeMsg NO_ORDERS = new CodeMsg(500202,"没有订单");
 
     //商品异常 5003xx
     public static CodeMsg STOCKOUT = new CodeMsg(500301,"库存不足");
