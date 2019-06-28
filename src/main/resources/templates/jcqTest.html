@@ -8,6 +8,28 @@
 </head>
 <body>
 <!--后台数据测试按钮 id=b1x-->
+<button id="data" type="button">数据统计</button>
+<script>
+    var btn1 = $("#data");
+    btn1.click(function () {
+        $.ajax({
+            url: "/api/backstage/getData",    //请求的url地址
+            contentType :"application/json",
+            dataType:"json",
+            async: true,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: JSON.stringify({}),    //参数值
+            type: "POST",   //请求方式
+            success: function (req) {
+                //请求成功时处理
+                console.log(req);
+            },
+            error: function (req) {
+                //请求出错处理
+                console.log(req);
+            }
+        });
+    })
+</script>
 <br><hr>
 <button id="b11" type="button">订单异常</button>
 <script>
