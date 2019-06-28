@@ -12,6 +12,7 @@ import org.cdut.tzg.service.GoodsOrdersService;
 import org.cdut.tzg.service.GoodsService;
 import org.cdut.tzg.service.OrderService;
 import org.cdut.tzg.service.UserService;
+import org.cdut.tzg.utils.CDUTUtils;
 import org.cdut.tzg.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static org.cdut.tzg.result.CodeMsg.NOT_STUDENT;
+import static org.cdut.tzg.result.CodeMsg.USERNAME_REPEAT;
 
 /**
  * @author anlan
@@ -67,23 +71,35 @@ public class UserController {
     }
 
     /**
-     * 注册用户!!!!!!未开发完
+     * 注册用户
      */
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     @ResponseBody
-    public Map register(@RequestBody String data)
+    public Result<Object> register(@RequestBody String data)
     {   Map map = MapUtils.getMap(data);
-        User user = new User(String.valueOf(map.get("学号")),String.valueOf(map.get("用户名")),String.valueOf(map.get("密码")),String.valueOf(map.get("手机号")),String.valueOf(map.get("地址")),String.valueOf(map.get("邮箱")),(Integer)(map.get("角色")));
-        int count=userService.register(user);
+        String schoolNumber = (String) map.get("学号");
+        String schoolPassword = (String) map.get("教务处密码");
         Map mapdata=new HashMap();
-        if(count!=0){
-            mapdata.put("status",0);
-            mapdata.put("content","注册成功！");
-        }else{
-            mapdata.put("status",1);
-            mapdata.put("content","注册失败！");
-        }
-        return mapdata;
+        boolean isStudent = CDUTUtils.isStudent(schoolNumber,schoolPassword);
+        if(!isStudent)
+            return Result.error(NOT_STUDENT);
+        User user = new User();
+        user.setUsername(String.valueOf(map.get("用户名")));
+        user.setSchoolNumber(String.valueOf(map.get("学号")));
+        user.setPassword(String.valueOf(map.get("密码")));
+        user.setPhoneNumber(String.valueOf(map.get("手机号")));
+        user.setAddress(String.valueOf(map.get("地址")));
+        user.setEmail(String.valueOf(map.get("邮箱")));
+        user.setIsFrozen(0);
+        user.setTotalSold(0);
+        user.setGrade(0);
+        user.setRole(0);
+        int count=userService.register(user);
+        if(count==0)
+            return Result.error(USERNAME_REPEAT);
+        mapdata.put("status",0);
+        mapdata.put("content","注册成功");
+        return Result.success(mapdata);
     }
 
     /**

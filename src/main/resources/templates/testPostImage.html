@@ -12,6 +12,8 @@
                 let fileField = document.getElementById('file');
                 formData.append('username','123');
                 formData.append('avatar',fileField.files[0]);
+                console.log(formData.get("username"));
+                console.log(formData.get("avatar"));
                 let url = '/test/image';
                 let posts = Post(url, formData);
                 console.log(posts);
@@ -19,17 +21,19 @@
             let btn_2 = document.getElementById('login');
             btn_2.onclick=function () {
                 let url = '/api/user/login';
-                let data = {'用户名':'xx','密码':'sadasd'};
+                let data = {'用户名':'小红','密码':'xiaohong123'};
                 data = JSON.stringify(data);
                 let postsResule = Post(url, data);
-                console.log(postsResule);
+                postsResule.then((data)=>{
+                    console.log(data)
+                })
             }
             function Post(url, data){
                 return fetch(url, {
                     method : "POST",
-                    headers : new Headers({
-                        'Content-Type': 'application/json'
-                    }),
+                    // headers : new Headers({
+                    //     'Content-Type': 'application/json'
+                    // }),
                     body : data
                 }).then(response => {
                     return handlResponse(url, response);
@@ -41,6 +45,20 @@
                         }
                     };
                 });
+            }
+            function handlResponse(url, response){
+                if(response.status < 500){
+                    let a = response.json();
+                    console.log(a)
+                    return a;
+                }else{
+                    console.error(`Requset failed. Url=${url}. Message=${response.statusText}`);
+                    return {
+                        error : {
+                            message : 'request failed due to server error'
+                        }
+                    }
+                }
             }
         </script>
     </body>

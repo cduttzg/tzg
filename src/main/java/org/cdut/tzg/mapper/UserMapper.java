@@ -36,8 +36,8 @@ public interface UserMapper {
     /**
      *插入用户数据
      */
-    @Insert("insert into user(school_number,username,password,phone_number,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role)" +
-            " values (schoolNumber,username,password,phoneNumber,address,email,isFrozen,totalSold,grade,avatar,moneyCode,role)")
+    @Insert("insert into user(school_number,username,password,phone_number,address,email,is_frozen,total_sold,grade,avatar,money_code,role)" +
+            " values (#{schoolNumber},#{username},#{password},#{phoneNumber},#{address},#{email},#{isFrozen},#{totalSold},#{grade},#{avatar},#{moneyCode},#{role})")
     int insert(User user);
 
     /**

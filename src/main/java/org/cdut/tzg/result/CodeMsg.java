@@ -33,6 +33,10 @@ public class CodeMsg {
     public static CodeMsg REPETITIVE_OPERATION = new CodeMsg(500402,"重复操作");
     public static CodeMsg NO_ADMINISTRATOR = new CodeMsg(500403,"暂无管理员");
 
+    //个人中心异常 5005xx
+    public static CodeMsg NOT_STUDENT = new CodeMsg(500501,"你不是成都理工的学生");
+    public static CodeMsg USERNAME_REPEAT = new CodeMsg(500502,"用户名已存在");
+
     private CodeMsg(int code, String msg) {
         this.code = code;
         this.msg = msg;
