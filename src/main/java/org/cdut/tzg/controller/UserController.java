@@ -113,6 +113,7 @@ public class UserController {
         mapdata.put("content","注册成功");
         return Result.success(mapdata);
     }
+
     /**
      * URL： /api/user/login
      * 描述：用户登录
@@ -146,15 +147,24 @@ public class UserController {
 
         }
     }
-
     /**
-     * 用户是否是商家
+     * URL： /api/user/home/isSaller
+     * 描述：用户是否是商家
+     * 方法：POST
+     * 数据：{“用户名”:”XXX”}
+     * 返回：
+     *  不是卖家：{"code":200,"msg":"success","data":{"isSaller":false,"moneyCode":null}}
+     *  是卖家：{"code":200,"msg":"success","data":{"isSaller":true,"moneyCode":"zacky的收款码"}}
+     *  输入的用户不存在：{"code":500201,"msg":"未找到该用户","data":null}
      */
     @RequestMapping(value = "/home/isSaller",method = RequestMethod.POST)
     @ResponseBody
     public Result<Object> isSaller(@RequestBody String data){
         Map map=MapUtils.getMap(data);
         User user = userService.findUserByName((String) map.get("用户名"));
+        if(user == null){
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
         Map <String,Object> mapdata = new LinkedHashMap<String,Object>();
         if (user.getMoneyCode() != null){
             mapdata.put("isSaller",true);
@@ -167,7 +177,15 @@ public class UserController {
     }
 
     /**
-     * 发布/删除求购
+     *  URL： /api/user/home/handleSeek
+     * 描述：发布/删除求购
+     * 方法：POST
+     * 数据：{"data":{"发布":true/false,”用户名”:”XXX”,“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX },"img":file} img-->商品图片
+     * 返回：
+     * 未找到该用户：{"code":500201,"msg":"未找到该用户","data":null}
+     * 发布求购信息成功：{"code":200,"msg":"success","data":{"success":true}}
+     * 发布的求购信息已经存在：{"code":600603,"msg":"求购信息已经存在，请勿重复发布","data":null}
+     * 删除求购信息：{"code":200,"msg":"success","data":{"success":true}}
      */
     @RequestMapping(value = "/home/handleSeek",method = RequestMethod.POST)
     @ResponseBody
@@ -175,6 +193,9 @@ public class UserController {
         Map map=MapUtils.getMap(data);
         Map mapdata = new HashMap();
         Long userId = userService.findIdByUserName((String) map.get("用户名"));
+        if(userId == null){
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
         if((Boolean) map.get("发布")){//发布求购信息
 //            Date day=new Date();
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -188,7 +209,7 @@ public class UserController {
                 good.setContent((String) map.get("描述"));
                 good.setPrice(Float.parseFloat(map.get("单价").toString()));
                 good.setStock((Integer) map.get("数量"));
-                good.setImage((String) map.get("商品图片"));
+                good.setImage((String) map.get("img"));
                 int pubStatus = goodsService.publishSeekGood(good);
                 if (pubStatus==1){//求购信息发布成功
                     mapdata.put("success",true);
@@ -214,6 +235,15 @@ public class UserController {
         }
     }
 
+    /*
+     * URL： /api/user/home/SeekInfo
+     * 描述：查看已发布求购
+     * 方法：GET
+     * 数据：{"用户名":"XXX"}
+     * 返回：
+     * 存在求购信息：{"code":200,"msg":"success","data":[{"商品名称":"求购TypeC充电线","数量":993,"单价":20.0,"商品图片":null,"联系方式":"13568043079","商品标签":5,"描述":"最近自己的Type-c充电线坏了，求购一条，亲们速速联系！感激不尽！"}]}
+     * 不存在求购信息：{"code":200,"msg":"success","data":[]}
+     */
     @RequestMapping(value = "/home/SeekInfo",method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> findAllSeekGoods(@RequestParam String username){
@@ -242,8 +272,6 @@ public class UserController {
 
     /**
      * 添加新商品
-     * @param data
-     * @return
      */
     @RequestMapping(value = "/home/addGoods",method = RequestMethod.POST)
     @ResponseBody
@@ -433,9 +461,13 @@ public class UserController {
 
 
     /**
-     *方法：GET
+     * URL：/api/user/home/message
+     * 描述：获取当前用户信息
+     * 方法：GET
      * 数据：{“用户名”:”XXX” }
-     * 期望返回格式：{“学号”:”XXX” ,”用户名”:”XXX” ,”手机号码”:”XXX” ,”电子邮箱”:”XXX” ,”收货地址”:”XXX” ,”用户评分”:5,”头像”:”XXX” ,”总卖出量”:100}
+     * 返回：
+     * 查找用户信息成功：{"code":200,"msg":"success","data":{"头像":null,"总卖出量":0,"用户评分":10,"手机号码":"13568043079","学号":"201613160810","用户名":"rock","电子邮箱":"134562","收货地址":"成都"}}
+     * 查找用户信息失败：{"code":500201,"msg":"未找到该用户","data":null}
      */
     @RequestMapping(value = "/home/message",method = RequestMethod.GET)
     @ResponseBody
@@ -458,10 +490,13 @@ public class UserController {
     }
 
     /**
+     * URL：/api/user/home/orderInfo
      * 描述：获取当前用户的订单
      * 方法：GET
      * 数据：{“用户名”:”XXX”}
-     * 期望返回格式：[{“买家姓名”:”XXX”,“卖家记录”：[{”卖家姓名”:"xxx",”商品名称”:"xxx"},{”卖家姓名”:"xxx",”商品名称”:"xxx"}],”订单时间”:”XXX”,”订单状态”:已付款/已完成/异常,”订单ID”:”xxx”},]
+     * 返回：
+     * 用户存在订单：{"code":200,"msg":"success","data":[{"买家姓名":"小红","订单ID":4,"订单状态":1,"卖家记录":[{"商品名称":"东苑E12套间一套三合租","卖家姓名":"rock"}],"订单时间":"2019-06-25T16:26:44.000+0000"}]}
+     * 用户不存在订单：{"code":200,"msg":"success","data":[]}
      */
     @RequestMapping(value = "/home/orderInfo",method = RequestMethod.GET)
     @ResponseBody
