@@ -266,9 +266,15 @@ public class UserController {
         return  Result.success(listdata);
     }
 
-    /**
-     * 添加新商品
-     */
+    /*
+    * 描述：用户添加新商品
+    * 方法：POST
+    * 数据：formData-->{"data":{”用户名”:”XXX”,“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX },"img":file}  img-->商品图片
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"添加商品完成"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500201, "msg": "未找到该用户", "data": null}
+    * */
     @RequestMapping(value = "/home/addGoods",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> addGoods(@RequestBody String data){
@@ -291,7 +297,7 @@ public class UserController {
             System.out.println(goods);
             if (sign == 1){
                 map.put("success",true);
-                map.put("content","上架成功");
+                map.put("content","添加商品完成");
             }else if (sign == 0)
                 //再次上架
                 return Result.error(CodeMsg.REPETITIVE_OPERATION);
@@ -300,7 +306,17 @@ public class UserController {
 
         return Result.success(map);
     }
-
+    /*
+    * 描述：用户将商品上架
+    * 方法：POST
+    * 数据:{"商品ID":""xxxx","商品标签":xxx}
+    * 例子：{“商品ID”:1,"商品标签":1}
+    * 期望返回值:{"success":"true","content":"商品重新上架完成"}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"商品上架完成"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500303, "msg": "商品不存在", data: null}
+    * */
     @RequestMapping(value = "/home/onShelves",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> onShelves(@RequestBody String data){
@@ -312,7 +328,7 @@ public class UserController {
             int sign = goodsService.updateTypeState(goodsId,0);
             if (sign == 1){
                 map.put("success",true);
-                map.put("content","商品下架成功");
+                map.put("content","商品上架完成");
             }else if (sign == 0)
                 return Result.error(CodeMsg.REPETITIVE_OPERATION);
         }else
@@ -320,11 +336,16 @@ public class UserController {
         return Result.success(map);
     }
 
-    /**
-     * 商品下架
-     * @param data
-     * @return
-     */
+    /*
+    * 描述：用户将商品下架
+    * 方法：POST
+    * 数据：{“商品ID”:”xxxx”,”下架”:true}------>>>{"商品ID":"xxx"}
+    * 期望返回格式：{“success”:false/true,”content”:”xxx”}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"商品下架完成"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500303, "msg": "商品不存在", data: null}
+    * */
     @RequestMapping(value = "/home/offShelves",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> offShelves(@RequestBody String data){
@@ -336,7 +357,7 @@ public class UserController {
             int sign = goodsService.updateTypeState(goodsId,-1);
             if (sign == 1){
                 map.put("success",true);
-                map.put("content","商品下架成功");
+                map.put("content","商品下架完成");
             }else if (sign == 0){
                 return Result.error(CodeMsg.REPETITIVE_OPERATION);
             }
@@ -345,11 +366,16 @@ public class UserController {
 
         return Result.success(map);
     }
-    /**
-     * 更新用户信息
-     * @param data
-     * @return
-     */
+    /*
+    * 描述：更新用户信息
+    * 方法：POST
+    * 数据：formData-->{"data":{“用户名”:”XXX”,”手机号码”:”XXX” ,”电子邮箱”:”XXX” ,”收货地址”:”XXX”},"img":[file,]}   img-->收款码、用户头像
+    * 期望返回格式：{“success”:false/true,”content”:”xxx”,”beSaller”:false/true}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"beSaller":false,"content":"信息修改成功"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500201, "msg": "未找到该用户", "data": null}
+    * */
     @RequestMapping(value = "/home/updateMessage",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> updateUserInformation(@RequestBody String data){
@@ -378,11 +404,17 @@ public class UserController {
         return Result.success(map);
     }
 
-    /**
-     * 订单置为已支付
-     * @param data
-     * @return
-     */
+    /*
+    * 描述：支付完成
+    * 方法：POST
+    * 数据：{“买家用户名”:”xxx”,”订单ID”:”xxx”}
+    * 期望返回格式：{“success”:false/true,”content”:”xxx”}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"订单已支付"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500400, "msg": "订单不存在", data: null}
+    * {"code": 500201, "msg": "未找到该用户", "data": null}
+    * */
     @RequestMapping(value = "/buyer/paidOrder",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> setStateToPaid(@RequestBody String data){
@@ -416,11 +448,17 @@ public class UserController {
         return Result.success(map);
     }
 
-    /**
-     * 订单置为完成
-     * @param data
-     * @return
-     */
+    /*
+    * 描述：收货完成
+    * 方法：POST
+    * 数据：{“买家用户名”:”xxx”,”订单ID”:”xxx”}
+    * 期望返回格式：{“success”:false/true,”content”:”xxx”}
+    * 返回值：
+    * {"code":200,"msg":"success","data":{"success":true,"content":"订单已完成"}}
+    * {"code": 500402, "msg": "重复操作", data: null}
+    * {"code": 500400, "msg": "订单不存在", data: null}
+    * {"code": 500201, "msg": "未找到该用户", "data": null}
+    * */
     @RequestMapping(value = "/buyer/completeOrder",method = RequestMethod.POST)
     @ResponseBody
     public Result<Map<String,Object>> setOrderComplete(@RequestBody String data){
@@ -586,23 +624,27 @@ public class UserController {
     @RequestMapping(value = "/home/goodsInfo",method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> goodsInfo(@RequestParam String username){
-        Long userid = userService.findIdByUserName(username);
-        if (userid == 0){
+        User user = userService.findUserByName(username);
+        if (user != null) {
+            List<Map<String, Object>> list = new ArrayList<>();
+            List<Goods> goods = goodsService.getPutGoods(user.getId());
+            //System.out.println(goods);
+            for (Goods good : goods) {
+                Map<String, Object> mapdata = new HashMap<String, Object>();
+                mapdata.put("商品图片", good.getImage());
+                mapdata.put("描述", good.getContent());
+                mapdata.put("单价", good.getPrice());
+                mapdata.put("数量", good.getStock());
+                mapdata.put("商品ID", good.getId());
+                if (good.getType() == -1){
+                    mapdata.put("上架",false);
+                }else {
+                    mapdata.put("上架",true);
+                }
+                list.add(mapdata);
+            }
+            return Result.success(list);
+        }else
             return Result.error(CodeMsg.USER_UNDEFIND);
-        }
-        Map<String,Object> mapdata;
-        List<Map<String,Object>> list= new ArrayList<Map<String,Object>>();
-        List<Goods> goods = goodsService.getPutGoods(userid);
-        System.out.println(goods);
-        for(Goods good:goods){
-            mapdata= new HashMap<String, Object>();
-            mapdata.put("商品图片",good.getImage());
-            mapdata.put("描述",good.getContent());
-            mapdata.put("单价",good.getPrice());
-            mapdata.put("数量",good.getStock());
-            mapdata.put("商品ID",good.getId());
-            list.add(mapdata);
-        }
-        return Result.success(list);
     }
 }
