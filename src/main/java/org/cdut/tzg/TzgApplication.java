@@ -47,6 +47,7 @@ public class TzgApplication {
         System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/SeekInfo?username=rose" +":根据用户姓名查询用户求购信息");//根据用户姓名查询用户求购信息
         System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/message?username=rock" + ":根据用户姓名查找用户信息");//根据用户姓名查找用户信息
         System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/goodsInfo?username=zacky" + ":根据用户名查找该用户的上架信息");//根据用户名查找该用户的上架信息
+        System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/orderInfo?username=zacky" + ":根据用户名获取当前用户的订单");//根据用户名获取当前用户的订单
     }
 
 }

@@ -458,7 +458,7 @@ public class UserController {
     @ResponseBody
     public Result<Object> getUserOrderInfo(@RequestParam String username){
         Long userId = userService.findIdByUserName(username);//用户id
-        if(userId == 0){
+        if(userId == null){
             return Result.error(CodeMsg.USER_UNDEFIND);
         }
         List <Map<String,Object>> listdata = new ArrayList<Map<String,Object>>();
@@ -493,9 +493,10 @@ public class UserController {
         List<GoodsOrders> goodsOrderss = goodsOrdersService.getGoodsOrdersBySellerId(userId);//获取自己卖的商品订单
         List<Map<String,Object>> listbuyer = new ArrayList<Map<String,Object>>();
         List<Map<String,Object>> listbuyerrec;
-        Map<String,Object> buyermap = new HashMap<String, Object>();
-        System.out.println("1:"+goodsOrderss);
+        Map<String,Object> buyermap;
+        //System.out.println("1:"+goodsOrderss);
         for (GoodsOrders goodsOrders1:goodsOrderss){
+            buyermap= new HashMap<String, Object>();
             listbuyerrec=new ArrayList<Map<String,Object>>();
             map=new HashMap<String, Object>();
             Long orderid=goodsOrders1.getOrdersId();
@@ -503,36 +504,35 @@ public class UserController {
             String buyername = userService.getUserNameById(orders1.getBuyerId());
             Long goodsid=goodsOrders1.getGoodsId();
             String goodsname=goodsService.getGoodsNameById(goodsid);
+            //System.out.println(goodsname);
             map.put("买家姓名",buyername);
             map.put("订单时间",orders1.getCreatedTime());
             map.put("订单状态",orders1.getState());
             map.put("订单ID",orderid);
-            System.out.println(map);
-            if (listbuyer.isEmpty()){//当listbuyer为空的时候，不需要合并卖家记录
-                buyermap.put("卖家姓名",username);
-                buyermap.put("商品名称",goodsname);
-            }else{
-                int index=-1;
+            int index = -1;
+           // System.out.println(map);
+            if (!listbuyer.isEmpty()){//当listbuyer为空的时候，不需要合并卖家记录
                 for (Map<String,Object> map1:listbuyer){
                     if(map1.get("订单ID").equals(orderid)){
                         index = listbuyer.indexOf(map1);
                         List<Map<String,Object>> list=(List<Map<String,Object>>) map1.get("卖家记录");
                         Map<String,Object> map2 = new HashMap<String, Object>();
-                        Map<String,Object> map3 = new HashMap<String, Object>();
                         map2.put("卖家姓名",username);
                         map2.put("商品名称",goodsname);
-                        map3.put("卖家记录",map2);
-                        listbuyer.set(index,map3);
+                        list.add(map2);
+                        listbuyer.get(index).replace("卖家记录",list);
                         break;
                     }
                 }
             }
-            //System.out.println("buyermap:"+buyermap);
-            listbuyerrec.add(buyermap);
-            //System.out.println("listbuyerrec:"+listbuyerrec);
-            map.put("卖家记录",listbuyerrec);
+            if(index == -1){
+                buyermap.put("卖家姓名",username);
+                buyermap.put("商品名称",goodsname);
+                listbuyerrec.add(buyermap);
+                map.put("卖家记录",listbuyerrec);
+                listbuyer.add(map);
+            }
         }
-        System.out.println("2:"+listbuyer);
         listdata.addAll(listbuyer);
         return Result.success(listdata);
     }

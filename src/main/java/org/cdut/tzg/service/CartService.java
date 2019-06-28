@@ -37,4 +37,9 @@ public interface CartService {
      * 根据用户id和商品id获得唯一商品(购物车不允许同一id商品出现多次 只允许对它在购物车中的数量进行修改)
      */
     Cart findCartByUserIdAndGoodsId(Long buyerId,Long goodsId);
+
+    /**
+     *  清空买家的购物车(创建订单后)
+     */
+    int clearBuyerCart(Long buyerId);
 }

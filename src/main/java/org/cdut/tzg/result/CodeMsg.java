@@ -24,8 +24,9 @@ public class CodeMsg {
     public static CodeMsg STOCKOUT = new CodeMsg(500301,"库存不足");
     public static CodeMsg EMPTY_TYPE_GOODS = new CodeMsg(500302,"当前没有该类型商品");
     public static CodeMsg NO_GOODS = new CodeMsg(500303,"商品不存在");
-    //购物异常
-    public static CodeMsg EMPTY_CART=new CodeMsg(500303,"当前用户购物车为空");
+
+    //购物异常 5005xx
+    public static CodeMsg EMPTY_CART=new CodeMsg(500501,"当前用户购物车为空");
 
     //后台数据获取异常5004xx
     public static CodeMsg NO_ORDER = new CodeMsg(500400,"订单不存在");
