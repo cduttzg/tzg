@@ -36,7 +36,7 @@ public interface GoodsMapper {
      * 发布求购信息
      */
     @Insert("insert into goods(user_id,type,title,content,price,image,stock,tag) values" +
-            " (#{userId},5,#{title},#{content},#{price},#{image},#{stock},5)")
+            " (#{userId},5,#{title},#{content},#{price},#{image},#{stock},#{tag})")
     int publishSeekGood(Goods good);
     /**
      * 通过good中userid 、tpye、title删除求购信息

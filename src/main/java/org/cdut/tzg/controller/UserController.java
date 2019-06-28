@@ -131,15 +131,15 @@ public class UserController {
         User user=userService.findUserByName((String)map.get("用户名"));
         Map mapdata = new LinkedHashMap();
         if(user ==null){
-            return Result.error(CodeMsg.USER_UNDEFIND);
+            return Result.error(CodeMsg.USER_UNDEFIND);//用户名为空，返回查找用户失败
         }else{
-            if (user.getPassword().equals((String)map.get("密码"))){
+            if (user.getPassword().equals((String)map.get("密码"))){ //密码不正确则返回失败信息
                 mapdata.put("status",0);
                 boolean isFrozen = (user.getIsFrozen()==0?false:true);
                 mapdata.put("是否被冻结",isFrozen);
                 mapdata.put("角色",user.getRole());
                 return Result.success(mapdata);
-            }else {
+            }else { //密码成功则显示登陆成功
                 mapdata.put("status",1);
                 mapdata.put("是否被冻结",true);
                 return Result.error(CodeMsg.PASSWD_ERROE);
@@ -161,12 +161,12 @@ public class UserController {
     @ResponseBody
     public Result<Object> isSaller(@RequestBody String data){
         Map map=MapUtils.getMap(data);
-        User user = userService.findUserByName((String) map.get("用户名"));
+        User user = userService.findUserByName((String) map.get("用户名"));//通过用户名查找用户信息
         if(user == null){
             return Result.error(CodeMsg.USER_UNDEFIND);
         }
-        Map <String,Object> mapdata = new LinkedHashMap<String,Object>();
-        if (user.getMoneyCode() != null){
+        Map <String,Object> mapdata = new LinkedHashMap<String,Object>();//最后返回的data信息
+        if (user.getMoneyCode() != null){   //用户上传了付款码，则是商家
             mapdata.put("isSaller",true);
             mapdata.put("moneyCode",user.getMoneyCode());
         }else {
@@ -197,10 +197,7 @@ public class UserController {
             return Result.error(CodeMsg.USER_UNDEFIND);
         }
         if((Boolean) map.get("发布")){//发布求购信息
-//            Date day=new Date();
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            //int pubStatus = goodsService.publishSeekGood(userId,(Integer) map.get("商品标签"),(String) map.get("商品名称"),(String) map.get("描述"),Float.parseFloat(map.get("单价").toString()),(Integer) map.get("数量"),(String) map.get("商品图片"));
-            Goods exitSeekGoods=goodsService.isExitSeekGoods(userId, (Integer) map.get("商品标签"), (String) map.get("商品名称"));
+           Goods exitSeekGoods=goodsService.isExitSeekGoods(userId, (Integer) map.get("商品标签"), (String) map.get("商品名称"));
             if (exitSeekGoods==null){ //求购信息不存在的时候
                 Goods good=new Goods();
                 good.setUserId(userId);
@@ -210,7 +207,7 @@ public class UserController {
                 good.setPrice(Float.parseFloat(map.get("单价").toString()));
                 good.setStock((Integer) map.get("数量"));
                 good.setImage((String) map.get("img"));
-                int pubStatus = goodsService.publishSeekGood(good);
+                int pubStatus = goodsService.publishSeekGood(good);//发布求购信息
                 if (pubStatus==1){//求购信息发布成功
                     mapdata.put("success",true);
                     return Result.success(mapdata);
@@ -249,14 +246,13 @@ public class UserController {
     public Result<Object> findAllSeekGoods(@RequestParam String username){
         Map map=null;
         Long userId=userService.findIdByUserName(username);
-        List<Goods> seekGoods=goodsService.getAllSeekGoodsByUserId(userId);
-        String userPhone=userService.findPhoneByUsername(username);
+        List<Goods> seekGoods=goodsService.getAllSeekGoodsByUserId(userId);//根据用户id查找求购信息
+        String userPhone=userService.findPhoneByUsername(username);//根据用户名查找用户电话
         if (userPhone==null){
             return Result.error(CodeMsg.USER_UNDEFIND);
         }
         List<Map> listdata=new ArrayList<Map>();
-        //“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX ,”商品图片”:”XXX”,”联系方式”:”XXX”
-        for(Goods good : seekGoods){
+        for(Goods good : seekGoods){ //根据查找到的求购记录，构造商品数组
             map=new HashMap();
             map.put("商品标签",good.getTag());
             map.put("商品名称",good.getTitle());
@@ -521,7 +517,7 @@ public class UserController {
             Long orderid=orders1.getId();
             List<GoodsOrders> goodsOrder = goodsOrdersService.findTheOrdersDetailById(orderid);
             listseller = new ArrayList<Map<String,Object>>();
-            for (GoodsOrders goodsOrders1 : goodsOrder){
+            for (GoodsOrders goodsOrders1 : goodsOrder){//查找到的订单id相同时，显示在在通一个订单中
                 mapseller=new HashMap<String, Object>();
                 String sellername=userService.getUserNameById(goodsOrders1.getSellerId());
                 mapseller.put("卖家姓名",sellername);
@@ -557,7 +553,7 @@ public class UserController {
            // System.out.println(map);
             if (!listbuyer.isEmpty()){//当listbuyer为空的时候，不需要合并卖家记录
                 for (Map<String,Object> map1:listbuyer){
-                    if(map1.get("订单ID").equals(orderid)){
+                    if(map1.get("订单ID").equals(orderid)){//找到相同的订单id，则应该显示在同一个订单
                         index = listbuyer.indexOf(map1);
                         List<Map<String,Object>> list=(List<Map<String,Object>>) map1.get("卖家记录");
                         Map<String,Object> map2 = new HashMap<String, Object>();
