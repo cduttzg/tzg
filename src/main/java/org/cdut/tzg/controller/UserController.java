@@ -504,7 +504,7 @@ public class UserController {
      * 方法：GET
      * 数据：{“用户名”:”XXX” }
      * 返回：
-     * 查找用户信息成功：{"code":200,"msg":"success","data":{"头像":null,"总卖出量":0,"用户评分":10,"手机号码":"13568043079","学号":"201613160810","用户名":"rock","电子邮箱":"134562","收货地址":"成都"}}
+     * 查找用户信息成功：{"code":200,"msg":"success","data":{"头像":null,"总卖出量":0,"用户评分":10,"手机号码":"13568043079","学号":"201613160810","用户名":"rock","电子邮箱":"134562","收货地址":"成都","收款码":".....jpg"}}
      * 查找用户信息失败：{"code":500201,"msg":"未找到该用户","data":null}
      */
     @RequestMapping(value = "/home/message", method = RequestMethod.GET)
@@ -520,9 +520,10 @@ public class UserController {
             datamap.put("手机号码", user.getPhoneNumber());
             datamap.put("电子邮箱", user.getEmail());
             datamap.put("收货地址", user.getAddress());
-            datamap.put("用户评分", (int) user.getGrade());
+            datamap.put("用户评分", user.getGrade());
             datamap.put("头像", user.getAvatar());
-            datamap.put("总卖出量", (int) user.getTotalSold());
+            datamap.put("总卖出量", user.getTotalSold());
+            datamap.put("收款码",user.getMoneyCode());
             return Result.success(datamap);
         }
     }
