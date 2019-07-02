@@ -70,9 +70,6 @@ public class TestController {
     @RequestMapping("/spider")
     @ResponseBody
     public String testSpider() {
-        System.out.println(CDUTUtils.isStudent("201613160616","510922199608255211"));
-        System.out.println(CDUTUtils.isStudent("201613160618","510922199608255211"));
-        System.out.println(CDUTUtils.isStudent("201613160820","510121199807058819"));
         return "sss";
     }
 

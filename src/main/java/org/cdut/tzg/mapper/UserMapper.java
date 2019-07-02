@@ -91,11 +91,11 @@ public interface UserMapper {
      * 更新用户信息
      */
     @Update("update user set phone_number = #{phoneNum}," +
-            "email = #{email}," +
-            "address = #{address}," +
-            "avatar = #{avatar}," +
-            "money_code = #{moneyCode}" +
-            "where username = #{username}")
+            " email = #{email}," +
+            " address = #{address}," +
+            " avatar = #{avatar}," +
+            " money_code = #{moneyCode}" +
+            " where username = #{username}")
     int updateUserInformation(@Param("username") String username,
                               @Param("phoneNum") String phoneNum,
                               @Param("email") String email,

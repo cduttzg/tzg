@@ -1,22 +1,46 @@
 <!doctype html>
 <html>
-    <head></head>
+    <head>
+    </head>
     <body>
         <input id='file' type='file' />
+        <input id='file2' type='file' />
         <button id='upLoadFile'>up load file</button>
         <button id='login'>login</button>
         <script>
+
+            function Map2JSONString(MapOBJ){
+                let json = {};
+                const it = MapOBJ.entries();
+                for(let i of MapOBJ.entries()){
+                    json[i[0]]=i[1];
+                }
+                return JSON.stringify(json);
+            }
+
             let btn_1 = document.getElementById('upLoadFile');
             btn_1.onclick=function () {
                 let formData = new FormData();
                 let fileField = document.getElementById('file');
-                formData.append('username','123');
-                formData.append('avatar',fileField.files[0]);
-                console.log(formData.get("username"));
-                console.log(formData.get("avatar"));
-                let url = '/test/image';
+                let fileField2 = document.getElementById('file2');
+                let map = new Map();
+                map.set('用户名','小红');
+                map.set('手机号码','18081245642');
+                map.set('电子邮箱','anlan1996@qq.com');
+                map.set('收货地址','成都理工大学');
+                formData.append("data",Map2JSONString(map));
+
+                let file1;
+                file1 = fileField.files[0] || (new File(['file'],"nullFile"));
+                let file2;
+                file2 = fileField2.files[0] || (new File(['file'],"nullFile"));
+                formData.append('img',file1);
+                formData.append('img',file2);
+
+                console.log(file1);
+                let url = '/api/user/home/updateMessage';
                 let posts = Post(url, formData);
-                console.log(posts);
+                console.log(JSON.stringify(posts));
             }
             let btn_2 = document.getElementById('login');
             btn_2.onclick=function () {
@@ -49,7 +73,12 @@
             function handlResponse(url, response){
                 if(response.status < 500){
                     let a = response.json();
-                    console.log(a)
+                    a.then(res=>{
+                        console.log(res);
+                        console.log(JSON.stringify(res));
+                    })
+                    console.log(a);
+                    console.log(JSON.stringify(a));
                     return a;
                 }else{
                     console.error(`Requset failed. Url=${url}. Message=${response.statusText}`);
