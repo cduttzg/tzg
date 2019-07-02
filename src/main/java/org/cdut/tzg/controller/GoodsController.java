@@ -92,8 +92,8 @@ public class GoodsController {
         else{
             User buyer=userService.findUserByName(username);//买家
             User seller=userService.findUserById(cartGoods.getUserId());//卖家
-            //从商品表更新库存
-            goodsService.updateGoodsStock(cartGoods.getId(),cartGoods.getStock()-buyedNumber);
+            //从商品表更新库存  更改--在提交订单或者立即购买的时候更新商品库存
+            //goodsService.updateGoodsStock(cartGoods.getId(),cartGoods.getStock()-buyedNumber);
             //添加到购物车表
             //寻找购物车中是否存在该商品
             List<Cart> allCartGoods=cartService.findAll(buyer.getId());//获取到该用户的购物车所有商品信息

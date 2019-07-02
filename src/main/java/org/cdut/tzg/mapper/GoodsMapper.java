@@ -96,4 +96,9 @@ public interface GoodsMapper {
     @Select("select count(*) from goods where tag = #{tag}")
     int getGoodsNumByTags(Integer tag);
 
+    /**
+     * 根据求购id删除求购
+     */
+    @Delete("delete from goods where id=#{goodid} and type = 5")
+    int delSeekGoodByid(Integer goodid);
 }
