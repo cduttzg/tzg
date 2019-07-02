@@ -24,7 +24,7 @@
             contentType :"application/json",
             dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性
-            data: JSON.stringify({"用户名":"rock1","密码":"12"}),    //参数值
+            data: JSON.stringify({"用户名":"rock","密码":"rock"}),    //参数值
             type: "POST",   //请求方式
             success: function (req) {
                 //请求成功时处理
@@ -51,7 +51,7 @@
     isSallerbtn.click(function () {
         console.log("--start--");
         $.ajax({
-            url: "/api/user/home/isSaller",    //请求的url地址
+            url: "/api/user/home/isSeller",    //请求的url地址
             contentType :"application/json",
             dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性
@@ -96,11 +96,11 @@
     delebtn.click(function () {
         console.log("--start--");
         $.ajax({
-            url: "/api/user/home/handleSeek",    //请求的url地址
+            url: "/api/user/home/deleteSeek",   //请求的url地址
             contentType :"application/json",
             dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性
-            data: JSON.stringify({"商品ID":4}),   //参数值
+            data: JSON.stringify({"商品ID":39}),   //参数值
             type: "POST",   //请求方式
             success: function (req) {
                 //请求成功时处

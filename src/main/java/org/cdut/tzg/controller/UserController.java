@@ -231,7 +231,7 @@ public class UserController {
      */
     @RequestMapping(value = "/home/upSeek", method = RequestMethod.POST)
     @ResponseBody
-    public Result<Object> upSeek(@RequestParam("data") String data, @RequestParam(value = "img", required = false) MultipartFile file){
+    public Result<Object> upSeek(@RequestBody String data, @RequestParam(value = "img", required = false) MultipartFile file){
         Map map = MapUtils.getMap(data);
         Map mapdata = new HashMap();
         User user = userService.findUserByName((String) map.get("用户名"));
@@ -276,7 +276,9 @@ public class UserController {
      * 未找到该用户：{"code":500201,"msg":"未找到该用户","data":null}
      * 删除求购信息：{"code":200,"msg":"success","data":{"success":true}}
      */
-    public Result<Object> deleteSeek(@RequestParam("data") String data){
+    @RequestMapping(value = "/home/deleteSeek", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Object> deleteSeek(@RequestBody String data){
         Map map=MapUtils.getMap(data);
         Map mapdata = new HashMap();
         int delStatus = goodsService.delSeekGoodByid((int)map.get("商品ID"));
