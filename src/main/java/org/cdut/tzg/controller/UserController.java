@@ -225,7 +225,7 @@ public class UserController {
      * 方法：GET
      * 数据：{"用户名":"XXX"}
      * 返回：
-     * 存在求购信息：{"code":200,"msg":"success","data":[{"商品名称":"求购TypeC充电线","数量":993,"单价":20.0,"商品图片":null,"联系方式":"13568043079","商品标签":5,"描述":"最近自己的Type-c充电线坏了，求购一条，亲们速速联系！感激不尽！"}]}
+     * 存在求购信息：{"code":200,"msg":"success","data":[{"商品名称":"求购TypeC充电线","数量":993,"单价":20.0,"商品图片":null,"联系方式":"13568043079","商品标签":5,"描述":"最近自己的Type-c充电线坏了，求购一条，亲们速速联系！感激不尽！","商品ID":7}]}
      * 不存在求购信息：{"code":200,"msg":"success","data":[]}
      */
     @RequestMapping(value = "/home/SeekInfo", method = RequestMethod.GET)
@@ -248,6 +248,7 @@ public class UserController {
             map.put("数量", good.getStock());
             map.put("商品图片", good.getImage());
             map.put("联系方式", userPhone);
+            map.put("商品ID",good.getId());
             listdata.add(map);
         }
         return Result.success(listdata);
