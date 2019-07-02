@@ -169,7 +169,7 @@ public class UserController {
      * 发布的求购信息已经存在：{"code":600603,"msg":"求购信息已经存在，请勿重复发布","data":null}
      * 删除求购信息：{"code":200,"msg":"success","data":{"success":true}}
      */
-    @RequestMapping(value = "/home/handleSeek", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/home/handleSeek", method = RequestMethod.POST)
     @ResponseBody
     public Result<Object> handleSeek(@RequestParam("data") String data, @RequestParam(value = "img", required = false) MultipartFile file) {
         Map map = MapUtils.getMap(data);
@@ -217,7 +217,78 @@ public class UserController {
                 return Result.error(CodeMsg.DELETEGOODFAILED);
             }
         }
+    }*/
+
+    /*
+     *  URL： /api/user/home/upSeek
+     * 描述：发布求购
+     * 方法：POST
+     * 数据：{"data":{”用户名”:”XXX”,“商品标签”:”XXX”,”商品名称”:”XXX”,”描述”:”XXX”,”单价”:XXX,”数量”:XXX },"img":file} img-->商品图片
+     * 返回：
+     * 未找到该用户：{"code":500201,"message":"未找到该用户","data":null}
+     * 发布求购信息成功：{"code":200,"message":"success","data":{"success":true}}
+     * 发布的求购信息已经存在：{"code":600603,"message":"求购信息已经存在，请勿重复发布","data":null}
+     */
+    @RequestMapping(value = "/home/upSeek", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<Object> upSeek(@RequestParam("data") String data, @RequestParam(value = "img", required = false) MultipartFile file){
+        Map map = MapUtils.getMap(data);
+        Map mapdata = new HashMap();
+        User user = userService.findUserByName((String) map.get("用户名"));
+        Long userId = user.getId();
+        if (userId == null) {
+            return Result.error(CodeMsg.USER_UNDEFIND);
+        }
+        //发布求购信息
+        Integer tag = (Integer) map.get("商品标签");
+        String goodsTitle = (String) map.get("商品名称");
+        Goods exitSeekGoods = goodsService.isExitSeekGoods(userId, tag, goodsTitle);
+        if (exitSeekGoods == null) { //求购信息不存在的时候
+            Goods good = new Goods();
+            good.setUserId(userId);
+            good.setTag(tag);
+            good.setTitle(goodsTitle);
+            good.setContent((String) map.get("描述"));
+            good.setPrice(Float.parseFloat(map.get("单价").toString()));
+            good.setStock((Integer) map.get("数量"));
+            String imageUrl = ImageUtils.upload(file, user.getSchoolNumber());
+            good.setImage(imageUrl);
+            int pubStatus = goodsService.publishSeekGood(good);
+            if (pubStatus == 1) {//求购信息发布成功
+                mapdata.put("success", true);
+                return Result.success(mapdata);
+            } else {//求购信息发布失败
+                mapdata.put("success", false);
+                return Result.error(CodeMsg.PUBLISHGOODFAILED);
+            }
+        } else {//求购信息已经存在
+            mapdata.put("success", false);
+            return Result.error(CodeMsg.EXITSEEKGOODS);
+        }
     }
+
+    /*
+     *  URL： /api/user/home/deleteSeek
+     * 描述：删除求购
+     * 方法：POST
+     * 数据：{"data":{“商品ID”:xx}
+     * 返回：
+     * 未找到该用户：{"code":500201,"msg":"未找到该用户","data":null}
+     * 删除求购信息：{"code":200,"msg":"success","data":{"success":true}}
+     */
+    public Result<Object> deleteSeek(@RequestParam("data") String data){
+        Map map=MapUtils.getMap(data);
+        Map mapdata = new HashMap();
+        int delStatus = goodsService.delSeekGoodByid((int)map.get("商品ID"));
+        if (delStatus == 1) {//删除求购信息成功
+            mapdata.put("success", true);
+            return Result.success(mapdata);
+        } else {//删除求购信息失败
+            mapdata.put("success", false);
+            return Result.error(CodeMsg.DELETEGOODFAILED);
+        }
+    }
+
 
     /*
      * URL： /api/user/home/SeekInfo

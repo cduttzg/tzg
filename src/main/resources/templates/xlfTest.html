@@ -76,11 +76,11 @@
     insertbtn.click(function () {
         console.log("--start--");
         $.ajax({
-            url: "/api/user/home/handleSeek",    //请求的url地址
+            url: "/api/user/home/upSeek",    //请求的url地址
             contentType :"application/json",
             dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性
-            data: JSON.stringify({"发布":true,"用户名":"rose","商品标签":0,"商品名称":"c++","描述":"从入门到入土","单价":52.2,"数量":2,"img":"XXX"}),   //参数值
+            data: JSON.stringify({"用户名":"rose","商品标签":0,"商品名称":"c++","描述":"从入门到入土","单价":52.2,"数量":2,"img":"XXX"}),   //参数值
             type: "POST",   //请求方式
             success: function (req) {
                 //请求成功时处理
@@ -100,7 +100,7 @@
             contentType :"application/json",
             dataType:"json",
             async: true,//请求是否异步，默认为异步，这也是ajax重要特性
-            data: JSON.stringify({"发布":false,"用户名":"rose","商品标签":5,"商品名称":"c++","描述":"从入门到入土","单价":52.2,"数量":2,"商品图片":"XXX"}),   //参数值
+            data: JSON.stringify({"商品ID":4}),   //参数值
             type: "POST",   //请求方式
             success: function (req) {
                 //请求成功时处

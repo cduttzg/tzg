@@ -83,4 +83,9 @@ public interface GoodsService {
      * 获取指定标签的商品数量
      */
     int getGoodsNumByTags(Integer tag);
+
+    /**
+     * 根据求购id删除求购
+     */
+    int delSeekGoodByid(Integer goodid);
 }
