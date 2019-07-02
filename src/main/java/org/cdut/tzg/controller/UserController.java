@@ -504,7 +504,7 @@ public class UserController {
      * 方法：GET
      * 数据：{“用户名”:”XXX” }
      * 返回：
-     * 查找用户信息成功：{"code":200,"msg":"success","data":{"头像":null,"总卖出量":0,"用户评分":10,"手机号码":"13568043079","学号":"201613160810","用户名":"rock","电子邮箱":"134562","收货地址":"成都"}}
+     * 查找用户信息成功：{"code":200,"msg":"success","data":{"头像":null,"总卖出量":0,"用户评分":10,"手机号码":"13568043079","学号":"201613160810","用户名":"rock","电子邮箱":"134562","收货地址":"成都","收款码":".....jpg"}}
      * 查找用户信息失败：{"code":500201,"msg":"未找到该用户","data":null}
      */
     @RequestMapping(value = "/home/message", method = RequestMethod.GET)
@@ -520,9 +520,10 @@ public class UserController {
             datamap.put("手机号码", user.getPhoneNumber());
             datamap.put("电子邮箱", user.getEmail());
             datamap.put("收货地址", user.getAddress());
-            datamap.put("用户评分", (int) user.getGrade());
+            datamap.put("用户评分", user.getGrade());
             datamap.put("头像", user.getAvatar());
-            datamap.put("总卖出量", (int) user.getTotalSold());
+            datamap.put("总卖出量", user.getTotalSold());
+            datamap.put("收款码",user.getMoneyCode());
             return Result.success(datamap);
         }
     }
@@ -624,6 +625,8 @@ public class UserController {
      * 方法：GET
      * 数据：{“用户名”:”XXX”}
      * 期望返回格式：[{”商品图片”:”XXX”, ”描述”:”XXX”,”单价”:XXX,”数量”:XXX,”商品ID”:”xxx”},]
+     * 返回：
+     *  {"code":200,"message":"success","data":[{"数量":0,"上架":false,"商品ID":1,"商品图片":"","单价":128.0,"商品标签":-1,"描述":"女装"},{"数量":1,"上架":true,"商品ID":2,"商品图片":null,"单价":64.8,"商品标签":1,"描述":"Java程序设计"},{"数量":2,"上架":true,"商品ID":3,"商品图片":null,"单价":64.8,"商品标签":1,"描述":"C++Prime第五版"}]}
      */
     @RequestMapping(value = "/home/goodsInfo", method = RequestMethod.GET)
     @ResponseBody
@@ -640,6 +643,7 @@ public class UserController {
                 mapdata.put("单价", good.getPrice());
                 mapdata.put("数量", good.getStock());
                 mapdata.put("商品ID", good.getId());
+                mapdata.put("商品标签", good.getType());
                 if (good.getType() == -1) {
                     mapdata.put("上架", false);
                 } else {
