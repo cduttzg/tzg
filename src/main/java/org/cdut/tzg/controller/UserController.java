@@ -625,6 +625,8 @@ public class UserController {
      * 方法：GET
      * 数据：{“用户名”:”XXX”}
      * 期望返回格式：[{”商品图片”:”XXX”, ”描述”:”XXX”,”单价”:XXX,”数量”:XXX,”商品ID”:”xxx”},]
+     * 返回：
+     *  {"code":200,"message":"success","data":[{"数量":0,"上架":false,"商品ID":1,"商品图片":"","单价":128.0,"商品标签":-1,"描述":"女装"},{"数量":1,"上架":true,"商品ID":2,"商品图片":null,"单价":64.8,"商品标签":1,"描述":"Java程序设计"},{"数量":2,"上架":true,"商品ID":3,"商品图片":null,"单价":64.8,"商品标签":1,"描述":"C++Prime第五版"}]}
      */
     @RequestMapping(value = "/home/goodsInfo", method = RequestMethod.GET)
     @ResponseBody
@@ -641,6 +643,7 @@ public class UserController {
                 mapdata.put("单价", good.getPrice());
                 mapdata.put("数量", good.getStock());
                 mapdata.put("商品ID", good.getId());
+                mapdata.put("商品标签", good.getType());
                 if (good.getType() == -1) {
                     mapdata.put("上架", false);
                 } else {
