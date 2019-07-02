@@ -6,7 +6,7 @@ package org.cdut.tzg.result;
  */
 public class Result<T> {
     private int code;
-    private String msg;
+    private String message;
     private T data;
 
     /**
@@ -25,7 +25,7 @@ public class Result<T> {
 
     private Result(T data) {
         this.code = 200;
-        this.msg = "success";
+        this.message = "success";
         this.data = data;
     }
 
@@ -34,14 +34,14 @@ public class Result<T> {
             return;
         }
         this.code = cm.getCode();
-        this.msg = cm.getMsg();
+        this.message = cm.getMsg();
     }
 
     public int getCode() {
         return code;
     }
-    public String getMsg() {
-        return msg;
+    public String getMessage() {
+        return message;
     }
     public T getData() {
         return data;
