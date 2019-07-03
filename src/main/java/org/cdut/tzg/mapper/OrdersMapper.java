@@ -21,7 +21,7 @@ public interface OrdersMapper {
     /**
      * 获取指定日期订单数量
      */
-    @Select("select count(*) from orders where datediff(completed_time,#{date}) = 0")
+    @Select("select count(*) from orders where datediff(completed_time,#{date}) = 0 and state = 2")
     int getCompletedOrdersCount(Date date);
     /**
      * 获取指定id订单

@@ -49,8 +49,10 @@ public class OrderController {
         //返回数据载体
         Map<String,Object> map = new HashMap<>();
         //存储每日活跃量、销售量
-        Integer[] active = new Integer[7];
-        Integer[] daySold = new Integer[7];
+        //Integer[] active = new Integer[7];
+        Map<String,Integer> active = new HashMap<>();
+        Map<String,Integer> daySold = new HashMap<>();
+        //Integer[] daySold = new Integer[7];
 
         //获取一周内日期
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -63,8 +65,10 @@ public class OrderController {
             //System.out.println(sdf.format(calendar.getTime()));
             int orderCount = goodsService.getGoodsCount(calendar.getTime());
             int daySoldCount = orderService.getCompletedOrdersCount(calendar.getTime());
-            active[7-i] = orderCount;
-            daySold[7-i] = daySoldCount;
+            active.put(String.format("%tY-%tm-%td",calendar,calendar,calendar),orderCount);
+            daySold.put(String.format("%tY-%tm-%td",calendar,calendar,calendar),daySoldCount);
+            //active[7-i] = orderCount;
+            //daySold[7-i] = daySoldCount;
             calendar.setTime(date);
         }
         //统计各种求购标签的商品数量
