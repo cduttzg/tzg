@@ -88,4 +88,9 @@ public class GoodsServiceImpl implements GoodsService {
     public int getGoodsNumByTags(Integer tag) {
         return goodsMapper.getGoodsNumByTags(tag);
     }
+
+    @Override
+    public int delSeekGoodByid(Integer goodid) {
+        return goodsMapper.delSeekGoodByid(goodid);
+    }
 }
