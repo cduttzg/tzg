@@ -101,4 +101,11 @@ public interface GoodsMapper {
      */
     @Delete("delete from goods where id=#{goodid} and type = 5")
     int delSeekGoodByid(Integer goodid);
+
+    /**
+     * 模糊查询商品
+     */
+    @Select("select * from goods where title like concat('%',#{goodsName},'%') OR content LIKE CONCAT('%',#{goodsName},'%')")
+    List<Goods> findGoods(String goodsName);
+
 }

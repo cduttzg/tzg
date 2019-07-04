@@ -88,4 +88,9 @@ public interface GoodsService {
      * 根据求购id删除求购
      */
     int delSeekGoodByid(Integer goodid);
+
+    /**
+     * 模糊查询商品
+     */
+    List<Goods> findGoods(String goodsName);
 }

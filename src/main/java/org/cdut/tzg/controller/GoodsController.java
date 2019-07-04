@@ -34,6 +34,38 @@ public class GoodsController {
     @Autowired
     private GoodsOrdersService goodsOrdersService;
 
+
+    @RequestMapping("findGoods")
+    @ResponseBody
+    public  Result<Object> findGoods(@RequestParam("物品名称") String goodsName){
+        List<Goods> goodsList = goodsService.findGoods(goodsName);
+        if(goodsList==null)
+            return Result.error(NO_GOODS_LIKE_THIS);
+        List<Map<String, Object>> list = new ArrayList<>();
+        String[] tags = new String[]{"水票","书籍","寝室神器","租房","文具","电脑办公","游戏道具","体育用具","乐器","电器","装饰品","其他"};
+        String[] types = {"其他","书籍","虚拟","房屋","福利","求购"};
+        for(Goods goods:goodsList){
+            Map<String, Object> map = new HashMap<>();
+            map.put("商品名称",goods.getTitle());
+            map.put("商品类型",types[goods.getType()]);
+            map.put("描述",goods.getContent());
+            map.put("单价",goods.getPrice());
+            map.put("数量",goods.getStock());
+            map.put("卖家ID",goods.getUserId());
+            map.put("商品ID",goods.getId());
+            map.put("商品图片",goods.getImage());
+            map.put("联系方式",userService.findUserById(goods.getUserId()).getPhoneNumber());
+            if(goods.getTag()!=-1)
+                map.put("商品标签",tags[goods.getTag()]);
+            else
+                map.put("商品标签","商品");
+            list.add(map);
+        }
+        return Result.success(list);
+    }
+
+
+
     /**
      *URL：/api/goods/getInfo
      *描述：获取商品信息
@@ -60,6 +92,7 @@ public class GoodsController {
         }
         Map<String,Object> map=new HashMap<>();
         map.put("卖家名称",user.getUsername());
+        map.put("收款码",user.getMoneyCode());
         map.put("卖家头像",user.getAvatar());
         map.put("卖家成功交易量",user.getTotalSold());
         return Result.success(map);
@@ -83,7 +116,7 @@ public class GoodsController {
     public Result<Object> addToCart(@RequestBody String data){
         Map map= MapUtils.getMap(data);
         String username = (String) map.get("用户名");
-        Long goodsId = Long.valueOf((String)map.get("商品ID"));
+        Long goodsId = Long.valueOf((Integer) map.get("商品ID"));
         Integer buyedNumber = (Integer) map.get("商品数量");
         Goods cartGoods=goodsService.findGoodsById(goodsId);//商品
         if(cartGoods.getStock()-buyedNumber<0){//库存不足
@@ -97,10 +130,12 @@ public class GoodsController {
             //添加到购物车表
             //寻找购物车中是否存在该商品
             List<Cart> allCartGoods=cartService.findAll(buyer.getId());//获取到该用户的购物车所有商品信息
-            for(int i=0;i<allCartGoods.size();++i){//遍历查找是否存在相同商品
-                if(goodsId==allCartGoods.get(i).getGoodsId()){
-                    cartService.updateGoodsInCart(buyer.getId(),goodsId,buyedNumber+allCartGoods.get(i).getNumber());
-                    return Result.success("添加到购物车成功");
+            if(allCartGoods!=null){
+                for(int i=0;i<allCartGoods.size();++i){//遍历查找是否存在相同商品
+                    if(goodsId.equals(allCartGoods.get(i).getGoodsId())){
+                        cartService.updateGoodsInCart(buyer.getId(),goodsId,buyedNumber+allCartGoods.get(i).getNumber());
+                        return Result.success("添加到购物车成功");
+                    }
                 }
             }
             //不存在直接入库
@@ -132,7 +167,7 @@ public class GoodsController {
         //解析请求体参数
         Map map= MapUtils.getMap(data);
         String username=(String)map.get("用户名");
-        Long goodsId = Long.valueOf((String)map.get("商品ID"));
+        Long goodsId = Long.valueOf((Integer)map.get("商品ID"));
         Integer number=(Integer) map.get("数量");
 
         //orders订单入库
@@ -144,7 +179,7 @@ public class GoodsController {
 
         Orders orders=new Orders();//创建新订单
         orders.setBuyerId(userService.findUserByName(username).getId());//设置订单的buyer_id
-        orders.setState(0);//待支付
+        orders.setState(1);//已完成
         //Date date=new Date();
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         orderService.addOrders(orders);
@@ -200,8 +235,15 @@ public class GoodsController {
     @RequestMapping(value = "/gallery",method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> gallary(@RequestParam("标签种类") String type){
+        Map<String,Integer> types = new HashMap<>();
+        types.put("其它",0);
+        types.put("书籍",1);
+        types.put("虚拟",2);
+        types.put("房屋",3);
+        types.put("福利",4);
+        types.put("求购",5);
         List<Map<String,Object>> list=new ArrayList<>();//返回的数组
-        List<Goods> goodsList=goodsService.findSameTypeGoodsByType(5);//该类型所有商品数组
+        List<Goods> goodsList=goodsService.findSameTypeGoodsByType(types.get(type));//该类型所有商品数组
         if(goodsList.size()==0){
             return Result.error(EMPTY_TYPE_GOODS);
         }

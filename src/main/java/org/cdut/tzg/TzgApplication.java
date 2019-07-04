@@ -51,6 +51,7 @@ public class TzgApplication {
         System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/orderInfo?username=zacky" + ":根据用户名获取当前用户的订单");//根据用户名获取当前用户的订单
 
         System.out.println("home  http://localhost:" + serverPort+"/home");
+        System.out.println("tzg admin http://localhost:" + serverPort+"/api/backstage/getData");
 
     }
 

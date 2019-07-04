@@ -93,4 +93,9 @@ public class GoodsServiceImpl implements GoodsService {
     public int delSeekGoodByid(Integer goodid) {
         return goodsMapper.delSeekGoodByid(goodid);
     }
+
+    @Override
+    public List<Goods> findGoods(String goodsName) {
+        return goodsMapper.findGoods(goodsName);
+    }
 }

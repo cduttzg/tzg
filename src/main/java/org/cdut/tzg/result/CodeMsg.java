@@ -19,11 +19,13 @@ public class CodeMsg {
     //首页异常5002xx
     public static CodeMsg USER_UNDEFIND = new CodeMsg(500201,"未找到该用户");
     public static CodeMsg NO_ORDERS = new CodeMsg(500202,"没有订单");
+    public static CodeMsg NO_GOODS_LIKE_THIS = new CodeMsg(500202,"无类似物品");
 
     //商品异常 5003xx
     public static CodeMsg STOCKOUT = new CodeMsg(500301,"库存不足");
     public static CodeMsg EMPTY_TYPE_GOODS = new CodeMsg(500302,"当前没有该类型商品");
     public static CodeMsg NO_GOODS = new CodeMsg(500303,"商品不存在");
+    public static CodeMsg NEED_IMG = new CodeMsg(500304,"必须添加一张物品相关的图片哟");
 
     //购物异常 5005xx
     public static CodeMsg EMPTY_CART=new CodeMsg(500501,"当前用户购物车为空");

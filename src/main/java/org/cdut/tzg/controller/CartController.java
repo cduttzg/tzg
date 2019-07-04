@@ -49,17 +49,15 @@ public class CartController {
      */
     @RequestMapping(value = "/cartInfo",method = RequestMethod.GET)
     @ResponseBody
-    public Result<Object> cartInfo(@RequestParam String username){
+    public Result<Object> cartInfo(@RequestParam("用户名") String username){
         User buyer=userService.findUserByName(username);
         List<Cart> carts=cartService.findCartByUserId(buyer.getId());
         if(carts.size()<=0){
             return Result.error(EMPTY_CART);
         }
-        System.out.println(carts);
         List<Map<String,Object>> list=new ArrayList<>();
         for(int i=0;i<carts.size();++i){//遍历购物车数组 得到每条购物车记录中的商品和卖家信息
             Cart cart=carts.get(i);//当前商品
-            System.out.println(cart);
             Goods goods=goodsService.findGoodsById(cart.getGoodsId());//当前购物车该商品的信息
             User seller=userService.findUserById(cart.getSellerId());//当前购物车中该商品的买家信息
             Map<String,Object> map=new HashMap<>();
@@ -70,9 +68,10 @@ public class CartController {
             map.put("数量",cart.getNumber());
             map.put("卖家名称",seller.getUsername());
             map.put("商品库存",goods.getStock());
+            map.put("收款码",seller.getMoneyCode());
             list.add(map);
-            System.out.println(map);
         }
+        System.out.println("1111");
         return Result.success(list);
     }
 
@@ -94,7 +93,7 @@ public class CartController {
     public Result<Object> updateCartInfo(@RequestBody String data){
         Map map= MapUtils.getMap(data);
         String username=(String)map.get("用户名");
-        Long goodsId=Long.valueOf((String)map.get("商品ID"));
+        Long goodsId=Long.valueOf((Integer)map.get("商品ID"));
         boolean add=(boolean)map.get("add");
         User buyer=userService.findUserByName(username);
         Goods goods=goodsService.findGoodsById(goodsId);

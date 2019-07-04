@@ -15,6 +15,7 @@ import org.cdut.tzg.service.UserService;
 import org.cdut.tzg.utils.CDUTUtils;
 import org.cdut.tzg.utils.ImageUtils;
 import org.cdut.tzg.utils.MapUtils;
+import org.cdut.tzg.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static org.cdut.tzg.result.CodeMsg.NEED_IMG;
 import static org.cdut.tzg.result.CodeMsg.NOT_STUDENT;
 import static org.cdut.tzg.result.CodeMsg.USERNAME_REPEAT;
 import static org.cdut.tzg.utils.ImageUtils.DEFAULT_IMAGE_URL;
@@ -114,16 +116,14 @@ public class UserController {
         if (user == null) {
             return Result.error(CodeMsg.USER_UNDEFIND);//用户名为空，返回查找用户失败
         } else {
-            if (user.getPassword().equals((String) map.get("密码"))) { //密码不正确则返回失败信息
+            if (user.getPassword().equals((String) map.get("密码"))) {
                 mapdata.put("status", 0);
                 boolean isFrozen = (user.getIsFrozen() == 0 ? false : true);
                 mapdata.put("是否被冻结", isFrozen);
                 mapdata.put("角色", user.getRole());
-                return Result.success(mapdata);
-            } else { //密码成功则显示登陆成功
-                mapdata.put("status", 1);
-                mapdata.put("是否被冻结", true);
                 mapdata.put("用户头像",user.getAvatar());
+                return Result.success(mapdata);
+            } else {
                 return Result.error(CodeMsg.PASSWD_ERROE);
             }
 
@@ -150,10 +150,10 @@ public class UserController {
         }
         Map<String, Object> mapdata = new LinkedHashMap<String, Object>();//最后返回的data信息
         if (user.getMoneyCode() != null) {   //用户上传了付款码，则是商家
-            mapdata.put("isSeller", true);
+            mapdata.put("isSaller", true);
             mapdata.put("moneyCode", user.getMoneyCode());
         } else {
-            mapdata.put("isSeller", false);
+            mapdata.put("isSaller", false);
             mapdata.put("moneyCode", null);
         }
         return Result.success(mapdata);
@@ -232,7 +232,7 @@ public class UserController {
      */
     @RequestMapping(value = "/home/upSeek", method = RequestMethod.POST)
     @ResponseBody
-    public Result<Object> upSeek(@RequestBody String data, @RequestParam(value = "img", required = false) MultipartFile file){
+    public Result<Object> upSeek(@RequestParam("data") String data, @RequestParam(value = "img", required = false) MultipartFile file){
         Map map = MapUtils.getMap(data);
         Map mapdata = new HashMap();
         User user = userService.findUserByName((String) map.get("用户名"));
@@ -304,7 +304,7 @@ public class UserController {
      */
     @RequestMapping(value = "/home/SeekInfo", method = RequestMethod.GET)
     @ResponseBody
-    public Result<Object> findAllSeekGoods(@RequestParam String username) {
+    public Result<Object> findAllSeekGoods(@RequestParam("用户名") String username) {
         Map map = null;
         Long userId = userService.findIdByUserName(username);
         List<Goods> seekGoods = goodsService.getAllSeekGoodsByUserId(userId);//根据用户id查找求购信息
@@ -339,24 +339,25 @@ public class UserController {
      * */
     @RequestMapping(value = "/home/addGoods", method = RequestMethod.POST)
     @ResponseBody
-    public Result<Map<String, Object>> addGoods(@RequestBody String data) {
+    public Result<Map<String, Object>> addGoods(@RequestParam("data") String data, @RequestParam(value = "img",required = false) MultipartFile file) {
         Map<String, Object> map = new HashMap<>();
         Map maps = MapUtils.getMap(data);
-        String username = (String) maps.get("username");
+        String username = (String) maps.get("用户名");
         User user = userService.findUserByName(username);
+        if(file==null)
+            return Result.error(NEED_IMG);
         if (user != null) {
             Goods goods = new Goods();
             goods.setUserId(user.getId());
-            Integer type = (Integer) maps.get("type");
-            goods.setType((Integer) maps.get("type"));
-            goods.setTitle((String) maps.get("title"));
-            goods.setContent((String) maps.get("content"));
-            goods.setPrice(Float.valueOf((Integer) maps.get("price")));
-            goods.setImage((String) maps.get("image"));
-            goods.setStock((Integer) maps.get("stock"));
+            goods.setType((Integer) maps.get("商品标签"));
+            goods.setTitle((String) maps.get("商品名称"));
+            goods.setContent((String) maps.get("描述"));
+            goods.setPrice(Float.valueOf((Integer) maps.get("单价")));
+            goods.setStock((Integer) maps.get("数量"));
             goods.setTag(-1);
+            String imageUrl = ImageUtils.upload(file, user.getSchoolNumber());
+            goods.setImage(imageUrl);
             int sign = goodsService.addGoods(goods);
-            System.out.println(goods);
             if (sign == 1) {
                 map.put("success", true);
                 map.put("content", "添加商品完成");
@@ -385,14 +386,16 @@ public class UserController {
     public Result<Map<String, Object>> onShelves(@RequestBody String data) {
         Map<String, Object> map = new HashMap<>();
         Map maps = MapUtils.getMap(data);
-        Long goodsId = Long.valueOf((Integer) maps.get("goodsId"));
+        Long goodsId = Long.valueOf((Integer) maps.get("商品ID"));
         Goods goods = goodsService.findGoodsById(goodsId);
         if (goods != null) {
-            int sign = goodsService.updateTypeState(goodsId, 0);
-            if (sign == 1) {
+            if(goods.getType()==-10)
+                goods.setType(0);
+            int sign = goodsService.updateTypeState(goodsId, goods.getType()*-1);
+            if (sign >= 0) {
                 map.put("success", true);
                 map.put("content", "商品上架完成");
-            } else if (sign == 0)
+            } else
                 return Result.error(CodeMsg.REPETITIVE_OPERATION);
         } else
             Result.error(CodeMsg.NO_GOODS);
@@ -414,11 +417,14 @@ public class UserController {
     public Result<Map<String, Object>> offShelves(@RequestBody String data) {
         Map<String, Object> map = new HashMap<>();
         Map maps = MapUtils.getMap(data);
-        Long goodsId = Long.valueOf((Integer) maps.get("goodsId"));
+        Long goodsId = Long.valueOf((Integer) maps.get("商品ID"));
         Goods goods = goodsService.findGoodsById(goodsId);
         if (goods != null) {
-            int sign = goodsService.updateTypeState(goodsId, -1);
-            if (sign == 1) {
+            if(goods.getType()==0){
+                goods.setType(10);
+            }
+            int sign = goodsService.updateTypeState(goodsId, goods.getType()*-1);
+            if (sign >= 0) {
                 map.put("success", true);
                 map.put("content", "商品下架完成");
             } else if (sign == 0) {
@@ -446,9 +452,6 @@ public class UserController {
         Map<String, Object> map = new HashMap<>();
         System.out.println(files.length);
         Map maps = MapUtils.getMap(data);
-        System.out.println(maps.entrySet());
-        System.out.println(Arrays.toString(files));
-        System.out.println(files.length);
         for (int i = 0; i < files.length; i++) {
             if (files[i].getOriginalFilename().equals("nullFile")) {
                 files[i] = null;
@@ -499,12 +502,12 @@ public class UserController {
     public Result<Map<String, Object>> setStateToPaid(@RequestBody String data) {
         Map<String, Object> map = new HashMap<>();
         Map maps = MapUtils.getMap(data);
-        String userName = (String) maps.get("username");
+        String userName = (String) maps.get("买家用户名");
         Long userId = userService.findIdByUserName(userName);
         if (userId != null) {
             //用户存在
             //获取订单id
-            Long orderId = Long.valueOf((Integer) maps.get("id"));
+            Long orderId = Long.valueOf((Integer) maps.get("订单ID"));
             Orders order = orderService.getOrderByIdAndUserId(orderId, userId);
             //订单存在
             if (order != null) {
@@ -585,8 +588,6 @@ public class UserController {
     @RequestMapping(value = "/home/message", method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> getUserMessage(@RequestParam("用户名") String username) {
-        System.out.println("11111");
-        System.out.println(username);
         User user = userService.findUserByName(username);//根据用户名查找用户信息
         if (user == null) {//查找用户失败，则返回"未找到该用户"
             return Result.error(CodeMsg.USER_UNDEFIND);
@@ -601,6 +602,8 @@ public class UserController {
             datamap.put("用户头像", user.getAvatar());
             datamap.put("总卖出量", user.getTotalSold());
             datamap.put("收款码",user.getMoneyCode());
+            datamap.put("角色",user.getRole());
+            datamap.put("是否被冻结", user.getIsFrozen() == 1);
             return Result.success(datamap);
         }
     }
@@ -616,7 +619,7 @@ public class UserController {
      */
     @RequestMapping(value = "/home/orderInfo", method = RequestMethod.GET)
     @ResponseBody
-    public Result<Object> getUserOrderInfo(@RequestParam String username) {
+    public Result<Object> getUserOrderInfo(@RequestParam("用户名") String username) {
         Long userId = userService.findIdByUserName(username);//用户id
         if (userId == null) {
             return Result.error(CodeMsg.USER_UNDEFIND);
@@ -628,11 +631,12 @@ public class UserController {
         List<Map<String, Object>> listseller;
         Map<String, Object> mapseller;
         //自己是买家时的订单
+        String[] orderState = {"待支付","已完成","异常"};
         for (Orders orders1 : orders) {
             map = new HashMap<String, Object>();
             map.put("卖家姓名", username);
-            map.put("订单时间", orders1.getCreatedTime());
-            map.put("订单状态", orders1.getState());
+            map.put("订单时间", TimeUtils.date(orders1.getCreatedTime()));
+            map.put("订单状态", orderState[orders1.getState()]);
             map.put("订单ID", orders1.getId());
             Long orderid = orders1.getId();
             List<GoodsOrders> goodsOrder = goodsOrdersService.findTheOrdersDetailById(orderid);
@@ -721,7 +725,7 @@ public class UserController {
                 mapdata.put("数量", good.getStock());
                 mapdata.put("商品ID", good.getId());
                 mapdata.put("商品标签", good.getType());
-                if (good.getType() == -1) {
+                if (good.getType() < 0) {
                     mapdata.put("上架", false);
                 } else {
                     mapdata.put("上架", true);

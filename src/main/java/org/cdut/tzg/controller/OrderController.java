@@ -43,14 +43,14 @@ public class OrderController {
     * 返回值：
     * {code: 200, msg: "success", data: {"网站活跃度":[2019-7-2:12,2019-7-3:23],"网站日交易量":[2019-7-2:12,2019-7-3:23],"网站总交易量":800,"求购标签":[{"标签名1":111},{"标签名2":222},{"标签名3":333},...]}}
     * */
-    @RequestMapping(value = "/getData",method = RequestMethod.POST)
+    @RequestMapping(value = "/getData",method = RequestMethod.GET)
     @ResponseBody
     public Result<Map<String, Object>> getAllOrders(){
         //返回数据载体
         Map<String,Object> map = new HashMap<>();
         //存储每日活跃量、销售量
-        Map<String,Integer> active = new HashMap<>();
-        Map<String,Integer> daySold = new HashMap<>();
+        List<Map> active = new ArrayList<>(7);
+        List<Map> daySold = new ArrayList<>(7);
 
         //获取一周内日期
         Calendar calendar = Calendar.getInstance();
@@ -61,16 +61,23 @@ public class OrderController {
             calendar.add(calendar.DAY_OF_MONTH,-i);
             int orderCount = goodsService.getGoodsCount(calendar.getTime());
             int daySoldCount = orderService.getCompletedOrdersCount(calendar.getTime());
-            active.put(String.format("%tY-%tm-%td",calendar,calendar,calendar),orderCount);
-            daySold.put(String.format("%tY-%tm-%td",calendar,calendar,calendar),daySoldCount);
+            Map<String,Object> curMap = new HashMap<>();
+            curMap.put("day",String.format("%tm-%td",calendar,calendar));
+            curMap.put("活跃度",orderCount);
+            active.add(curMap);
+            Map<String,Object> curMap2 = new HashMap<>();
+            curMap2.put("day",String.format("%tm-%td",calendar,calendar));
+            curMap2.put("交易量",daySoldCount);
+            daySold.add(curMap2);
             calendar.setTime(date);
         }
         //统计各种求购标签的商品数量
-        List<Map<String,Integer>> list = new ArrayList<>();
+        List<Map> list = new ArrayList<>();
         String[] tags = new String[]{"水票","书籍","寝室神器","租房","文具","电脑办公","游戏道具","体育用具","乐器","电器","装饰品","其他"};
         for (int i=0; i<12; i++){
-            Map<String, Integer> tagmap = new HashMap<>();
-            tagmap.put(tags[i],goodsService.getGoodsNumByTags(i));
+            Map<String, Object> tagmap = new HashMap<>();
+            tagmap.put("tag",tags[i]);
+            tagmap.put("数量",goodsService.getGoodsNumByTags(i));
             list.add(tagmap);
         }
         int ordersCount = orderService.getAllCompletedOrdersCount();
@@ -157,7 +164,7 @@ public class OrderController {
     @ResponseBody
     public Result<Map<String,Object>> setFreezeUser(@RequestBody String data){
         Map maps = MapUtils.getMap(data);
-        String schoolNum = (String) maps.get("schoolNum");
+        String schoolNum = (String) maps.get("用户学号");
         Map<String,Object> map = new HashMap<>();
         User user = userService.getUserBySchoolNum(schoolNum);
         if (user == null)
@@ -188,7 +195,7 @@ public class OrderController {
     @ResponseBody
     public Result<Map<String,Object>> addAdministrator(@RequestBody String data){
         Map maps = MapUtils.getMap(data);
-        String schoolNum = (String) maps.get("schoolNum");
+        String schoolNum = (String) maps.get("用户学号");
         Map<String,Object> map = new HashMap<>();
         User user = userService.getUserBySchoolNum(schoolNum);
         if (user == null)
@@ -241,7 +248,7 @@ public class OrderController {
     * {"code":200,"msg":"success","data":[{"电话":"13568043079","用户名":"rock"},{"电话":"12345678987","用户名":"jack"},{"电话":"15196684789","用户名":"zacky"}]}
     * {"code": 500403, "msg": "暂无管理员", data: null}
     * */
-    @RequestMapping(value = "/getAdmin",method = RequestMethod.POST)
+    @RequestMapping(value = "/getAdmin",method = RequestMethod.GET)
     @ResponseBody
     public Result<List<Map<String,String>>> getAllAdministrator(){
         List<User> users = userService.getAllAdministrator();

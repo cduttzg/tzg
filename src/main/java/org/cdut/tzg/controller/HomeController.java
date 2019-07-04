@@ -50,7 +50,7 @@ public class HomeController {
      */
     @RequestMapping(value = "/cartInfo", method = RequestMethod.GET)
     @ResponseBody
-    public Result<Object> cartInfo(@RequestParam String username) {
+    public Result<Object> cartInfo(@RequestParam("用户名") String username) {
         //获取用户数据并封装到map里
         Map<String, Object> data = new HashMap<>();
         User user = userService.findUserByName(username);
@@ -61,6 +61,8 @@ public class HomeController {
         data.put("角色", user.getRole());
         //获取购物车信息并封装到map里
         List<Cart> carts = cartService.findAll(user.getId());
+        if(carts==null)
+            return Result.success(null);
         List<Map<String, Object>> list = new ArrayList<>();
         for (int i = 0; i < carts.size(); i++) {
             //查询商品的具体信息并封装到map里
@@ -130,8 +132,8 @@ public class HomeController {
     public Result<Object> home() {
         Map<String, Object> data = new HashMap<>();
         List<Goods> OthersGoods = goodsService.findGoodsByTypeAndLimit(0,8);
-        List<Goods> virtualGoods = goodsService.findGoodsByTypeAndLimit(1,8);
-        List<Goods> bookGoods = goodsService.findGoodsByTypeAndLimit(2,8);
+        List<Goods> virtualGoods = goodsService.findGoodsByTypeAndLimit(2,8);
+        List<Goods> bookGoods = goodsService.findGoodsByTypeAndLimit(1,8);
         List<Goods> houseGoods = goodsService.findGoodsByTypeAndLimit(3,8);
         List<Goods> activityGoods = goodsService.findGoodsByTypeAndLimit(4,1);
         if(OthersGoods==null)
@@ -169,6 +171,7 @@ public class HomeController {
             map.put("卖家ID",goods.getUserId());
             map.put("商品ID",goods.getId());
             map.put("商品图片",goods.getImage());
+            map.put("联系方式",userService.findUserById(goods.getUserId()).getPhoneNumber());
             list.add(map);
         }
         return list;
