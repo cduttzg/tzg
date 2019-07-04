@@ -199,9 +199,9 @@ public class GoodsController {
           */
     @RequestMapping(value = "/gallery",method = RequestMethod.GET)
     @ResponseBody
-    public Result<Object> gallary(@RequestParam Integer type){
+    public Result<Object> gallary(@RequestParam("标签种类") String type){
         List<Map<String,Object>> list=new ArrayList<>();//返回的数组
-        List<Goods> goodsList=goodsService.findSameTypeGoodsByType(type);//该类型所有商品数组
+        List<Goods> goodsList=goodsService.findSameTypeGoodsByType(5);//该类型所有商品数组
         if(goodsList.size()==0){
             return Result.error(EMPTY_TYPE_GOODS);
         }
