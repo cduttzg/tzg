@@ -123,6 +123,7 @@ public class UserController {
             } else { //密码成功则显示登陆成功
                 mapdata.put("status", 1);
                 mapdata.put("是否被冻结", true);
+                mapdata.put("用户头像",user.getAvatar());
                 return Result.error(CodeMsg.PASSWD_ERROE);
             }
 
