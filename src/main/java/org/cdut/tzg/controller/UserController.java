@@ -443,7 +443,7 @@ public class UserController {
     @ResponseBody
     public Result<Map<String, Object>> updateUserInformation(@RequestParam("data") String data, @RequestParam(value = "img", required = false) MultipartFile[] files) {
         Map<String, Object> map = new HashMap<>();
-        System.out.println(data);
+        System.out.println(files.length);
         Map maps = MapUtils.getMap(data);
         System.out.println(maps.entrySet());
         System.out.println(Arrays.toString(files));
@@ -583,7 +583,9 @@ public class UserController {
      */
     @RequestMapping(value = "/home/message", method = RequestMethod.GET)
     @ResponseBody
-    public Result<Object> getUserMessage(@RequestParam String username) {
+    public Result<Object> getUserMessage(@RequestParam("用户名") String username) {
+        System.out.println("11111");
+        System.out.println(username);
         User user = userService.findUserByName(username);//根据用户名查找用户信息
         if (user == null) {//查找用户失败，则返回"未找到该用户"
             return Result.error(CodeMsg.USER_UNDEFIND);
@@ -595,7 +597,7 @@ public class UserController {
             datamap.put("电子邮箱", user.getEmail());
             datamap.put("收货地址", user.getAddress());
             datamap.put("用户评分", user.getGrade());
-            datamap.put("头像", user.getAvatar());
+            datamap.put("用户头像", user.getAvatar());
             datamap.put("总卖出量", user.getTotalSold());
             datamap.put("收款码",user.getMoneyCode());
             return Result.success(datamap);

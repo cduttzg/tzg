@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("")
 public class EntryController {
 
-    @RequestMapping("/homePage")
+    @RequestMapping("/home")
     public String index(){
         return "index";
     }

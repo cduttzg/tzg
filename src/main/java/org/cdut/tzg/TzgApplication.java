@@ -24,7 +24,6 @@ public class TzgApplication {
         System.out.println("OrderInfo  http://localhost:" + serverPort+"/api/home/OrderInfo?number=2");
         System.out.println("OrderInfo  http://localhost:" + serverPort+"/api/home/cartInfo?username=小红");
         System.out.println("home  http://localhost:" + serverPort+"/api/home/");
-        System.out.println("home  http://localhost:" + serverPort+"/homePage");
         System.out.println("home  http://localhost:" + serverPort+"/test/testPostImage");
         System.out.println("home  http://localhost:" + serverPort+"/test/spider");
         System.out.println(System.currentTimeMillis());
@@ -50,6 +49,9 @@ public class TzgApplication {
         System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/message?username=rock" + ":根据用户姓名查找用户信息");//根据用户姓名查找用户信息
         System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/goodsInfo?username=zacky" + ":根据用户名查找该用户的上/下架信息");//根据用户名查找该用户的上架信息
         System.out.println("tzg admin http://localhost:" + serverPort + "/api/user/home/orderInfo?username=zacky" + ":根据用户名获取当前用户的订单");//根据用户名获取当前用户的订单
+
+        System.out.println("home  http://localhost:" + serverPort+"/home");
+
     }
 
 }
