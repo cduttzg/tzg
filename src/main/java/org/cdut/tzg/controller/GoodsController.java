@@ -49,7 +49,7 @@ public class GoodsController {
 
     @RequestMapping(value = "/getInfo",method = RequestMethod.GET)
     @ResponseBody
-    public Result<Object> getInfo(@RequestParam Long goodsId){
+    public Result<Object> getInfo(@RequestParam("商品ID") Long goodsId){
         Goods goods=goodsService.findGoodsById(goodsId);
         if(goods==null){
             return Result.error(NO_GOODS);
