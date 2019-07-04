@@ -456,7 +456,7 @@ public class UserController {
         String username = (String) maps.get("用户名");
         User user = userService.findUserByName(username);
         if (user != null) {
-            String phoneNum = (String) maps.get("手机号码");
+            String phoneNum = (String) maps.get("电话号码");
             String email = (String) maps.get("电子邮箱");
             String address = (String) maps.get("收货地址");
             //若没有上传新的头像就使用以前的头像
